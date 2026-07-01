@@ -51,24 +51,24 @@ type Prototype = {
 // Every prototype A–I is routable by URL (/prototype-a … /prototype-i).
 // Only those with `visible: true` appear in the dropdown selector.
 const PROTOTYPES: Prototype[] = [
-  { id: "A", path: "prototype-a", label: "Concept One", visible: false, element: <ConceptOne /> },
-  { id: "B", path: "prototype-b", label: "Concept Two", visible: false, element: <ConceptTwo /> },
-  { id: "C", path: "prototype-c", label: "Concept Three", visible: false, element: <ConceptThree /> },
-  { id: "D", path: "prototype-d", label: "Ballot Question", visible: false, element: <BallotQuestion /> },
+  { id: "A", path: "prototype/legislator-profile/a-compact", label: "Concept One", visible: false, element: <ConceptOne /> },
+  { id: "B", path: "prototype/legislator-profile/b-standard", label: "Concept Two", visible: false, element: <ConceptTwo /> },
+  { id: "C", path: "prototype/legislator-profile/c-full", label: "Concept Three", visible: false, element: <ConceptThree /> },
+  { id: "D", path: "prototype/2024-ballot-question/audit/d-original", label: "Ballot Question", visible: false, element: <BallotQuestion /> },
   {
     id: "E",
-    path: "prototype-e",
+    path: "prototype/2024-ballot-question/audit/e-content-schemata",
     label: "Content Schemata",
     sub: "Inventory View",
     desc: "Content inventory organized by tab — showing all content types and sources per section.",
     visible: true,
     element: <ContentSchemata />,
   },
-  { id: "F", path: "prototype-f", label: "Concept F", visible: false, element: <ConceptF /> },
-  { id: "G", path: "prototype-g", label: "Concept G", visible: false, element: <ConceptG /> },
+  { id: "F", path: "prototype/2024-ballot-question/audit/f-foragainst-1", label: "Concept F", visible: false, element: <ConceptF /> },
+  { id: "G", path: "prototype/2024-ballot-question/audit/g-foragainst-2", label: "Concept G", visible: false, element: <ConceptG /> },
   {
     id: "H",
-    path: "prototype-h",
+    path: "prototype/2024-ballot-question/audit/h-foragainst-hybrid",
     label: "For & Against Example",
     sub: "Hybrid Approach",
     desc: "For & Against tab: Arguments synthesis, cross-cutting analysis, then research evidence.",
@@ -84,7 +84,7 @@ const PROTOTYPES: Prototype[] = [
   },
   {
     id: "I",
-    path: "prototype-i",
+    path: "prototype/2026-ballot-question/rent/i-ballotpedia-test",
     label: "Rent Control Example",
     sub: "Real Content Example",
     desc: "Rent control example",
@@ -101,7 +101,7 @@ const PROTOTYPES: Prototype[] = [
 ];
 
 const VISIBLE_PROTOTYPES = PROTOTYPES.filter((p) => p.visible);
-const DEFAULT_PATH = "/prototype-e";
+const DEFAULT_PATH = "/prototype/2024-ballot-question/audit/e-content-schemata";
 
 // Persistent chrome: the fixed concept switcher strip plus the routed content.
 function Layout() {
