@@ -78,7 +78,7 @@ export default function ContentSchemata() {
         </div>
 
         {/* ── Sticky: hero + sidebar + tab content ── */}
-        <div className="sticky top-[72px] h-[calc(100vh-72px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
+        <div className="sticky top-[24px] h-[calc(100vh-24px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
 
           {/* Hero card */}
           <div className="bg-white rounded-[12px] overflow-clip pb-[22px] pt-[24px] shrink-0">

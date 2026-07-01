@@ -76,7 +76,7 @@ export default function ConceptH() {
         </div>
 
         {/* ── Sticky: hero + sidebar + tab content ── */}
-        <div className="sticky top-[109px] h-[calc(100vh-109px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
+        <div className="sticky top-[61px] h-[calc(100vh-61px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
 
           {/* Hero card */}
           <div className="bg-white rounded-[12px] overflow-clip pb-[22px] pt-[24px] shrink-0">

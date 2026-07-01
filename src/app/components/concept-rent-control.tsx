@@ -275,7 +275,7 @@ export default function ConceptRentControl() {
         </div>
 
         {/* Sticky layout */}
-        <div className="sticky top-[109px] h-[calc(100vh-109px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
+        <div className="sticky top-[61px] h-[calc(100vh-61px)] overflow-hidden flex flex-col gap-[16px] px-[90px] pb-[24px] bg-[#ededed]">
           {/* Hero card */}
           <div className="bg-white rounded-[12px] overflow-clip pb-[22px] pt-[24px] shrink-0">
             <div className="flex gap-[24px] items-center w-full px-[24px]">

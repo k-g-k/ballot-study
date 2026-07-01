@@ -89,8 +89,9 @@ const PROTOTYPES: Prototype[] = [
 
 const DEFAULT_PATH = "/prototype/2024-ballot-question/audit/e-content-schemata";
 
-// Floating, collapsible navigation panel. Rendered only in development
-// (see Layout) — Vite strips it from production builds.
+// Collapsible navigation panel flush against the bottom-right edge of the
+// screen. Rendered only in development (see Layout) — Vite strips it from
+// production builds.
 function DevNav() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(true);
@@ -99,8 +100,8 @@ function DevNav() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-3 right-3 z-[60] shadow-lg"
-        style={{ fontFamily: "Nunito", background: "#12266f", color: "#fff", borderRadius: 999, padding: "8px 14px", fontWeight: 800, fontSize: 11, letterSpacing: "0.1em" }}
+        className="fixed left-0 bottom-16 z-[60] shadow-lg"
+        style={{ fontFamily: "Nunito", background: "#12266f", color: "#fff", borderTopRightRadius: 8, borderBottomRightRadius: 8, padding: "14px 8px", fontWeight: 800, fontSize: 11, letterSpacing: "0.1em", writingMode: "vertical-rl" }}
       >
         DEV NAV
       </button>
@@ -109,8 +110,8 @@ function DevNav() {
 
   return (
     <div
-      className="fixed bottom-3 right-3 z-[60] shadow-lg"
-      style={{ fontFamily: "Nunito", width: 260, background: "#fff", border: "1px solid #d1d1d1", borderRadius: 8, overflow: "hidden" }}
+      className="fixed left-0 bottom-0 z-[60] shadow-lg"
+      style={{ fontFamily: "Nunito", width: 260, background: "#fff", border: "1px solid #d1d1d1", borderLeft: "none", borderBottom: "none", borderTopRightRadius: 8, overflow: "hidden" }}
     >
       <div
         className="flex items-center justify-between"
