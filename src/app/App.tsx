@@ -1,19 +1,13 @@
+import { useState } from "react";
 import type { ReactNode } from "react";
 import {
+  Link,
   Navigate,
   Outlet,
   Route,
   Routes,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./components/ui/select";
 
 import ConceptOne from "./components/concept-one";
 import ConceptTwo from "./components/concept-two";
@@ -25,11 +19,10 @@ import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
 import ConceptRentControl from "./components/concept-rent-control";
 
-// Sticky disclaimer shown below the concept switcher on certain prototypes;
-// content scrolls under it.
+// Sticky disclaimer shown on certain prototypes; content scrolls under it.
 function DisclaimerBar({ children }: { children: ReactNode }) {
   return (
-    <div className="sticky top-[48px] z-40 h-[37px] bg-[#fef3c7] border-b border-[#f59e0b] px-[16px] flex items-center gap-[8px]">
+    <div className="sticky top-0 z-40 h-[37px] bg-[#fef3c7] border-b border-[#f59e0b] px-[16px] flex items-center gap-[8px]">
       <span className="text-[16px]">⚠️</span>
       <p className="font-['Nunito'] font-bold text-[13px] text-[#92400e] leading-[1.4]">
         {children}
@@ -38,41 +31,37 @@ function DisclaimerBar({ children }: { children: ReactNode }) {
   );
 }
 
+// Route sections, used to group prototypes in the dev nav.
+const GROUPS = [
+  { key: "legislator-profile", title: "Legislator Profile" },
+  { key: "2024-audit", title: "2024 Ballot Question · Audit" },
+  { key: "2026-rent", title: "2026 Ballot Question · Rent" },
+] as const;
+
+type GroupKey = (typeof GROUPS)[number]["key"];
+
 type Prototype = {
   id: string; // "A".."I"
-  path: string; // route segment, e.g. "prototype-e"
+  path: string; // route path, e.g. "prototype/2024-ballot-question/audit/e-content-schemata"
   label: string;
-  sub?: string;
-  desc?: string;
-  visible: boolean; // whether it appears in the dropdown selector
+  group: GroupKey;
   element: ReactNode;
 };
 
-// Every prototype A–I is routable by URL (/prototype-a … /prototype-i).
-// Only those with `visible: true` appear in the dropdown selector.
+// Every prototype A–I is routable by URL. Navigation is dev-only (see DevNav).
 const PROTOTYPES: Prototype[] = [
-  { id: "A", path: "prototype/legislator-profile/a-compact", label: "Concept One", visible: false, element: <ConceptOne /> },
-  { id: "B", path: "prototype/legislator-profile/b-standard", label: "Concept Two", visible: false, element: <ConceptTwo /> },
-  { id: "C", path: "prototype/legislator-profile/c-full", label: "Concept Three", visible: false, element: <ConceptThree /> },
-  { id: "D", path: "prototype/2024-ballot-question/audit/d-original", label: "Ballot Question", visible: false, element: <BallotQuestion /> },
-  {
-    id: "E",
-    path: "prototype/2024-ballot-question/audit/e-content-schemata",
-    label: "Content Schemata",
-    sub: "Inventory View",
-    desc: "Content inventory organized by tab — showing all content types and sources per section.",
-    visible: true,
-    element: <ContentSchemata />,
-  },
-  { id: "F", path: "prototype/2024-ballot-question/audit/f-foragainst-1", label: "Concept F", visible: false, element: <ConceptF /> },
-  { id: "G", path: "prototype/2024-ballot-question/audit/g-foragainst-2", label: "Concept G", visible: false, element: <ConceptG /> },
+  { id: "A", path: "prototype/legislator-profile/a-compact", label: "Compact", group: "legislator-profile", element: <ConceptOne /> },
+  { id: "B", path: "prototype/legislator-profile/b-standard", label: "Standard", group: "legislator-profile", element: <ConceptTwo /> },
+  { id: "C", path: "prototype/legislator-profile/c-full", label: "Full", group: "legislator-profile", element: <ConceptThree /> },
+  { id: "D", path: "prototype/2024-ballot-question/audit/d-original", label: "Original", group: "2024-audit", element: <BallotQuestion /> },
+  { id: "E", path: "prototype/2024-ballot-question/audit/e-content-schemata", label: "Content Schemata", group: "2024-audit", element: <ContentSchemata /> },
+  { id: "F", path: "prototype/2024-ballot-question/audit/f-foragainst-1", label: "For & Against 1", group: "2024-audit", element: <ConceptF /> },
+  { id: "G", path: "prototype/2024-ballot-question/audit/g-foragainst-2", label: "For & Against 2", group: "2024-audit", element: <ConceptG /> },
   {
     id: "H",
     path: "prototype/2024-ballot-question/audit/h-foragainst-hybrid",
-    label: "For & Against Example",
-    sub: "Hybrid Approach",
-    desc: "For & Against tab: Arguments synthesis, cross-cutting analysis, then research evidence.",
-    visible: true,
+    label: "For & Against Hybrid",
+    group: "2024-audit",
     element: (
       <>
         <DisclaimerBar>
@@ -85,10 +74,8 @@ const PROTOTYPES: Prototype[] = [
   {
     id: "I",
     path: "prototype/2026-ballot-question/rent/i-ballotpedia-test",
-    label: "Rent Control Example",
-    sub: "Real Content Example",
-    desc: "Rent control example",
-    visible: true,
+    label: "Ballotpedia test",
+    group: "2026-rent",
     element: (
       <>
         <DisclaimerBar>
@@ -100,67 +87,81 @@ const PROTOTYPES: Prototype[] = [
   },
 ];
 
-const VISIBLE_PROTOTYPES = PROTOTYPES.filter((p) => p.visible);
 const DEFAULT_PATH = "/prototype/2024-ballot-question/audit/e-content-schemata";
 
-// Persistent chrome: the fixed concept switcher strip plus the routed content.
-function Layout() {
-  const navigate = useNavigate();
+// Floating, collapsible navigation panel. Rendered only in development
+// (see Layout) — Vite strips it from production builds.
+function DevNav() {
   const { pathname } = useLocation();
-  const current = PROTOTYPES.find((p) => `/${p.path}` === pathname);
-  // Only reflect the dropdown selection when on a visible prototype.
-  const selectValue = current?.visible ? current.path : undefined;
+  const [open, setOpen] = useState(true);
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="fixed bottom-3 right-3 z-[60] shadow-lg"
+        style={{ fontFamily: "Nunito", background: "#12266f", color: "#fff", borderRadius: 999, padding: "8px 14px", fontWeight: 800, fontSize: 11, letterSpacing: "0.1em" }}
+      >
+        DEV NAV
+      </button>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Fixed concept switcher strip */}
+    <div
+      className="fixed bottom-3 right-3 z-[60] shadow-lg"
+      style={{ fontFamily: "Nunito", width: 260, background: "#fff", border: "1px solid #d1d1d1", borderRadius: 8, overflow: "hidden" }}
+    >
       <div
-        className="fixed top-0 left-0 right-0 z-50 flex items-center gap-0 border-b"
-        style={{
-          backgroundColor: "#fff",
-          borderColor: "#d1d1d1",
-          height: 48,
-          paddingLeft: 16,
-          paddingRight: 16,
-        }}
+        className="flex items-center justify-between"
+        style={{ background: "#12266f", color: "#fff", padding: "6px 10px" }}
       >
-        <span
-          className="mr-5 shrink-0"
-          style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 12, color: "#888", textTransform: "uppercase", letterSpacing: "0.1em" }}
-        >
-          IA Concepts
-        </span>
-
-        {/* Prototype selector */}
-        <Select value={selectValue} onValueChange={(path) => navigate(`/${path}`)}>
-          <SelectTrigger
-            className="w-[300px] h-8 shrink-0"
-            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 13, color: "#334156" }}
-          >
-            <SelectValue placeholder="Select a prototype…" />
-          </SelectTrigger>
-          <SelectContent>
-            {VISIBLE_PROTOTYPES.map((p) => (
-              <SelectItem key={p.id} value={p.path} style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 13 }}>
-                {p.id} — {p.label}
-                {p.sub ? <span style={{ fontWeight: 400, opacity: 0.75 }}> — {p.sub}</span> : null}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Description */}
-        <div className="hidden lg:flex items-center ml-6 shrink-0">
-          <span style={{ fontFamily: "Nunito", fontSize: 12, color: "#606060" }}>
-            {current?.desc}
-          </span>
-        </div>
+        <span style={{ fontWeight: 800, fontSize: 11, letterSpacing: "0.1em" }}>DEV NAV</span>
+        <button onClick={() => setOpen(false)} aria-label="Collapse dev nav" style={{ color: "#fff", fontSize: 16, lineHeight: 1, fontWeight: 700 }}>
+          ×
+        </button>
       </div>
-
-      {/* Routed content — offset for the strip */}
-      <div style={{ paddingTop: 48 }}>
-        <Outlet />
+      <div style={{ maxHeight: "60vh", overflowY: "auto", padding: 8 }}>
+        {GROUPS.map((g) => (
+          <div key={g.key} className="mb-2 last:mb-0">
+            <div style={{ fontSize: 10, fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.08em", padding: "4px 6px" }}>
+              {g.title}
+            </div>
+            {PROTOTYPES.filter((p) => p.group === g.key).map((p) => {
+              const active = `/${p.path}` === pathname;
+              return (
+                <Link
+                  key={p.id}
+                  to={`/${p.path}`}
+                  className={active ? "block rounded" : "block rounded hover:bg-[#f0f0f0]"}
+                  style={{
+                    padding: "5px 8px",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    color: active ? "#fff" : "#334156",
+                    background: active ? "#12266f" : undefined,
+                  }}
+                >
+                  <span style={{ opacity: 0.55, marginRight: 6 }}>{p.id}</span>
+                  {p.label}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </div>
+    </div>
+  );
+}
+
+// Persistent chrome. In production this is just the routed content; the dev nav
+// only renders during `npm run dev`.
+function Layout() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Outlet />
+      {import.meta.env.DEV && <DevNav />}
     </div>
   );
 }
