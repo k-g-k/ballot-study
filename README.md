@@ -1,5 +1,7 @@
 # Ballot Question Prototype
 
+**Live demo:** https://ballot-pi.vercel.app/
+
 An interactive prototype exploring information-architecture concepts for ballot-question pages —
 a React + Vite + Tailwind single-page app with a top switcher between three concepts:
 
@@ -25,7 +27,7 @@ npm run build   # production build → dist/
 
 ## Deployment
 
-Deployed on **Vercel**. Vercel auto-detects the Vite setup:
+Deployed on **Vercel** at https://ballot-pi.vercel.app/. Vercel auto-detects the Vite setup:
 
 - Framework preset: **Vite**
 - Build command: `npm run build`
