@@ -1,11 +1,34 @@
+# Ballot Question Prototype
 
-  # Ballot Question Proto (Copy)
+An interactive prototype exploring information-architecture concepts for ballot-question pages —
+a React + Vite + Tailwind single-page app with a top switcher between three concepts:
 
-  This is a code bundle for Ballot Question Proto (Copy). The original project is available at https://www.figma.com/design/4jwB4IAFcpAHuq5O0b6uye/Ballot-Question-Proto--Copy-.
+- **Content Schemata** — content inventory organized by tab
+- **For & Against Example** — arguments synthesis + research evidence (AI-generated demo content)
+- **Rent Control Example** — a real-content example based on public sources
 
-  ## Running the code
+> ⚠️ Prototype only. Some content is AI-generated for demonstration and is not real ballot-measure data.
 
-  Run `npm i` to install the dependencies.
+## Tech stack
 
-  Run `npm run dev` to start the development server.
-  
+React 18 · Vite 6 · Tailwind CSS v4 · shadcn/ui (Radix) · TypeScript
+
+## Getting started
+
+Requires Node 20+.
+
+```bash
+npm install     # install dependencies
+npm run dev     # start the dev server (prints a localhost URL)
+npm run build   # production build → dist/
+```
+
+## Deployment
+
+Deployed on **Vercel**. Vercel auto-detects the Vite setup:
+
+- Framework preset: **Vite**
+- Build command: `npm run build`
+- Output directory: `dist`
+
+Pushes to `main` trigger a new deployment automatically once the repo is connected.
