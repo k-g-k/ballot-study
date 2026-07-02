@@ -18,6 +18,7 @@ import ConceptF from "./components/concept-f";
 import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
 import ConceptRentControl from "./components/concept-rent-control";
+import BallotQuestions from "./components/ballot-questions";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
 function DisclaimerBar({ children }: { children: ReactNode }) {
@@ -33,6 +34,7 @@ function DisclaimerBar({ children }: { children: ReactNode }) {
 
 // Route sections, used to group prototypes in the dev nav.
 const GROUPS = [
+  { key: "ballot-questions", title: "MAPLE · Ballot Questions" },
   { key: "legislator-profile", title: "Legislator Profile" },
   { key: "2024-audit", title: "2024 Ballot Question · Audit" },
   { key: "2026-rent", title: "2026 Ballot Question · Rent" },
@@ -50,6 +52,7 @@ type Prototype = {
 
 // Every prototype A–I is routable by URL. Navigation is dev-only (see DevNav).
 const PROTOTYPES: Prototype[] = [
+  { id: "BQ", path: "ballotQuestions", label: "2026 Index", group: "ballot-questions", element: <BallotQuestions /> },
   { id: "A", path: "prototype/legislator-profile/a-compact", label: "Compact", group: "legislator-profile", element: <ConceptOne /> },
   { id: "B", path: "prototype/legislator-profile/b-standard", label: "Standard", group: "legislator-profile", element: <ConceptTwo /> },
   { id: "C", path: "prototype/legislator-profile/c-full", label: "Full", group: "legislator-profile", element: <ConceptThree /> },
