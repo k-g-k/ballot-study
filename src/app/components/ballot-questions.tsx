@@ -24,7 +24,7 @@ type BallotQuestion = {
 // is listed last as it is a different type of question than the initiatives.
 const QUESTIONS_2026: BallotQuestion[] = [
   {
-    title: "Limiting Rent Increases",
+    title: "Protect Tenants by Limiting Rent Increases",
     description:
       "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
     href: "/ballotQuestions/2026/rent-control",
@@ -181,7 +181,7 @@ function QuestionCard({ q }: { q: BallotQuestion }) {
           {q.title}
         </h3>
         <p
-          className="font-['Nunito'] font-light text-[18px] leading-[1.5] mt-[6px]"
+          className="font-['Nunito'] font-light text-[14px] leading-[1.5] mt-[6px]"
           style={{ lineHeight: 1.25, color: "#808080" }}
         >
           {q.description}

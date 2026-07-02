@@ -17,6 +17,8 @@ import {
   MessagesSquare,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { MapleTopNav, BreadcrumbBack, PageHeading } from "./maple-shared";
 import { POSITION_USERS, type PositionUser } from "../data/rent-control-users";
@@ -46,19 +48,21 @@ type TabId =
   | "background"
   | "for-against"
   | "perspectives"
+  | "deliberations"
   | "media"
   | "finance"
-  | "references";
+  | "bibliography";
 type SrcKind = "official" | "outside" | "ai" | "user";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "overview", label: "Overview" },
-  { id: "background", label: "Background" },
   { id: "for-against", label: "For & Against" },
   { id: "perspectives", label: "Public Perspectives" },
-  { id: "media", label: "Media Coverage" },
+  { id: "deliberations", label: "Citizen Deliberations" },
+  // { id: "media", label: "Media Coverage" },
   { id: "finance", label: "Campaign Finance" },
-  { id: "references", label: "References" },
+  { id: "background", label: "Background" },
+  { id: "bibliography", label: "Bibliography" },
 ];
 
 // ── Sources (all followed & verified this build) ─────────────────────────────
@@ -197,13 +201,31 @@ const SOURCES: Record<string, Source> = {
     kind: "official",
     url: "https://housingformass.com/",
   },
+  article48: {
+    label: "Massachusetts Constitution, Article 48 (The Initiative)",
+    kind: "official",
+    url: "https://malegislature.gov/Laws/Constitution",
+    title: "Massachusetts Constitution, Article 48 — the Initiative",
+    meta: "Commonwealth of Massachusetts",
+    note: "Governs the initiative-petition process, including legislative amendment or repeal of voter-approved statutes after passage.",
+  },
+  spoaGuide: {
+    label:
+      "SPOA — Massachusetts Rent Control Ballot 2026: Property Owner Guide",
+    kind: "outside",
+    url: "https://spoa.com/learn/massachusetts-rent-control-ballot-measure-2026-guide",
+    date: "May 2026",
+    title: "Massachusetts Rent Control Ballot 2026: Property Owner Guide",
+    meta: "Small Property Owners Association (property-owner association; opposes the measure)",
+    note: "Owner-side legal analysis raising takings/fair-return and Ch. 93A interaction arguments.",
+  },
   academicResearch: {
     label: "Peer-reviewed rent-control research (see Research & Evidence)",
     kind: "outside",
     url: "",
     title: "Peer-reviewed rent-control research",
     meta: "Autor, Palmer & Pathak 2014 · Sims 2007 · Diamond, McQuade & Qian 2019",
-    note: "The studies summarized under Research & Evidence on the For & Against tab.",
+    note: "The studies summarized under Research & Evidence on the Bibliography tab.",
   },
   mapleTestimony: {
     label: "Testimony submitted to MAPLE (this question)",
@@ -1218,47 +1240,12 @@ function FinanceLedger({
   );
 }
 
-// Research & evidence list — generic.
+// Study entry — rendered by ResearchGroup on the Bibliography tab.
 interface Study {
   citation: string;
   affiliation?: string;
   finding: string;
   url?: string;
-}
-function ResearchList({ studies }: { studies: Study[] }) {
-  return (
-    <div className="space-y-[12px]">
-      {studies.map((s) => (
-        <div
-          key={s.citation}
-          className="border-l-[3px] border-[#22c55e] pl-[14px]"
-        >
-          <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
-            {s.citation}
-            {s.affiliation && (
-              <span className="font-normal italic text-[#606060]">
-                {" "}
-                — {s.affiliation}
-              </span>
-            )}
-          </p>
-          <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-            {s.finding}
-          </p>
-          {s.url && (
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] mt-[3px]"
-            >
-              Source <ExternalLink className="w-[11px] h-[11px]" />
-            </a>
-          )}
-        </div>
-      ))}
-    </div>
-  );
 }
 
 // Media article rows grouped by phase — generic.
@@ -1312,8 +1299,17 @@ function MediaPhase({
   );
 }
 
-// Empty / invitation state — generic.
-function EmptyState({ title, body }: { title: string; body: string }) {
+// Empty / invitation state — generic. `shareOnly` drops every action except
+// "Share your perspective".
+function EmptyState({
+  title,
+  body,
+  shareOnly = false,
+}: {
+  title: string;
+  body: string;
+  shareOnly?: boolean;
+}) {
   return (
     <div className="border-[1.5px] border-dashed border-[#d1d1d1] rounded-[12px] p-[22px] text-center bg-[#fbfaf7]">
       <p className="font-['Nunito'] font-bold text-[15px] text-black mb-[4px]">
@@ -1326,9 +1322,11 @@ function EmptyState({ title, body }: { title: string; body: string }) {
         <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px]">
           Share your perspective
         </button>
-        <button className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px]">
-          Ask a question
-        </button>
+        {!shareOnly && (
+          <button className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px]">
+            Ask a question
+          </button>
+        )}
       </div>
     </div>
   );
@@ -1339,9 +1337,9 @@ function EmptyState({ title, body }: { title: string; body: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const RC = {
-  title: "An Initiative Petition to Protect Tenants by Limiting Rent Increases",
+  title: "Protect Tenants by Limiting Rent Increases",
   plain:
-    "Would cap annual rent increases for most residential units at the Consumer Price Index (CPI) or 5%, whichever is lower.",
+    "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
   tags: ["Housing Policy", "Tenant Rights", "Rental Market"],
 
   overviewSummary:
@@ -1709,6 +1707,9 @@ const RC = {
     "How a CPI-linked cap would interact with insurance and utility costs that have risen faster than inflation.",
     "How the 10-year new-construction exemption interacts with longer-term housing production cycles.",
     "Would local governments retain any ability to set tighter or looser caps under this statewide framework?",
+    "Enforcement capacity and funding — what municipalities would need, and whether any of it is funded.",
+    "What happens to rents already raised above the January 31, 2026 baseline.",
+    "Guidance for owners and tenants on coverage, exemptions, and turnover.",
   ],
 
   // Checkable claims pulled from the arguments for and against, then vetted.
@@ -1716,7 +1717,8 @@ const RC = {
   claims: [
     {
       // From the YES argument "It Keeps Families in Their Homes."
-      claim: "A rent cap makes covered tenants far less likely to be displaced.",
+      claim:
+        "A rent cap makes covered tenants far less likely to be displaced.",
       mark: "verified",
       source: "outside",
       note: "Supported by peer-reviewed research (Diamond, McQuade & Qian 2019) on San Francisco — the tenant-stability effect is well established, though measured in a different city.",
@@ -1955,12 +1957,56 @@ function OverviewTab({
         />
       </div>
 
+      {/* Featured testimony from followed accounts — also shown on the
+          Public Perspectives tab. */}
+      <FollowedTestimonyCard />
+
       {/* Scope — per-group impact tiles */}
       <Card
         title="Stakeholder Impact"
         subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
       >
         <StakeholderGrid rows={RC.stakeholders} />
+      </Card>
+
+      <SynthSummaryCard
+        title="Research & Evidence"
+        subtitle="Confirmed studies relevant to the debate. Affiliation is named; MAPLE does not rank research by conclusion."
+        ids={["academicResearch", "tuftsGlobe"]}
+        prompt="Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+      >
+        <p>
+          The peer-reviewed literature is consistent on the trade-off: rent
+          control keeps covered tenants in place, but reduces rental supply over
+          time. Cambridge's 1994 decontrol raised property values even at
+          never-controlled buildings nearby; in San Francisco, covered landlords
+          cut rental supply about 15%, raising citywide rents; and the end of
+          Massachusetts rent control had small effects on new construction, with
+          larger effects on maintenance and conversion. The widely cited 6–9%
+          tax-base projection does not come from this literature — it traces to
+          a single industry-commissioned analysis extrapolating from Cambridge
+          and St. Paul.
+        </p>
+      </SynthSummaryCard>
+
+      <Card title="Still deciding? Ask MAPLE about this measure">
+        <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+          Ask a plain question —{" "}
+          <span className="italic">
+            "I own a two-family and live upstairs; would my building be
+            covered?"
+          </span>{" "}
+          — here on the page or through your own AI assistant. Answers draw only
+          from the sources on this page and cite them.
+        </p>
+        <div className="flex items-center gap-[20px] mt-[16px] flex-wrap">
+          <button className="bg-white border-[1.5px] border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[20px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]">
+            Ask on MAPLE
+          </button>
+          <button className="font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] underline underline-offset-[4px] cursor-pointer">
+            Connect your assistant (MCP) →
+          </button>
+        </div>
       </Card>
 
       {/* Original scope card — kept for reference; Stakeholder Impact replaced it.
@@ -1979,94 +2025,249 @@ function OverviewTab({
 }
 
 function BackgroundTab() {
+  // Path to the Ballot starts collapsed at a bit more than the height of the
+  // Context and History card above it (measured the same way the shell
+  // mirrors the hero), with an Expand button that opens it to full size.
+  const ctxCardRef = useRef<HTMLDivElement>(null);
+  const [ctxCardH, setCtxCardH] = useState<number | null>(null);
+  const [pathExpanded, setPathExpanded] = useState(false);
+  useEffect(() => {
+    const el = ctxCardRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => setCtxCardH(el.offsetHeight));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   return (
     <div className="flex flex-col gap-[16px]">
-      <SynthSummaryCard
-        title="Context and History"
-        ids={["petition", "h5008", "q9", "ballotpedia"]}
-        prompt="Summarize how Petition No. 25-21 reached the November 2026 ballot — filing, certification, signature rounds, and legislative review — plus the history of rent control at the Massachusetts ballot. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+      <div ref={ctxCardRef}>
+        <SynthSummaryCard
+          title="Context and History"
+          ids={["petition", "h5008", "q9", "ballotpedia"]}
+          prompt="Summarize how Petition No. 25-21 reached the November 2026 ballot — filing, certification, signature rounds, and legislative review — plus the history of rent control at the Massachusetts ballot. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+        >
+          <p>
+            Petition No. 25-21 was filed in August 2025 and certified by the
+            Attorney General that September. Supporters submitted more than
+            124,000 first-round signatures in November, of which 88,132 were
+            certified — well above the 74,574 required — sending the measure to
+            the Legislature as House Bill 5008. Lawmakers did not act by the May
+            2026 deadline, so a second round of signature collection began to
+            place the question on the November 2026 ballot.
+          </p>
+          <p>
+            Rent control has been banned statewide since 1994, when voters
+            approved Question 9 and repealed the programs in Boston, Cambridge,
+            and Brookline. Recent bills to allow local rent control have not
+            passed, and in June 2026 both the YES campaign and leading opponents
+            signaled openness to a legislative compromise that could still take
+            the question off the ballot.
+          </p>
+        </SynthSummaryCard>
+      </div>
+
+      {/* Same card chrome as Card. Collapsed, it clips the timeline behind a
+          fade; Expand opens the card to its natural height. */}
+      <div
+        style={
+          !pathExpanded && ctxCardH ? { height: ctxCardH + 96 } : undefined
+        }
+        className="bg-white rounded-[8px] p-[24px] flex flex-col min-h-0"
       >
-        <p>
-          Petition No. 25-21 was filed in August 2025 and certified by the
-          Attorney General that September. Supporters submitted more than
-          124,000 first-round signatures in November, of which 88,132 were
-          certified — well above the 74,574 required — sending the measure to
-          the Legislature as House Bill 5008. Lawmakers did not act by the May
-          2026 deadline, so a second round of signature collection began to
-          place the question on the November 2026 ballot.
-        </p>
-        <p>
-          Rent control has been banned statewide since 1994, when voters
-          approved Question 9 and repealed the programs in Boston, Cambridge,
-          and Brookline. Recent bills to allow local rent control have not
-          passed, and in June 2026 both the YES campaign and leading opponents
-          signaled openness to a legislative compromise that could still take
-          the question off the ballot.
-        </p>
-      </SynthSummaryCard>
+        <h3 className="font-['Nunito'] font-normal text-[18px] text-black mb-[4px]">
+          Path to the Ballot
+        </h3>
+        <div className="mb-[12px]" />
+        <div
+          className={`flex-1 min-h-0 relative ${
+            pathExpanded ? "" : "overflow-hidden"
+          }`}
+        >
+          <Timeline items={[...RC.timeline].reverse()} />
+          {!pathExpanded && (
+            <div className="absolute inset-x-0 bottom-0 h-[56px] bg-gradient-to-t from-white to-transparent pointer-events-none" />
+          )}
+        </div>
+        <div className="flex justify-center pt-[10px]">
+          <button
+            onClick={() => setPathExpanded((e) => !e)}
+            aria-expanded={pathExpanded}
+            className="inline-flex items-center gap-[5px] bg-white border border-[#d1d1d1] text-[#606060] hover:border-[#a0a0a0] font-['Nunito'] font-semibold text-[12px] px-[14px] py-[5px] rounded-[100px] cursor-pointer"
+          >
+            {pathExpanded ? "Collapse" : "Expand"}
+            {pathExpanded ? (
+              <ChevronUp className="w-[13px] h-[13px]" />
+            ) : (
+              <ChevronDown className="w-[13px] h-[13px]" />
+            )}
+          </button>
+        </div>
+      </div>
 
-      <SynthSummaryCard
-        title="Research & Evidence"
-        subtitle="Confirmed studies relevant to the debate. Affiliation is named; MAPLE does not rank research by conclusion."
-        ids={["academicResearch", "tuftsGlobe"]}
-        prompt="Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+      <Card
+        title="Implementation"
+        subtitle="What passage would set in motion — next steps, fiscal consequences, and legal questions."
       >
-        <p>
-          The peer-reviewed literature is consistent on the trade-off: rent
-          control keeps covered tenants in place, but reduces rental supply
-          over time. Cambridge's 1994 decontrol raised property values even at
-          never-controlled buildings nearby; in San Francisco, covered
-          landlords cut rental supply about 15%, raising citywide rents; and
-          the end of Massachusetts rent control had small effects on new
-          construction, with larger effects on maintenance and conversion. The
-          widely cited 6–9% tax-base projection does not come from this
-          literature — it traces to a single industry-commissioned analysis
-          extrapolating from Cambridge and St. Paul.
-        </p>
-      </SynthSummaryCard>
-
-      <Card title="Path to the Ballot">
-        <Timeline items={[...RC.timeline].reverse()} />
-      </Card>
-
-      {/* Same citation-block format as Research & evidence, blue for official. */}
-
-      <Card title="Official Petition Information">
-        <div className="space-y-[12px]">
-          <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
-              Petition No. 25-21 — "An Initiative Petition to Protect Tenants by
-              Limiting Rent Increases."
+        <div className="space-y-[24px]">
+          {/* What happens if it passes — AI-synthesis pattern (purple bar,
+              prompt & sources popover). */}
+          <AnalysisSection
+            title="What happens if it passes"
+            ids={["petition", "spoaGuide"]}
+            prompt="Summarize what would happen if the measure passes — effective date and baseline, exemptions, the enforcement and guidance work left to the Legislature and agencies, expected litigation, and what the official fiscal statement says. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+          >
+            <p className="font-['Nunito'] text-[14px] text-black leading-[1.55] mb-[6px]">
+              The cap would take effect using rents in place as of January 31,
+              2026 as the baseline — or the most recent rent if a unit was then
+              vacant — with the exemptions set out in the official summary under
+              Bibliography; units rented with a mobile housing voucher stay
+              covered even though other publicly regulated units are exempt. The
+              Legislature and agencies would then set enforcement and guidance,
+              and owner groups have signaled likely court challenges. The
+              official fiscal statement says any effect on state and municipal
+              finances cannot be determined with certainty.
             </p>
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-              Filed Aug 7, 2025; cleared by the Attorney General Sep 3, 2025.
+          </AnalysisSection>
+
+          {/* What it would cost — the official statement anchors; campaign
+              claims are shown against it, each attributed. */}
+          <div>
+            <p className="font-['Nunito'] font-semibold text-[14px] text-black">
+              What it would cost
             </p>
-            <SourceNote ids={["petition", "agSummary"]} />
+            <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[12px] leading-[1.5]">
+              The official fiscal statement is the anchor; campaign claims about
+              money are shown against it, each attributed.
+            </p>
+            <div className="space-y-[16px]">
+              <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                  Official statement of fiscal consequences
+                </p>
+                <p className="font-['Nunito'] italic text-[12px] text-[#808080] mt-[2px]">
+                  Sample — replaced by the official statement when the
+                  Information for Voters is published.
+                </p>
+                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[6px] leading-[1.5]">
+                  “The proposed law may have fiscal consequences for state and
+                  municipal government finances; the amount cannot be determined
+                  with certainty.”
+                </p>
+                <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[6px] leading-[1.5]">
+                  As required by law, statements of fiscal consequences are
+                  written by the Executive Office for Administration and Finance
+                  and published in the Information for Voters. The 2024
+                  statements were one sentence each; this sample follows that
+                  form.
+                </p>
+              </div>
+
+              {/* Attributed campaign claims — outside info, green citation
+                  blocks, one per quote. */}
+              <div>
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+                  Fiscal claims that go beyond the official statement
+                </p>
+                <div className="space-y-[12px]">
+                  <div className="border-l-[3px] border-[#22c55e] pl-[14px]">
+                    <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                      “The measure would shrink the residential tax base 6–9%
+                      and pressure municipal budgets”
+                    </p>
+                    <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+                      Made by the Greater Boston Real Estate Board, citing its
+                      report with Tufts CSPA — a projection the official
+                      statement does not make; extrapolated from Cambridge and
+                      St. Paul studies; disputed by the supporting campaign.
+                    </p>
+                    <div className="mt-[6px]">
+                      <SynthSourcesNote
+                        ids={["tuftsWBUR", "tuftsGlobe"]}
+                        variant="plain"
+                        linkClass="text-[#166534] hover:text-[#0f4a26]"
+                      />
+                    </div>
+                  </div>
+                  <div className="border-l-[3px] border-[#22c55e] pl-[14px]">
+                    <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                      “Predictable rents reduce displacement costs borne by
+                      communities”
+                    </p>
+                    <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+                      Made by supporting organizations — a benefit claim the
+                      official statement does not address.
+                    </p>
+                    <div className="mt-[6px]">
+                      <SynthSourcesNote
+                        ids={["cbsSigs", "keepMAHome"]}
+                        variant="plain"
+                        linkClass="text-[#166534] hover:text-[#0f4a26]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
-              What it would do
+
+          {/* Legal questions raised — citation blocks colored by source kind
+              (green outside, blue official). */}
+          <div>
+            <p className="font-['Nunito'] font-semibold text-[14px] text-black">
+              Legal questions raised
             </p>
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-              Limit annual rent increases on covered units to CPI or 5%,
-              whichever is lower, applying whether or not there is a change in
-              tenancy. The base is the rent in place on January 31, 2026 (or the
-              most recent rent if the unit was then vacant).
+            <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[12px] leading-[1.5]">
+              Arguments about how the law would hold up, each shown with who
+              raises it. MAPLE does not predict rulings or offer legal advice.
             </p>
-            <SourceNote ids={["petition"]} />
-          </div>
-          <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
-              Exemptions
-            </p>
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-              Owner-occupied buildings under 5 units; units regulated by another
-              public authority (except mobile-voucher holders); transient
-              rentals under 14 days; facilities operated solely for educational,
-              religious, or non-profit purposes; and units first occupied less
-              than 10 years ago.
-            </p>
-            <SourceNote ids={["petition"]} />
+            <div className="space-y-[12px]">
+              <div className="border-l-[3px] border-[#22c55e] pl-[14px]">
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                  Takings and fair rate of return
+                </p>
+                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+                  Raised by property-owner organizations as likely post-passage
+                  litigation — the argument that a cap binding at turnover
+                  denies owners a fair return; untested for this design.
+                </p>
+                <div className="mt-[6px]">
+                  <SynthSourcesNote
+                    ids={["spoaGuide"]}
+                    variant="plain"
+                    linkClass="text-[#166534] hover:text-[#0f4a26]"
+                  />
+                </div>
+              </div>
+              <div className="border-l-[3px] border-[#22c55e] pl-[14px]">
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                  Interaction with existing tenant-landlord law
+                </p>
+                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+                  Identified in coverage and owner-association analyses as an
+                  open drafting question: how the cap interfaces with Ch. 93A
+                  and existing eviction protections.
+                </p>
+                <div className="mt-[6px]">
+                  <SynthSourcesNote
+                    ids={["spoaGuide"]}
+                    variant="plain"
+                    linkClass="text-[#166534] hover:text-[#0f4a26]"
+                  />
+                </div>
+              </div>
+              <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+                  Amendment by the Legislature
+                </p>
+                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+                  Under the state constitution, voter-approved statutes can be
+                  amended or repealed by the Legislature after passage.
+                </p>
+                <div className="mt-[6px]">
+                  <SynthSourcesNote ids={["article48"]} variant="plain" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Card>
@@ -2082,8 +2283,8 @@ function BackgroundTab() {
   );
 }
 
-// Analysis & open questions — each sub-section in its own purple AI-synthesis
-// block: a labeled purple citation line with its own prompt/sources popover.
+// A labeled purple AI-synthesis block. Pass `ids` for its own prompt/sources
+// popover; omit them when a parent renders one shared attribution instead.
 function AnalysisSection({
   title,
   ids,
@@ -2091,8 +2292,8 @@ function AnalysisSection({
   children,
 }: {
   title: string;
-  ids: string[];
-  prompt: string;
+  ids?: string[];
+  prompt?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -2101,7 +2302,7 @@ function AnalysisSection({
         {title}
       </p>
       {children}
-      <SynthSourcesNote ids={ids} prompt={prompt} />
+      {ids && <SynthSourcesNote ids={ids} prompt={prompt} />}
     </div>
   );
 }
@@ -2117,28 +2318,21 @@ function AnalysisOpenQuestionsCard() {
   return (
     <Card title="Analysis & Open Questions">
       <div className="space-y-[16px]">
-        <AnalysisSection
-          title="Areas of Consensus"
-          ids={["academicResearch", "mapleTestimony", "petition"]}
-          prompt="Identify the points supporters and opponents of the rent-control ballot question agree on, across testimony, research, and the official text. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-        >
+        <AnalysisSection title="Areas of Consensus">
           <Bullets items={RC.consensus} />
         </AnalysisSection>
-        <AnalysisSection
-          title="Areas of Disagreement"
-          ids={["academicResearch", "mapleTestimony"]}
-          prompt="Identify the points supporters and opponents of the rent-control ballot question most disagree on. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-        >
+        <AnalysisSection title="Areas of Disagreement">
           <Bullets items={RC.disagreement} />
         </AnalysisSection>
-        <AnalysisSection
-          title="Open Questions"
-          ids={["academicResearch", "ballotpedia"]}
-          prompt="Identify the open questions about the rent-control ballot question that the available evidence can't yet answer. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-        >
+        <AnalysisSection title="Open Questions">
           <Bullets items={RC.openQuestions} />
         </AnalysisSection>
       </div>
+      {/* One shared attribution for all three sections. */}
+      <SynthSourcesNote
+        ids={["academicResearch", "mapleTestimony", "petition", "ballotpedia"]}
+        prompt="Identify the points supporters and opponents of the rent-control ballot question agree on, the points they most disagree on, and the open questions the available evidence can't yet answer — across testimony, research, and the official text. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+      />
     </Card>
   );
 }
@@ -2244,16 +2438,10 @@ const ARG_FILTER_IDS: Record<ArgFilter, string[]> = {
 
 function ForAgainstTab() {
   const [argFilter, setArgFilter] = useState<ArgFilter>("all");
-  const peerReviewed = RC.studies.filter(
-    (s) => s.affiliation === "peer-reviewed",
-  );
-  const commissioned = RC.studies.filter(
-    (s) => s.affiliation !== "peer-reviewed",
-  );
   return (
     <div className="flex flex-col gap-[16px]">
       {/* Official statements — their own cards */}
-      <div className="flex gap-[16px] max-lg:flex-col">
+      {/* <div className="flex gap-[16px] max-lg:flex-col">
         <div className="flex-1 min-w-0">
           <Card title="Why Vote Yes">
             <OfficialStatementLine
@@ -2270,7 +2458,7 @@ function ForAgainstTab() {
             />
           </Card>
         </div>
-      </div>
+      </div> */}
 
       {/* Arguments — concept-I two-column glance format, purple bars; one
           AI-synthesis attribution row below all sections. */}
@@ -2300,9 +2488,7 @@ function ForAgainstTab() {
           <ArgColumn
             title="YES Arguments"
             args={
-              argFilter === "all"
-                ? RC.yesArgs
-                : RC.argsBySource[argFilter].yes
+              argFilter === "all" ? RC.yesArgs : RC.argsBySource[argFilter].yes
             }
           />
           <div className="w-[1px] bg-[#e5e7eb] shrink-0 max-lg:hidden" />
@@ -2313,12 +2499,19 @@ function ForAgainstTab() {
             }
           />
         </div>
-        <div className="mt-[16px]">
-          <SynthSourcesNote
-            ids={ARG_FILTER_IDS[argFilter]}
-            prompt="Synthesize the strongest and most common points for and against the rent-control ballot question from the cited sources, sorting each point by the side it supports — regardless of the speaker's declared position. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-          />
-        </div>
+        {/* No attribution when the selected source type has no arguments —
+            there is no synthesized content to attribute. */}
+        {(argFilter === "all"
+          ? RC.yesArgs.length + RC.noArgs.length
+          : RC.argsBySource[argFilter].yes.length +
+            RC.argsBySource[argFilter].no.length) > 0 && (
+          <div className="mt-[16px]">
+            <SynthSourcesNote
+              ids={ARG_FILTER_IDS[argFilter]}
+              prompt="Synthesize the strongest and most common points for and against the rent-control ballot question from the cited sources, sorting each point by the side it supports — regardless of the speaker's declared position. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+            />
+          </div>
+        )}
       </Card>
 
       <AnalysisOpenQuestionsCard />
@@ -2328,37 +2521,6 @@ function ForAgainstTab() {
         subtitle="Checkable claims pulled from the arguments above, each marked verified or attributed."
       >
         <ClaimMap rows={RC.claims} />
-      </Card>
-
-      <Card
-        title="Research & Evidence"
-        subtitle="Confirmed studies relevant to the debate. Affiliation is named; MAPLE does not rank research by conclusion."
-      >
-        <div className="space-y-[20px]">
-          <div className="border-l-[3px] border-[#a855f7] pl-[14px]">
-            <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
-              The peer-reviewed literature is consistent on the trade-off: rent
-              control keeps covered tenants in place, but reduces rental supply
-              over time. Cambridge's 1994 decontrol raised property values even
-              at never-controlled buildings nearby; in San Francisco, covered
-              landlords cut rental supply about 15%, raising citywide rents; and
-              the end of Massachusetts rent control had small effects on new
-              construction, with larger effects on maintenance and conversion.
-              The widely cited 6–9% tax-base projection does not come from this
-              literature — it traces to a single industry-commissioned analysis
-              extrapolating from Cambridge and St. Paul.
-            </p>
-            <SynthSourcesNote
-              ids={["academicResearch", "tuftsGlobe"]}
-              prompt="Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-            />
-          </div>
-          <ResearchGroup title="Peer-Reviewed Research" studies={peerReviewed} />
-          <ResearchGroup
-            title="Industry-Commissioned Research"
-            studies={commissioned}
-          />
-        </div>
       </Card>
     </div>
   );
@@ -2717,12 +2879,7 @@ function Pagination({
 // only once the feed reaches FEED_CONTROLS_MIN testimonies.
 const FEED_PAGE_SIZE = 5;
 const FEED_CONTROLS_MIN = 5;
-type StanceFilter =
-  | "all"
-  | "following"
-  | "endorsing"
-  | "opposing"
-  | "no-position";
+type StanceFilter = "all" | "endorsing" | "opposing" | "no-position";
 
 const STANCE_FILTERS: { id: StanceFilter; label: string }[] = [
   { id: "all", label: "All" },
@@ -2740,33 +2897,32 @@ function TestimonyFeed({
   items: TestimonyItem[];
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
-  /** Add a "Following" chip that filters to accounts the viewer follows. */
+  /** Add a "Following" toggle that narrows any stance filter to accounts the
+      viewer follows. */
   includeFollowingFilter?: boolean;
 }) {
   const [filter, setFilter] = useState<StanceFilter>("all");
+  // Following is an overlay, not a stance: it combines with every stance chip.
+  const [followingOnly, setFollowingOnly] = useState(false);
   const [page, setPage] = useState(0);
 
   const showControls = items.length >= FEED_CONTROLS_MIN;
   const showFilters = showControls;
-  const chips = includeFollowingFilter
-    ? [
-        STANCE_FILTERS[0],
-        { id: "following" as StanceFilter, label: "Following" },
-        ...STANCE_FILTERS.slice(1),
-      ]
-    : STANCE_FILTERS;
-  const filtered =
+  const stanceMatched =
     !showFilters || filter === "all"
       ? items
       : items.filter((t) => {
-          if (filter === "following") {
-            return POSITION_USERS.find((u) => u.id === t.userId)
-              ?.followedByViewer;
-          }
           if (filter === "endorsing") return t.stance === "endorse";
           if (filter === "opposing") return t.stance === "oppose";
           return t.stance === "no-position";
         });
+  const filtered =
+    showFilters && followingOnly
+      ? stanceMatched.filter(
+          (t) =>
+            POSITION_USERS.find((u) => u.id === t.userId)?.followedByViewer,
+        )
+      : stanceMatched;
   const pageCount = Math.max(1, Math.ceil(filtered.length / FEED_PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
   const shown = showControls
@@ -2780,7 +2936,7 @@ function TestimonyFeed({
     <div>
       {showFilters && (
         <div className="flex items-center gap-[6px] flex-wrap mb-[16px]">
-          {chips.map(({ id, label }) => {
+          {STANCE_FILTERS.map(({ id, label }) => {
             const active = filter === id;
             return (
               <button
@@ -2799,6 +2955,28 @@ function TestimonyFeed({
               </button>
             );
           })}
+          {includeFollowingFilter && (
+            <button
+              onClick={() => {
+                setFollowingOnly((f) => !f);
+                setPage(0);
+              }}
+              aria-pressed={followingOnly}
+              title={
+                followingOnly
+                  ? "Clear the Following filter"
+                  : "Only accounts you follow"
+              }
+              className={`ml-auto inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[100px] border cursor-pointer transition-colors ${
+                followingOnly
+                  ? "bg-[rgba(232,239,255,0.68)] border-[#c9d8ff] text-[#1e3f8a]"
+                  : "bg-white border-[#d1d1d1] text-[#606060] hover:border-[#a0a0a0]"
+              }`}
+            >
+              Following
+              {followingOnly && <X className="w-[12px] h-[12px]" />}
+            </button>
+          )}
         </div>
       )}
 
@@ -2844,45 +3022,46 @@ function FollowedTestimonyCard() {
       title="Featured Testimony"
       subtitle="Testimony of the organizations, officials, and individuals that you follow on MAPLE."
     >
-      <div className="flex items-center gap-[10px]">
+      {/* Chevrons sit at the card edges and stretch the full height of the
+          row for a large click target; the entry itself is width-capped and
+          centered so lines don't run long. */}
+      <div className="flex items-stretch gap-[10px]">
         <button
           onClick={() => step(-1)}
           aria-label="Previous testimony"
-          className="text-[#334156] hover:text-[#c71e32] cursor-pointer shrink-0"
+          className="text-[#334156] hover:text-[#c71e32] hover:bg-[#f5f5f5] cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-[8px]"
         >
           <ChevronLeft className="w-[18px] h-[18px]" />
         </button>
 
-        <div className="flex-1 min-w-0 grid">
-          {/* Invisible sizers — reserve the height of the tallest entry. */}
-          {items.map((t) => (
-            <div
-              key={t.id}
-              aria-hidden="true"
-              className="col-start-1 row-start-1 invisible pointer-events-none"
-            >
-              <TestimonyEntry t={t} showDescriptor="officials" />
+        <div className="flex-1 min-w-0">
+          {/* The entry sits in its own padded container. */}
+          <div className="max-w-[760px] mx-auto border border-[#e5e7eb] rounded-[12px] p-[18px] bg-[#fbfaf7] grid">
+            {/* Invisible sizers — reserve the height of the tallest entry. */}
+            {items.map((t) => (
+              <div
+                key={t.id}
+                aria-hidden="true"
+                className="col-start-1 row-start-1 invisible pointer-events-none"
+              >
+                <TestimonyEntry t={t} showDescriptor="officials" />
+              </div>
+            ))}
+            {/* Active entry — keyed so it remounts collapsed when cycling. */}
+            <div key={items[current].id} className="col-start-1 row-start-1">
+              <TestimonyEntry t={items[current]} showDescriptor="officials" />
             </div>
-          ))}
-          {/* Active entry — keyed so it remounts collapsed when cycling. */}
-          <div key={items[current].id} className="col-start-1 row-start-1">
-            <TestimonyEntry t={items[current]} showDescriptor="officials" />
           </div>
         </div>
 
         <button
           onClick={() => step(1)}
           aria-label="Next testimony"
-          className="text-[#334156] hover:text-[#c71e32] cursor-pointer shrink-0"
+          className="text-[#334156] hover:text-[#c71e32] hover:bg-[#f5f5f5] cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-[8px]"
         >
           <ChevronRight className="w-[18px] h-[18px]" />
         </button>
       </div>
-      {items.length > 1 && (
-        <p className="font-['Nunito'] text-[12px] text-[#808080] text-center mt-[10px]">
-          {current + 1} of {items.length}
-        </p>
-      )}
     </Card>
   );
 }
@@ -2970,7 +3149,177 @@ function PublicPerspectivesTab() {
         <EmptyState
           title="No individual testimony on this question yet"
           body="No resident submissions are on file for this question yet — be among the first to add your perspective. Public statements reported elsewhere are kept under For & Against and Media Coverage, where they can be traced to their source."
+          shareOnly
         />
+      </Card>
+    </div>
+  );
+}
+
+// ── Citizen Deliberations — facilitated deliberation sessions on this
+// question: participation stats, ECHO-synthesized themes, and the anonymized
+// transcripts the synthesis can be checked against. Sample layout.
+function DelibStat({ n, label }: { n: string; label: string }) {
+  return (
+    <div className="flex-1 min-w-[104px] border border-[#e5e7eb] rounded-[8px] px-[10px] py-[12px] text-center">
+      <p className="font-['Nunito'] font-bold text-[22px] text-black leading-none">
+        {n}
+      </p>
+      <p className="font-['Nunito'] text-[11px] text-[#606060] mt-[5px] leading-[1.3]">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+// One theme column — top rule, uppercase label, body. Neutral (uncolored).
+function DelibThemeCol({ label, text }: { label: string; text: string }) {
+  return (
+    <div className="flex-1 min-w-0 border-t-[3px] border-[#d1d1d1] pt-[10px]">
+      <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.07em] uppercase text-[#606060]">
+        {label}
+      </p>
+      <p className="font-['Nunito'] text-[13px] text-[#334156] leading-[1.55] mt-[6px]">
+        {text}
+      </p>
+    </div>
+  );
+}
+
+const DELIB_THEMES: {
+  title: string;
+  agreed: string;
+  split: string;
+  tradeoff: string;
+}[] = [
+  {
+    title: "The housing crisis was widely agreed upon",
+    agreed:
+      "Displacement is real and accelerating; “do nothing” was almost nobody's first choice, including most landlord participants.",
+    split:
+      "Whether a statewide cap or a local option is the right scale — Western MA participants were warier of one statewide rule than Boston-area participants.",
+    tradeoff:
+      "Protection for current tenants now vs. risk to future renters if construction or maintenance slows.",
+  },
+  {
+    title: "The turnover cap was the single most contested design detail",
+    agreed:
+      "Caps that reset at vacancy create an incentive to push tenants out — most participants found vacancy coverage coherent once explained.",
+    split:
+      "Whether that justifies a stricter cap than any other state's, or argues instead for stronger anti-harassment enforcement.",
+    tradeoff:
+      "Closing the eviction incentive vs. removing owners' main path to recover renovation costs.",
+  },
+  {
+    title: "Trust in the evidence itself became a topic",
+    agreed:
+      "Participants wanted to know who funded each study before weighing it; affiliation labels changed how findings landed.",
+    split:
+      "Whether the tax-base projection should be discounted as advocacy or engaged as the best available estimate.",
+    tradeoff:
+      "Acting on imperfect projections vs. waiting for evidence that may only exist after a policy is tried.",
+  },
+];
+
+const DELIB_TRANSCRIPTS = [
+  {
+    title: "Worcester in-person cohort, session 2",
+    meta: "Oct 2026 · 14 participants · 2h 10m · facilitated by GenUnity",
+  },
+  {
+    title: "Springfield Democracy Hub session",
+    meta: "Oct 2026 · 12 participants · 1h 45m · with Mass Voter Table",
+  },
+  {
+    title: "Statewide online session 1",
+    meta: "Nov 2026 · 22 participants · 1h 30m",
+  },
+];
+
+function CitizenDeliberationsTab() {
+  const linkClass =
+    "font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] cursor-pointer";
+  return (
+    <div className="flex flex-col gap-[16px]">
+      <Card
+        title="Deliberation on This Question"
+        subtitle="Sample layout — deliberations begin fall 2026."
+      >
+        <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+          Massachusetts residents meet in facilitated groups — in person through
+          GenUnity and the Mass Voter Table's Democracy Hubs, and online every
+          Wednesday at 7pm — to reason through this question together. Sessions
+          are recorded and synthesized with Dembrane ECHO; anonymized
+          transcripts are public, so every synthesized claim below can be
+          checked against what was actually said.
+        </p>
+        <div className="flex gap-[10px] flex-wrap mt-[16px]">
+          <DelibStat n="3" label="in-person cohorts" />
+          <DelibStat n="2" label="online sessions" />
+          <DelibStat n="87" label="deliberators" />
+          <DelibStat n="6" label="regions" />
+          <DelibStat n="5" label="public transcripts" />
+        </div>
+        <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.55] mt-[14px]">
+          Deliberators are recruited across geography, age, housing situation
+          (renters, owners, landlords), and politics, with informed consent for
+          recording and publication.{" "}
+          <button className={linkClass}>How deliberations work →</button>
+        </p>
+      </Card>
+
+      <Card
+        title="Themes from Deliberation"
+        subtitle="Each theme shows where groups agreed, where they split, and the trade-off they weighed — synthesized from session transcripts; every theme links to its transcript segments. (Illustrative)"
+      >
+        <div className="space-y-[26px]">
+          {DELIB_THEMES.map((th) => (
+            <div key={th.title}>
+              <p className="font-['Nunito'] font-bold text-[15px] text-black leading-[1.45]">
+                {th.title}
+              </p>
+              <div className="flex gap-[24px] max-lg:flex-col max-lg:gap-[14px] mt-[12px]">
+                <DelibThemeCol label="Where groups agreed" text={th.agreed} />
+                <DelibThemeCol label="Where they split" text={th.split} />
+                <DelibThemeCol
+                  label="The trade-off weighed"
+                  text={th.tradeoff}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card
+        title="Anonymized Transcripts"
+        subtitle="Full session transcripts with names and identifying details removed. The synthesis above is generated from these — check it. (Sample listing)"
+      >
+        <div>
+          {DELIB_TRANSCRIPTS.map((t) => (
+            <div
+              key={t.title}
+              className="flex items-center justify-between gap-[24px] py-[16px] border-b border-dotted border-[#d1d1d1] first:pt-0"
+            >
+              <div className="min-w-0">
+                <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.4]">
+                  {t.title}
+                </p>
+                <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[2px]">
+                  {t.meta}
+                </p>
+              </div>
+              <button className="font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] underline underline-offset-[4px] cursor-pointer whitespace-nowrap shrink-0">
+                Read transcript →
+              </button>
+            </div>
+          ))}
+        </div>
+        <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[18px] leading-[1.5]">
+          Recording, transcription, and theme extraction run on Dembrane ECHO.
+          Participants consent to publication; redaction follows our privacy
+          policy.
+        </p>
       </Card>
     </div>
   );
@@ -2988,8 +3337,8 @@ function MediaCoverageTab() {
           Coverage has moved through several phases: the signature drive and
           early polling, Gov. Healey's opposition, the dispute over the
           GBREB-commissioned Tufts fiscal study, and the June compromise talks.
-          The 6–9% tax-base figure recurs across coverage and traces to a
-          single industry-commissioned report.
+          The 6–9% tax-base figure recurs across coverage and traces to a single
+          industry-commissioned report.
         </p>
       </SynthSummaryCard>
 
@@ -3045,67 +3394,183 @@ function CampaignFinanceTab() {
   );
 }
 
-// Bibliography — citation-block format matching the academic-articles section
-// of For & Against, split into Academic / Media / Other cards.
-function RefList({ items }: { items: Source[] }) {
+// Bibliography source group — a categorized, bulleted list of SOURCES entries
+// in the same citation format as ResearchGroup.
+function RefGroup({ title, ids }: { title?: string; ids: string[] }) {
   return (
-    <div className="space-y-[12px]">
-      {items.map((s) => (
-        <div
-          key={s.url + s.label}
-          className="border-l-[3px] pl-[14px]"
-          style={{ borderLeftColor: KIND_DOT[s.kind] }}
-        >
-          {s.url ? (
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-['Nunito'] font-semibold text-[14px] text-[#12266f] hover:text-[#c71e32] inline-flex items-baseline gap-[5px] leading-[1.5]"
+    <div>
+      {title && (
+        <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+          {title}
+        </p>
+      )}
+      <ul className="list-disc list-outside pl-[18px] space-y-[8px]">
+        {ids.map((id) => {
+          const s = SOURCES[id];
+          if (!s) return null;
+          const metaLine =
+            s.meta && s.date && !s.meta.includes(s.date)
+              ? `${s.meta} · ${s.date}`
+              : (s.meta ?? s.date);
+          return (
+            <li
+              key={id}
+              className="font-['Nunito'] text-[13px] text-[#334156] leading-[1.5]"
             >
-              {s.label}
-              <ExternalLink className="w-[12px] h-[12px] shrink-0 self-center" />
-            </a>
-          ) : (
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
-              {s.label}
-            </p>
-          )}
-          {s.date && (
-            <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[2px]">
-              {s.date}
-            </p>
-          )}
-        </div>
-      ))}
+              <span className="font-semibold text-black">
+                {s.title ?? s.label}
+              </span>
+              {metaLine && (
+                <span className="italic text-[#606060]"> — {metaLine}</span>
+              )}
+              {s.note && <> — {s.note}</>}
+              {s.url && (
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] ml-[4px] align-baseline"
+                >
+                  Source <ExternalLink className="w-[11px] h-[11px]" />
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
 
-function ReferencesTab() {
-  const entries = Object.entries(SOURCES);
-  // Ballotpedia lives under Other; everything else outside-kind is media.
-  const media = entries
-    .filter(([id, s]) => s.kind === "outside" && id !== "ballotpedia")
-    .map(([, s]) => s);
-  const other = entries
-    .filter(([id, s]) => s.kind !== "outside" || id === "ballotpedia")
-    .map(([, s]) => s);
+function BibliographyTab() {
+  const peerReviewed = RC.studies.filter(
+    (s) => s.affiliation === "peer-reviewed",
+  );
+  const commissioned = RC.studies.filter(
+    (s) => s.affiliation !== "peer-reviewed",
+  );
   return (
     <div className="flex flex-col gap-[16px]">
       <Card
-        title="Academic"
-        subtitle="Every source cited on this page, grouped by type. MAPLE publishes its sources so any claim can be checked at its origin."
+        title="Official Documentation"
+        subtitle="The measure's certified documents and election records, published unedited."
       >
-        <ResearchList studies={RC.studies} />
+        <div className="space-y-[20px]">
+          <div className="border-l-[3px] border-[#3b82f6] pl-[14px]">
+            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+              Official summary of the ballot question
+            </p>
+            <p className="font-['Nunito'] text-[14px] text-black leading-[1.6] mt-[4px]">
+              This proposed law would limit the annual rent increase for
+              residential units in Massachusetts to the annual increase in the
+              Consumer Price Index for a 12-month period, or 5%, whichever is
+              lower. The law would not apply to units in owner-occupied
+              buildings with four or fewer units; units that are subject to
+              regulation by a public authority; units rented to transient guests
+              for periods of less than 14 days; units operated for educational,
+              religious, or non-profit purposes; and units that received their
+              residential certificate of occupancy within the last 10 years. The
+              rent in place for a unit as of January 31, 2026, would serve as
+              the base rent for the annual rent increase limit. A violation of
+              this law would be a violation of the state consumer protection
+              law.
+            </p>
+            <SourceNote ids={["agSummary"]} />
+          </div>
+          <RefGroup ids={["petition", "agSummary", "h5008", "q9"]} />
+        </div>
       </Card>
 
-      <Card title="Media">
-        <RefList items={media} />
+      <Card
+        title="Research & Evidence"
+        subtitle="Confirmed studies relevant to the debate. Affiliation is named; MAPLE does not rank research by conclusion."
+      >
+        <div className="space-y-[20px]">
+          <div className="border-l-[3px] border-[#a855f7] pl-[14px]">
+            <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+              The peer-reviewed literature is consistent on the trade-off: rent
+              control keeps covered tenants in place, but reduces rental supply
+              over time. Cambridge's 1994 decontrol raised property values even
+              at never-controlled buildings nearby; in San Francisco, covered
+              landlords cut rental supply about 15%, raising citywide rents; and
+              the end of Massachusetts rent control had small effects on new
+              construction, with larger effects on maintenance and conversion.
+              The widely cited 6–9% tax-base projection does not come from this
+              literature — it traces to a single industry-commissioned analysis
+              extrapolating from Cambridge and St. Paul.
+            </p>
+            <SynthSourcesNote
+              ids={["academicResearch", "tuftsGlobe"]}
+              prompt="Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+            />
+          </div>
+          <ResearchGroup
+            title="Peer-Reviewed Research"
+            studies={peerReviewed}
+          />
+          <ResearchGroup
+            title="Industry-Commissioned Research"
+            studies={commissioned}
+          />
+        </div>
       </Card>
 
-      <Card title="Other">
-        <RefList items={other} />
+      <Card
+        title="Media"
+        subtitle="Confirmed articles cited on this page, grouped by coverage focus."
+      >
+        <div className="space-y-[20px]">
+          <div className="border-l-[3px] border-[#a855f7] pl-[14px]">
+            <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+              Coverage has tracked the measure's path to the ballot: the
+              November 2025 signature filing and Gov. Healey's December
+              statement of opposition, a March 2026 dispute over an
+              industry-commissioned study projecting property-value and tax-base
+              losses, and June 2026 reporting on compromise talks that could
+              still keep the question off the ballot. Polling coverage has found
+              majority support in every published survey, and campaign-finance
+              reporting describes in-kind organizing support behind the YES
+              committee against real-estate industry cash on the NO side.
+            </p>
+            <SynthSourcesNote
+              ids={[
+                "cbsSigs",
+                "healeyGlobe",
+                "tuftsGlobe",
+                "tuftsWBUR",
+                "cwbCompromise",
+                "suffolkGlobe",
+                "unhFeb",
+                "wwlpPoll",
+                "ocpfSHNS",
+              ]}
+              prompt="Summarize how confirmed media coverage of the rent-control ballot question developed across the campaign — the signature drive, official opposition, the study dispute, compromise talks, polling, and campaign finance. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+            />
+          </div>
+          <RefGroup
+            title="Campaign & Ballot Path"
+            ids={["cbsSigs", "healeyGlobe", "cwbCompromise"]}
+          />
+          <RefGroup
+            title="The Evidence Dispute"
+            ids={["tuftsGlobe", "tuftsWBUR"]}
+          />
+          <RefGroup
+            title="Polling"
+            ids={["suffolkGlobe", "unhFeb", "wwlpPoll"]}
+          />
+          <RefGroup title="Campaign Finance" ids={["ocpfSHNS"]} />
+        </div>
+      </Card>
+
+      <Card title="Other References">
+        <div className="space-y-[20px]">
+          <RefGroup
+            title="Campaign Committees"
+            ids={["keepMAHome", "housingForMA"]}
+          />
+          <RefGroup title="Encyclopedia" ids={["ballotpedia"]} />
+        </div>
         <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[18px] leading-[1.5]">
           Inline citations throughout the page link to the matching entry here.
         </p>
@@ -3200,11 +3665,11 @@ export default function RentControlAlt() {
                   TAKE PART
                 </p>
                 <div className="flex flex-col gap-[14px] w-full items-center">
-                  <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[12px] px-[12px] py-[8px] rounded-[4px] w-[196px]">
+                  <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[12px] py-[8px] rounded-[4px] w-[196px]">
                     Share Your Perspective
                   </button>
-                  <button className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[12px] px-[12px] py-[8px] rounded-[4px] w-[196px]">
-                    Ask a Question
+                  <button className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[12px] py-[8px] rounded-[4px] w-[196px]">
+                    Join a Deliberation!
                   </button>
                 </div>
               </div>
@@ -3278,9 +3743,10 @@ export default function RentControlAlt() {
               {activeTab === "background" && <BackgroundTab />}
               {activeTab === "for-against" && <ForAgainstTab />}
               {activeTab === "perspectives" && <PublicPerspectivesTab />}
-              {activeTab === "media" && <MediaCoverageTab />}
+              {activeTab === "deliberations" && <CitizenDeliberationsTab />}
+              {/* {activeTab === "media" && <MediaCoverageTab />} */}
               {activeTab === "finance" && <CampaignFinanceTab />}
-              {activeTab === "references" && <ReferencesTab />}
+              {activeTab === "bibliography" && <BibliographyTab />}
             </div>
           </div>
         </div>
