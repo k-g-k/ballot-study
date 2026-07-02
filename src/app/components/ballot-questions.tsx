@@ -1,5 +1,6 @@
-import { ChevronDown, Info, TreePine } from "lucide-react";
-import { MAPLE_NAVY, MAPLE_DARK_NAVY } from "./maple-shared";
+import { Link } from "react-router-dom";
+import { ChevronDown, Info } from "lucide-react";
+import { MAPLE_DARK_NAVY, MapleTopNav, PageHeading } from "./maple-shared";
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 // A ballot question's presentation is driven by its state:
@@ -15,12 +16,19 @@ type BallotQuestion = {
   number?: number;
   outcome?: "passed" | "rejected";
   badges?: Badge[];
+  href?: string;
 };
 
 // The current 2026 statewide ballot questions — proposed but not yet numbered,
 // so every entry is in the pre-election unnumbered state. The gun-law referendum
 // is listed last as it is a different type of question than the initiatives.
 const QUESTIONS_2026: BallotQuestion[] = [
+  {
+    title: "Limiting Rent Increases",
+    description:
+      "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
+    href: "/ballotQuestions/2026/rent-control",
+  },
   {
     title: "Single-Family Home Zoning Regulation",
     description:
@@ -64,75 +72,6 @@ const QUESTIONS_2026: BallotQuestion[] = [
   },
 ];
 
-// ─── Top navigation (static, matches the MAPLE chrome) ────────────────────────
-const NAV_LINKS = [
-  "Ballot Questions",
-  "Bills",
-  "Hearings",
-  "Testimony",
-  "About MAPLE",
-  "Learn",
-];
-const NAV_DROPDOWNS = new Set(["About MAPLE", "Learn"]);
-
-function MapleTopNav() {
-  return (
-    <nav
-      className="w-full flex items-center px-6 h-[64px] shrink-0"
-      style={{ backgroundColor: MAPLE_NAVY }}
-    >
-      <div className="flex items-center gap-2 mr-auto">
-        <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center shrink-0">
-          <TreePine size={18} color="#fff" />
-        </div>
-        <span
-          style={{
-            fontFamily: "Nunito",
-            fontWeight: 800,
-            fontSize: 18,
-            color: "#fff",
-            letterSpacing: "0.06em",
-          }}
-        >
-          MAPLE
-        </span>
-      </div>
-
-      <div className="hidden md:flex items-center gap-1">
-        {NAV_LINKS.map((label) => (
-          <a
-            key={label}
-            href="#"
-            className="flex items-center gap-1 px-3 py-1.5 rounded transition-colors hover:bg-white/10"
-            style={{
-              fontFamily: "Nunito",
-              fontWeight: 700,
-              fontSize: 13,
-              color: "rgba(255,255,255,0.9)",
-            }}
-          >
-            {label}
-            {NAV_DROPDOWNS.has(label) && <ChevronDown size={13} />}
-          </a>
-        ))}
-      </div>
-
-      <a
-        href="#"
-        className="ml-4 px-4 py-1.5 rounded text-white shrink-0"
-        style={{
-          fontFamily: "Nunito",
-          fontWeight: 700,
-          fontSize: 13,
-          backgroundColor: "#d32f2f",
-        }}
-      >
-        Log In/Sign Up
-      </a>
-    </nav>
-  );
-}
-
 // ─── Toast / info banner (shown for the unnumbered state) ─────────────────────
 function UnnumberedNotice() {
   return (
@@ -163,6 +102,7 @@ const BADGE_TONES: Record<
   green: { bg: "#dcfce7", text: "#15803d", border: "#bbf7d0" },
   red: { bg: "#fee2e2", text: "#b91c1c", border: "#fecaca" },
   neutral: { bg: "#f1f1f1", text: "#525252", border: "#d4d4d4" },
+  amber: { bg: "#fef3c7", text: "#92400e", border: "#f59e0b" },
 };
 
 function BadgeChip({ label, tone }: Badge) {
@@ -195,18 +135,26 @@ function QuestionCard({ q }: { q: BallotQuestion }) {
       : "#22c55e";
   // Rejected questions are visually de-emphasized in the post-election state.
   const muted = rejected ? 0.6 : 1;
+  // Unnumbered questions get a "Tentative" chip in the same spot post-election
+  // questions show their outcome badges.
+  const badges: Badge[] =
+    q.number == null
+      ? [{ label: "Tentative Ballot Question", tone: "amber" }]
+      : (q.badges ?? []);
 
-  return (
-    <div
-      className="flex items-center gap-[20px] bg-white rounded-[8px] px-[24px] py-[20px]"
-      style={{
-        border: "1px solid #e5e7eb",
-        borderLeft: isPostElection
-          ? `4px solid ${borderColor}`
-          : "1px solid #e5e7eb",
-        boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-      }}
-    >
+  const cardClassName =
+    "flex items-center gap-[20px] bg-white rounded-[8px] px-[24px] py-[20px]" +
+    (q.href ? " no-underline" : "");
+  const cardStyle = {
+    border: "1px solid #e5e7eb",
+    borderLeft: isPostElection
+      ? `4px solid ${borderColor}`
+      : "1px solid #e5e7eb",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+  };
+
+  const content = (
+    <>
       {/* Number column — temporarily hidden. Restore this <span> to show the
           number (or its "?" placeholder) again in the unnumbered/numbered states.
       <span
@@ -238,14 +186,31 @@ function QuestionCard({ q }: { q: BallotQuestion }) {
         >
           {q.description}
         </p>
-        {q.badges && q.badges.length > 0 && (
+        {/* Badge row — temporarily hidden. Restore this block to show the
+            "Tentative Ballot Question" chip and post-election outcome badges.
+        {badges.length > 0 && (
           <div className="flex flex-wrap gap-[6px] mt-[10px]">
-            {q.badges.map((b) => (
+            {badges.map((b) => (
               <BadgeChip key={b.label} {...b} />
             ))}
           </div>
         )}
+        */}
       </div>
+    </>
+  );
+
+  if (q.href) {
+    return (
+      <Link to={q.href} className={cardClassName} style={cardStyle}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={cardClassName} style={cardStyle}>
+      {content}
     </div>
   );
 }
@@ -271,12 +236,7 @@ export default function BallotQuestions() {
       <main className="max-w-[1000px] mx-auto px-6 py-[28px]">
         {/* Heading row */}
         <div className="flex items-center justify-between mb-[20px]">
-          <h1
-            className="font-['Nunito'] font-semibold text-[26px]"
-            style={{ color: "#1a1a1a" }}
-          >
-            Ballot Questions
-          </h1>
+          <PageHeading>Ballot Questions</PageHeading>
           <button
             className="flex items-center gap-1.5 rounded-[6px] px-[12px] py-[6px]"
             style={{

@@ -1,0 +1,3369 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rent Stabilization (2026) — MAPLE Ballot Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4f3f0;
+        --ink: #1f2330;
+        --muted: #5d6271;
+        --line: #dddad0;
+        --hair: #e8e6de;
+        --navy: #1a3185;
+        --red: #c71e32;
+        --official: #2b6cb0;
+        --maple: #c05621;
+        --outside: #2f7d4f;
+        --synth: #6b46c1;
+        --synth-line: #c9b8ea;
+        --gold: #8a6d1d;
+        --goldbg: #fbf3dc;
+        --sans: "Nunito", -apple-system, "Segoe UI", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--navy);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2.5px;
+      }
+      a:hover {
+        color: var(--red);
+      }
+      b,
+      strong {
+        font-weight: 800;
+      }
+
+      /* masthead — MAPLE black bar */
+      .masthead {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 14px 30px;
+        background: #111319;
+        color: #fff;
+      }
+      .wordmark {
+        font-weight: 900;
+        font-size: 23px;
+        letter-spacing: 0.01em;
+      }
+      .wordmark span {
+        color: var(--red);
+      }
+      .crumb {
+        font-size: 12.5px;
+        color: #b9bcc9;
+      }
+      .crumb b {
+        color: #fff;
+        font-weight: 800;
+      }
+
+      /* banners */
+      .live-banner {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 9px 30px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 13px;
+      }
+      .live-banner a {
+        color: #fff;
+        font-weight: 800;
+        margin-left: 8px;
+      }
+      .pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff7a88;
+        flex: none;
+        animation: pu 1.8s infinite;
+      }
+      @keyframes pu {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+      .live-banner .x {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: #c7cce6;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .decided-banner {
+        padding: 9px 30px;
+        background: #3a3f4e;
+        color: #fff;
+        font-size: 13px;
+        display: flex;
+        gap: 10px;
+      }
+      .decided-banner b {
+        font-weight: 800;
+      }
+      .proto-note {
+        padding: 8px 30px;
+        background: var(--goldbg);
+        border-bottom: 1px solid #e8dbb2;
+        font-size: 12.5px;
+        color: #6b5712;
+      }
+      .proto-note b {
+        font-weight: 800;
+      }
+
+      /* frame */
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 28px 30px 70px;
+      }
+
+      /* question header */
+      .qheader {
+        display: grid;
+        grid-template-columns: 96px 1fr 250px;
+        gap: 28px;
+        align-items: start;
+        padding-bottom: 24px;
+      }
+      .qnum .n {
+        font-weight: 900;
+        font-size: 38px;
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        background: var(--navy);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .qnum .lbl {
+        font-size: 9.5px;
+        color: var(--muted);
+        margin-top: 7px;
+        line-height: 1.5;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+      .qtitle h1 {
+        font-weight: 900;
+        font-size: 28px;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+      }
+      .qtitle .plain {
+        font-size: 15px;
+        color: var(--muted);
+        margin-top: 8px;
+        max-width: 56ch;
+      }
+      .takepart {
+        border-left: 1px solid var(--line);
+        padding-left: 24px;
+      }
+      .tp-lbl {
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+      .btn {
+        display: block;
+        text-align: center;
+        padding: 10px 16px;
+        font-weight: 800;
+        font-size: 13.5px;
+        text-decoration: none;
+        margin-bottom: 8px;
+        border-radius: 50px;
+      }
+      .btn-primary {
+        background: var(--navy);
+        color: #fff;
+        border: 1.5px solid var(--navy);
+      }
+      .btn-primary:hover {
+        background: #13256b;
+        color: #fff;
+      }
+      .btn-ghost {
+        border: 1.5px solid var(--navy);
+        color: var(--navy);
+        background: #fff;
+      }
+      .btn-ghost:hover {
+        background: var(--navy);
+        color: #fff;
+      }
+      .tp-hint {
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* tabs — underline, MAPLE navy */
+      .tabbar {
+        display: flex;
+        gap: 2px;
+        border-bottom: 2px solid var(--line);
+        overflow-x: auto;
+      }
+      .tabbar button {
+        background: none;
+        border: none;
+        font-family: var(--sans);
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--muted);
+        padding: 10px 13px;
+        cursor: pointer;
+        white-space: nowrap;
+        box-shadow: inset 0 -3px 0 transparent;
+        margin-bottom: -2px;
+      }
+      .tabbar button:hover {
+        color: var(--ink);
+      }
+      .tabbar button.active {
+        color: var(--navy);
+        box-shadow: inset 0 -3px 0 var(--navy);
+      }
+      .legend-row {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 9px 2px;
+        font-size: 10.5px;
+        color: var(--muted);
+      }
+      .legend-row .li {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .legend-row .sw {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+      .legend-row a {
+        font-size: 10.5px;
+      }
+
+      /* cards — MAPLE white rounded, flat border */
+      .tabpane {
+        display: none;
+      }
+      .tabpane.show {
+        display: block;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px 26px;
+        margin: 16px 0;
+      }
+      .card h2 {
+        font-weight: 900;
+        font-size: 19px;
+        margin-bottom: 6px;
+      }
+      .card h3 {
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .sub {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 16px;
+        max-width: 74ch;
+      }
+
+      /* source-type labels — quiet outline chips */
+      .chip {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: #fff;
+        border: 1px solid;
+        border-radius: 4px;
+        padding: 1px 7px;
+        vertical-align: 2px;
+      }
+      .chip.official {
+        color: var(--official);
+        border-color: #bcd2e8;
+      }
+      .chip.maple {
+        color: var(--maple);
+        border-color: #e5c5ac;
+      }
+      .chip.outside {
+        color: var(--outside);
+        border-color: #bbd8c5;
+      }
+      .chip.synth {
+        color: var(--synth);
+        border-color: var(--synth-line);
+      }
+      .chip.sample {
+        color: var(--gold);
+        border-color: #d9c792;
+        border-style: dashed;
+        background: var(--goldbg);
+      }
+
+      /* official document excerpts */
+      .officialtext,
+      .block.official {
+        background: #fbfaf7;
+        border: 1px solid var(--hair);
+        border-left: 3px solid var(--official);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+      }
+      .officialtext p,
+      .block.official p {
+        font-size: 14.5px;
+        line-height: 1.62;
+      }
+      .block .b-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+        margin-bottom: 7px;
+        flex-wrap: wrap;
+      }
+      .block .b-title {
+        font-weight: 800;
+        font-size: 13.5px;
+      }
+      .block .meta,
+      .t-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+
+      /* segmented toggle */
+      .seg {
+        display: inline-flex;
+        border: 1.5px solid var(--navy);
+        border-radius: 50px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .seg button {
+        background: #fff;
+        border: none;
+        font-family: var(--sans);
+        font-size: 12.5px;
+        font-weight: 800;
+        padding: 7px 18px;
+        cursor: pointer;
+        color: var(--navy);
+      }
+      .seg button.on {
+        background: var(--navy);
+        color: #fff;
+      }
+
+      /* AI synthesis */
+      .syn {
+        border-left: 3px solid var(--synth-line);
+        padding: 4px 0 4px 16px;
+        margin: 16px 0;
+      }
+      .syn-t {
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--synth);
+        margin-bottom: 7px;
+      }
+      .syn p {
+        font-size: 14px;
+      }
+      .syn ul {
+        padding-left: 18px;
+        font-size: 14px;
+      }
+      .syn li {
+        margin-bottom: 5px;
+      }
+
+      /* citations */
+      .cite {
+        background: none;
+        border: none;
+        border-bottom: 1px dotted var(--synth);
+        color: var(--synth);
+        font-family: var(--sans);
+        font-size: 10.5px;
+        font-weight: 800;
+        padding: 0;
+        margin-left: 4px;
+        cursor: pointer;
+        vertical-align: 1px;
+      }
+      .cite:hover {
+        color: var(--red);
+        border-color: var(--red);
+      }
+      .src-btn {
+        background: none;
+        border: none;
+        color: var(--synth);
+        font-family: var(--sans);
+        font-weight: 800;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 0;
+        margin-top: 8px;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .src-btn:hover {
+        color: var(--red);
+      }
+      .stmt-link {
+        display: inline-block;
+        background: none;
+        border: none;
+        color: var(--navy);
+        font-family: var(--sans);
+        font-weight: 800;
+        font-size: 12.5px;
+        padding: 0;
+        margin-top: 9px;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .stmt-link:hover {
+        color: var(--red);
+      }
+      .placeholder {
+        color: var(--muted);
+        font-style: italic;
+      }
+      .note-foot {
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px dotted var(--line);
+        padding-top: 9px;
+        margin-top: 14px;
+        max-width: 80ch;
+      }
+
+      /* grids */
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .two > .card {
+        margin: 16px 0 0;
+      }
+      .argcols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .argcols > .card {
+        margin: 0;
+      }
+      .glance {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 32px;
+        margin-top: 6px;
+      }
+      .glance > div + div {
+        border-left: 1px solid var(--hair);
+        padding-left: 32px;
+      }
+      .glance h3 {
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .g-item {
+        display: block;
+        padding: 8px 0;
+        border-bottom: 1px dotted var(--line);
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .g-item:hover {
+        color: var(--navy);
+      }
+      .cta-row {
+        margin-top: 14px;
+        font-size: 13.5px;
+        font-weight: 800;
+      }
+
+      /* stat strips */
+      .t-counts {
+        display: flex;
+        gap: 26px;
+        flex-wrap: wrap;
+        margin: 8px 0 14px;
+      }
+      .tc {
+        font-size: 12.5px;
+        color: var(--muted);
+        border-left: 3px solid var(--hair);
+        padding-left: 12px;
+      }
+      .tc b {
+        font-weight: 900;
+        font-size: 20px;
+        color: var(--ink);
+        display: inline-block;
+        margin-right: 3px;
+      }
+      .dstrip {
+        display: flex;
+        gap: 26px;
+        flex-wrap: wrap;
+        margin: 12px 0;
+      }
+      .dstrip .it {
+        font-size: 12.5px;
+        color: var(--muted);
+        border-left: 3px solid var(--hair);
+        padding-left: 12px;
+      }
+      .dstrip b {
+        font-weight: 900;
+        font-size: 20px;
+        color: var(--ink);
+        display: block;
+      }
+
+      /* Public Perspectives — MAPLE testimony cards */
+      .filterbar {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 14px 0 10px;
+        align-items: center;
+      }
+      .fbtn {
+        background: #fff;
+        border: 1.5px solid var(--line);
+        font-family: var(--sans);
+        font-size: 12px;
+        font-weight: 800;
+        padding: 5px 14px;
+        cursor: pointer;
+        color: var(--muted);
+        border-radius: 50px;
+      }
+      .fbtn:hover {
+        border-color: var(--navy);
+        color: var(--navy);
+      }
+      .fbtn.active {
+        border-color: var(--navy);
+        color: #fff;
+        background: var(--navy);
+      }
+      .testi {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+      }
+      .t-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--navy);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 12px;
+        flex: none;
+      }
+      .t-org {
+        font-weight: 800;
+        font-size: 14.5px;
+      }
+      .verified {
+        font-size: 8.5px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 800;
+        border: 1px solid var(--hair);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+      .stance {
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-left: auto;
+        border-radius: 50px;
+        padding: 3px 11px;
+      }
+      .stance.yes {
+        color: #1e5b38;
+        background: #e3f1e8;
+      }
+      .stance.no {
+        color: #92121f;
+        background: #fbe7e9;
+      }
+      .stance.nopos {
+        color: #6b5712;
+        background: var(--goldbg);
+      }
+      .testi p {
+        font-size: 14.5px;
+      }
+
+      /* claim mapping */
+      .claim-line {
+        border-top: 1px dotted var(--line);
+        padding: 11px 0;
+      }
+      .claim-line b {
+        font-size: 14px;
+        display: block;
+        margin-bottom: 3px;
+      }
+      .claim-line .verdict {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* research */
+      .evgroup {
+        margin-bottom: 20px;
+      }
+      .evgroup h4 {
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .evitem {
+        border-top: 1px dotted var(--line);
+        padding: 11px 0;
+        font-size: 14px;
+      }
+      .evitem .find {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .evitem .affil {
+        font-style: italic;
+        color: var(--muted);
+      }
+      .suggest {
+        border: 1.5px dashed var(--line);
+        border-radius: 12px;
+        padding: 18px;
+        background: #fbfaf7;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .suggest input {
+        flex: 1;
+        min-width: 220px;
+        border: 1px solid var(--line);
+        padding: 9px 14px;
+        font-family: var(--sans);
+        font-size: 13.5px;
+        border-radius: 50px;
+        background: #fff;
+      }
+      .suggest .note {
+        flex-basis: 100%;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* deliberation */
+      .theme {
+        border-top: 1px solid var(--hair);
+        padding: 18px 0;
+      }
+      .theme h4 {
+        font-weight: 800;
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+      .adt {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
+      }
+      .adt .col {
+        font-size: 13px;
+        padding-top: 9px;
+      }
+      .adt h6 {
+        font-size: 9.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .adt .agree {
+        border-top: 2.5px solid var(--outside);
+      }
+      .adt .agree h6 {
+        color: var(--outside);
+      }
+      .adt .disagree {
+        border-top: 2.5px solid var(--red);
+      }
+      .adt .disagree h6 {
+        color: var(--red);
+      }
+      .adt .trade {
+        border-top: 2.5px solid var(--gold);
+      }
+      .adt .trade h6 {
+        color: var(--gold);
+      }
+      .dq {
+        font-style: italic;
+        font-size: 15.5px;
+        border-left: 3px solid var(--navy);
+        padding-left: 16px;
+        margin-top: 14px;
+        line-height: 1.6;
+      }
+      .dq .who {
+        display: block;
+        font-style: normal;
+        font-size: 11.5px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .transcript {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        border-top: 1px dotted var(--line);
+        padding: 12px 0;
+      }
+      .transcript .t-name {
+        font-weight: 800;
+        font-size: 14px;
+      }
+      .transcript .t-meta {
+        margin-top: 2px;
+      }
+      .transcript a {
+        white-space: nowrap;
+        font-weight: 800;
+        font-size: 13px;
+      }
+
+      /* media */
+      .tl-phase {
+        border-top: 1px solid var(--hair);
+        padding: 16px 0;
+      }
+      .tl-phase h4 {
+        font-weight: 800;
+        font-size: 15.5px;
+        display: inline;
+      }
+      .ph-when {
+        font-size: 10px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: var(--muted);
+        margin: 2px 0 8px;
+      }
+      .art {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        padding: 6px 0;
+        flex-wrap: wrap;
+      }
+      .outlet {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        min-width: 120px;
+      }
+      .art a {
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .a-type {
+        font-size: 10px;
+        color: var(--muted);
+        margin-left: auto;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .poll {
+        border-top: 1px dotted var(--line);
+        padding: 13px 0;
+      }
+      .pollbar {
+        display: flex;
+        height: 26px;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 9px 0 5px;
+        font-size: 11px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .p-yes {
+        background: var(--navy);
+        display: flex;
+        align-items: center;
+        padding-left: 9px;
+      }
+      .p-no {
+        background: #7c8196;
+        display: flex;
+        align-items: center;
+        padding-left: 9px;
+      }
+      .p-und {
+        background: #d8d5ca;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        padding-left: 9px;
+      }
+      .p-meta {
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+
+      /* finance ledger */
+      .fin-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 36px;
+      }
+      .fin-grid > .fin-col + .fin-col {
+        border-left: 1px solid var(--hair);
+        padding-left: 36px;
+      }
+      .fin-col h4 {
+        font-weight: 900;
+        font-size: 16px;
+        margin-bottom: 3px;
+      }
+      .committee {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .fin-h {
+        font-size: 9.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: var(--muted);
+        margin: 16px 0 3px;
+      }
+      .fin-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        font-size: 13.5px;
+        padding: 7px 0;
+        border-bottom: 1px dotted var(--line);
+        font-variant-numeric: tabular-nums;
+      }
+      .fin-row b {
+        font-weight: 800;
+      }
+      .fin-pending {
+        color: var(--muted);
+        font-style: italic;
+      }
+      .fin-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 4px 0 20px;
+      }
+      .fin-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px 18px;
+        background: #fff;
+      }
+      .fin-card .fc-name {
+        font-weight: 900;
+        font-size: 16px;
+      }
+      .fin-card .fc-stance {
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: 50px;
+        padding: 3px 11px;
+        margin-left: 6px;
+      }
+      .fc-stance.yes {
+        color: #1e5b38;
+        background: #e3f1e8;
+      }
+      .fc-stance.no {
+        color: #92121f;
+        background: #fbe7e9;
+      }
+      .fin-card .fc-total {
+        font-weight: 900;
+        font-size: 26px;
+        margin: 10px 0 2px;
+      }
+      .fin-card .fc-sub {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .geobar {
+        display: flex;
+        height: 22px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 12px 0 4px;
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .geobar .g-in {
+        background: var(--outside);
+        display: flex;
+        align-items: center;
+        padding-left: 8px;
+      }
+      .geobar .g-out {
+        background: var(--maple);
+        display: flex;
+        align-items: center;
+        padding-left: 8px;
+      }
+      .geobar .g-na {
+        background: #c9c6bb;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+      .geo-key {
+        display: flex;
+        gap: 16px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .geo-key span::before {
+        content: "●";
+        margin-right: 4px;
+      }
+      .geo-key .ki::before {
+        color: var(--outside);
+      }
+      .geo-key .ko::before {
+        color: var(--maple);
+      }
+      .fin-detail {
+        margin-top: 10px;
+      }
+      .fin-detail summary {
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--navy);
+        list-style: none;
+        padding: 8px 0;
+      }
+      .fin-detail summary::-webkit-details-marker {
+        display: none;
+      }
+      .fin-detail summary::before {
+        content: "▸ ";
+        color: var(--navy);
+      }
+      .fin-detail[open] summary::before {
+        content: "▾ ";
+      }
+      .fin-detail summary:hover {
+        color: var(--red);
+      }
+
+      /* implementation */
+      .scenario {
+        border-left: 3px solid var(--hair);
+        padding: 4px 0 4px 16px;
+        margin: 14px 0;
+      }
+      .scenario h4 {
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 5px;
+      }
+      .scenario p {
+        font-size: 14px;
+      }
+      .impl-tl {
+        margin-left: 6px;
+        padding-left: 24px;
+        border-left: 2px solid var(--line);
+      }
+      .impl-item {
+        position: relative;
+        margin-bottom: 20px;
+      }
+      .impl-item::before {
+        content: "";
+        position: absolute;
+        left: -30px;
+        top: 5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--navy);
+      }
+      .impl-item .i-when {
+        font-size: 10px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: var(--navy);
+      }
+      .impl-item h4 {
+        font-weight: 800;
+        font-size: 15px;
+        margin: 2px 0 4px;
+      }
+      .impl-item p {
+        font-size: 14px;
+      }
+      .impl-item .meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      /* results */
+      .resultbar {
+        display: flex;
+        height: 32px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0 8px;
+        font-size: 13px;
+        font-weight: 900;
+        color: #fff;
+      }
+      .resultbar .r-yes {
+        background: var(--navy);
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+      }
+      .resultbar .r-no {
+        background: #7c8196;
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+      }
+      .r-meta {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+
+      /* ask + empty */
+      .ask {
+        display: flex;
+        gap: 16px;
+      }
+      .ask h4 {
+        font-weight: 900;
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+      .ask p {
+        font-size: 13.5px;
+      }
+      .ask .ic {
+        display: none;
+      }
+      .empty {
+        border: 1.5px dashed var(--line);
+        border-radius: 12px;
+        padding: 22px;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+        background: #fbfaf7;
+      }
+      .empty b {
+        display: block;
+        color: var(--ink);
+        font-size: 14.5px;
+        margin-bottom: 4px;
+        font-weight: 800;
+      }
+
+      /* modal */
+      .modal-back[hidden] {
+        display: none !important;
+      }
+      .modal-back {
+        position: fixed;
+        inset: 0;
+        background: rgba(27, 30, 39, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 20px;
+      }
+      .modal {
+        background: #fff;
+        border-radius: 14px;
+        max-width: 580px;
+        width: 100%;
+        max-height: 80vh;
+        overflow: auto;
+        box-shadow: 0 14px 44px rgba(15, 18, 30, 0.3);
+      }
+      .modal-h {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        background: #fff;
+        border-radius: 14px 14px 0 0;
+      }
+      .modal-h b {
+        font-size: 15px;
+        font-weight: 900;
+      }
+      .modal-h button {
+        background: none;
+        border: none;
+        font-size: 15px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .modal-body {
+        padding: 6px 20px 14px;
+      }
+      .srcline {
+        padding: 13px 0;
+        border-bottom: 1px dotted var(--line);
+      }
+      .srcline:last-child {
+        border: none;
+      }
+      .srcline .s-title {
+        font-weight: 800;
+        font-size: 14px;
+        margin: 5px 0 2px;
+      }
+      .srcline .s-who {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .srcline .s-note {
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .srcline a {
+        font-size: 12.5px;
+        font-weight: 800;
+      }
+
+      @media (max-width: 760px) {
+        .qheader {
+          grid-template-columns: 1fr;
+        }
+        .takepart {
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid var(--line);
+          padding-top: 16px;
+        }
+        .two,
+        .argcols,
+        .glance,
+        .fin-grid {
+          grid-template-columns: 1fr;
+        }
+        .glance > div + div,
+        .fin-grid > .fin-col + .fin-col {
+          border-left: none;
+          padding-left: 0;
+        }
+        .adt {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .wrap {
+          padding: 20px 16px 50px;
+        }
+        .masthead,
+        .live-banner,
+        .decided-banner,
+        .proto-note {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+        .card {
+          padding: 18px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="masthead">
+      <div class="wordmark">MAPLE<span>.</span></div>
+      <div class="crumb">
+        Ballot Questions&nbsp;›&nbsp;<b>Rent Stabilization (2026)</b>
+      </div>
+    </div>
+
+    <!-- Removable component: live deliberation banner -->
+    <div class="live-banner" id="liveBanner">
+      <span class="pulse" aria-hidden="true"></span>
+      <span
+        ><b
+          >Live virtual deliberation on this question every Wednesday, 7:00
+          pm.</b
+        >
+        Open to all Massachusetts residents — facilitated, one hour, no
+        preparation needed.<a href="#">Join the next session →</a></span
+      >
+      <button
+        class="x"
+        aria-label="Dismiss"
+        onclick="document.getElementById('liveBanner').remove()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="proto-note">
+      <b>Prototype.</b> Built on the public record as of June 2026. Blocks
+      labeled <b>Sample</b> use illustrative content where official text or data
+      — the 2026 voter guide, deliberations, MAPLE testimony, finance filings —
+      is not yet available.
+    </div>
+
+    <div class="wrap">
+      <header class="qheader">
+        <div class="qnum"></div>
+        <div class="qtitle">
+          <h1>
+            An Initiative Petition to Protect Tenants by Limiting Rent Increases
+          </h1>
+          <p class="plain">
+            A proposed law limiting annual rent increases on covered residential
+            units.
+          </p>
+          <div class="lbl">
+            Question number assigned when ballots are finalized
+          </div>
+        </div>
+        <div class="takepart">
+          <div class="tp-lbl">Take part</div>
+          <a
+            class="btn btn-primary"
+            href="#"
+            onclick="
+              go('perspectives');
+              return false;
+            "
+            >Share your perspective</a
+          >
+          <a
+            class="btn btn-ghost"
+            href="#"
+            onclick="
+              go('overview');
+              document.getElementById('ask').scrollIntoView();
+              return false;
+            "
+            >Ask MAPLE a question</a
+          >
+          <div class="tp-hint">
+            Ask from this page or from your own AI assistant — every answer
+            cites this page's sources.
+          </div>
+        </div>
+      </header>
+
+      <nav class="tabbar" aria-label="Question sections">
+        <button class="active" data-tab="overview">Overview</button>
+        <button data-tab="perspectives">Public Perspectives</button>
+        <button data-tab="foragainst">For &amp; Against</button>
+        <button data-tab="deliberation">Deliberation</button>
+        <button data-tab="media">Media Coverage</button>
+        <button data-tab="finance">Campaign Finance</button>
+        <button data-tab="implementation">Implementation</button>
+        <button data-tab="research">Research &amp; Studies</button>
+      </nav>
+      <div class="legend-row">
+        <span class="li"
+          ><span class="sw" style="background: var(--official)"></span>Official
+          info</span
+        >
+        <span class="li"
+          ><span class="sw" style="background: var(--maple)"></span
+          >User-submitted</span
+        >
+        <span class="li"
+          ><span class="sw" style="background: var(--outside)"></span>Outside
+          content</span
+        >
+        <span class="li"
+          ><span class="sw" style="background: var(--synth)"></span>AI
+          synthesis</span
+        >
+        <a href="#">About our sources</a>
+      </div>
+
+      <main>
+        <!-- ============ OVERVIEW ============ -->
+        <section class="tabpane show" id="overview">
+          <div class="card">
+            <h2>What this question would do</h2>
+            <div id="plainlang" style="">
+              <div class="syn" style="margin-bottom: 0">
+                <div class="syn-t">
+                  Plain-language translation
+                  <span class="chip synth">AI synthesis</span
+                  ><button class="cite" data-s="r1,r2,r3">sources</button>
+                </div>
+                <p>
+                  A yes vote would end that ban and set one statewide rule:
+                  rents on covered apartments could rise no faster than
+                  inflation, and never more than 5% a year — including when a
+                  new tenant moves in. Owner-occupied buildings of four or fewer
+                  units are exempt, and new buildings are exempt for their first
+                  ten years. A no vote keeps current law, where rent amounts are
+                  not capped.
+                </p>
+              </div>
+            </div>
+            <br />
+            <div id="official">
+              <p style="font-size: 13px; margin-top: 11px">
+                <a href="#">Full summary</a> ·
+                <a href="#">Complete legal text</a> ·
+                <a href="#">Fiscal impact statement</a> — published unedited
+                from the Secretary of the Commonwealth.
+              </p>
+            </div>
+
+            <div class="note-foot">
+              Current law: rent control has been prohibited statewide under a
+              voter-approved 1994 law. Before then, only Boston, Brookline, and
+              Cambridge had rent control programs.
+              <button class="cite" data-s="r4">source</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>The case each side makes</h2>
+            <div class="two">
+              <div>
+                <h3>A YES vote would:</h3>
+                <div class="officialtext">
+                  <p style="margin-top: 7px">
+                    Limit rent increases on certain residential rental units to
+                    the increase in the consumer price index or 5%, whichever is
+                    lower, including between tenancies, with exceptions
+                    including owner-occupied buildings of four or fewer units
+                    and new construction during its first ten years.
+                  </p>
+                  <button class="stmt-link" data-stmt="yes">
+                    Full statements for a yes vote →
+                  </button>
+                </div>
+              </div>
+              <div>
+                <h3>A NO vote would:</h3>
+                <div class="officialtext">
+                  <p style="margin-top: 7px">
+                    Make no change in the law regarding rents for residential
+                    rental units.
+                  </p>
+                  <button class="stmt-link" data-stmt="no">
+                    Full statements for a no vote →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="glance">
+              <div>
+                <h3>Why vote YES</h3>
+                <p style="font-size: 13.5px; margin-bottom: 4px">
+                  Rents that rise faster than incomes are displacing workers,
+                  seniors, and families. A cap tied to inflation gives renters
+                  predictability, and peer-reviewed research finds covered
+                  tenants are more likely to stay in their homes. Small owners
+                  (owner-occupied buildings of four or fewer units) and new
+                  construction (first ten years) are exempt, and applying the
+                  cap at turnover removes a landlord's incentive to push tenants
+                  out.
+                </p>
+              </div>
+              <div>
+                <h3>Why vote NO</h3>
+                <p style="font-size: 13.5px; margin-bottom: 4px">
+                  Caps can deter the construction and maintenance the state
+                  needs — Gov. Healey argues they "effectively halt production,"
+                  and no state has tried a statewide cap that binds at turnover.
+                  Critics, including a Greater Boston Real Estate Board report,
+                  warn of pressure on municipal tax bases, and point to
+                  compensated or local-option alternatives discussed in the
+                  Legislature as better tools.
+                </p>
+              </div>
+            </div>
+            <div class="cta-row">
+              <a
+                href="#"
+                onclick="
+                  go('foragainst');
+                  return false;
+                "
+                >Examine the arguments, evidence, and claim mapping →</a
+              >
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Where leaders and organizations stand</h2>
+            <p class="sub">
+              Public positions on record, as reported. (Perspectives submitted
+              by residents and organizations directly to MAPLE are under Public
+              Perspectives.)
+            </p>
+            <div class="two" style="gap: 0 32px">
+              <div style="padding-right: 0">
+                <h3 style="color: var(--outside)">On record for YES</h3>
+                <div class="g-item" style="cursor: default">
+                  Boston Mayor Michelle Wu
+                  <button class="cite" data-s="r2">source</button>
+                </div>
+                <div class="g-item" style="cursor: default">
+                  Boston City Council, 9–3 resolution
+                  <button class="cite" data-s="r11">source</button>
+                </div>
+                <div class="g-item" style="cursor: default">
+                  Tenant &amp; housing coalitions (Homes for All MA, Springfield
+                  No One Leaves)
+                  <button class="cite" data-s="r3">source</button>
+                </div>
+              </div>
+              <div
+                style="border-left: 1px solid var(--hair); padding-left: 32px"
+              >
+                <h3 style="color: var(--red)">On record for NO</h3>
+                <div class="g-item" style="cursor: default">
+                  Gov. Maura Healey
+                  <button class="cite" data-s="r18">source</button>
+                </div>
+                <div class="g-item" style="cursor: default">
+                  Holyoke Mayor Joshua Garcia
+                  <button class="cite" data-s="r12">source</button>
+                </div>
+                <div class="g-item" style="cursor: default">
+                  Real-estate &amp; owner groups (GBREB, MassLandlords)
+                  <button class="cite" data-s="r9,r13">sources</button>
+                </div>
+              </div>
+            </div>
+            <div class="note-foot">
+              Latest public poll: 56% of Massachusetts voters support the
+              measure. <button class="cite" data-s="r19">source</button> Polls
+              and their wording are under Media Coverage.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Who's paying for the campaigns</h2>
+            <div class="t-counts" style="margin-bottom: 6px">
+              <div class="tc">
+                <b style="font-size: 14px">Keep Massachusetts Home</b
+                ><br /><span style="font-size: 11.5px"
+                  >Yes · tenant, labor &amp; community coalition</span
+                >
+              </div>
+              <div class="tc">
+                <b style="font-size: 14px">Housing for Massachusetts</b
+                ><br /><span style="font-size: 11.5px"
+                  >No · realtor &amp; multifamily-owner coalition
+                  <button class="cite" data-s="r7">source</button></span
+                >
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--muted)">
+              Committees have registered with the state; dollar totals are filed
+              with OCPF closer to the election. Full donor breakdowns —
+              including in-state vs. out-of-state money — appear under Campaign
+              Finance.
+            </p>
+          </div>
+
+          <div class="card">
+            <h2>What happens if it passes</h2>
+            <p style="font-size: 13.5px">
+              The cap would take effect using rents in place as of January 31,
+              2026 as the baseline, with the exemptions above. The Legislature
+              and agencies would then set enforcement and guidance, and owner
+              groups have signaled likely court challenges. The official fiscal
+              statement says any effect on state and municipal finances cannot
+              be determined with certainty.
+            </p>
+            <div class="cta-row">
+              <a
+                href="#"
+                onclick="
+                  go('implementation');
+                  return false;
+                "
+                >See the implementation record and legal questions →</a
+              >
+            </div>
+          </div>
+          <div class="card">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+              "
+            >
+              <div style="flex: 1; min-width: 240px">
+                <span style="font-weight: 800; font-size: 13.5px"
+                  >Committee hearing — March 31, 2026.</span
+                >
+                <span style="font-size: 13px; color: var(--muted)">
+                  Legislators reviewed this petition and heard public testimony
+                  before it advanced to the ballot.</span
+                >
+              </div>
+              <a
+                href="#"
+                style="font-weight: 800; font-size: 13px; white-space: nowrap"
+                >Open hearing page ↗</a
+              >
+            </div>
+          </div>
+
+          <div class="card" id="ask">
+            <div class="ask">
+              <div>
+                <h4>Still deciding? Ask MAPLE about this measure</h4>
+                <p>
+                  Ask a plain question —
+                  <i
+                    >"I own a two-family and live upstairs; would my building be
+                    covered?"</i
+                  >
+                  — here on the page or through your own AI assistant. Answers
+                  draw only from the sources on this page and cite them.
+                </p>
+                <p style="margin-top: 7px">
+                  <a
+                    class="btn btn-ghost"
+                    style="
+                      display: inline-block;
+                      width: auto;
+                      padding: 7px 16px;
+                    "
+                    href="#"
+                    >Ask on MAPLE</a
+                  >
+                  &nbsp;
+                  <a
+                    href="https://github.com/nesanders/maple-testimony-skill"
+                    style="font-size: 13px; font-weight: 700"
+                    >Connect your assistant (MCP) →</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PUBLIC PERSPECTIVES ============ -->
+        <section class="tabpane" id="perspectives">
+          <div class="card">
+            <h2>Perspectives submitted to MAPLE</h2>
+            <p class="sub">
+              Testimony submitted directly by verified Massachusetts residents
+              and organizations. MAPLE verifies identity, never edits content,
+              and displays every submission. This is the only place on the page
+              that shows what people told MAPLE in their own words — public
+              statements reported elsewhere are kept under For &amp; Against and
+              Media Coverage.
+            </p>
+            <div class="t-counts">
+              <div class="tc">
+                <b>3</b>residents <span class="chip sample">sample</span>
+              </div>
+              <div class="tc">
+                <b>2</b>organizations <span class="chip sample">sample</span>
+              </div>
+              <div class="tc"><b>3</b>support · <b>2</b>oppose</div>
+            </div>
+
+            <div
+              class="proto-inline"
+              style="
+                background: var(--goldbg);
+                border: 1px dashed #d9c792;
+                border-radius: 10px;
+                padding: 12px 16px;
+                font-size: 12.5px;
+                color: #6b5712;
+                margin: 6px 0 16px;
+              "
+            >
+              <b>Prototype note.</b> This question hasn't launched, so no
+              testimony has been submitted yet. The entries below are
+              illustrative mock submissions — display name and community as a
+              resident would enter them — to show how the section works. They
+              are not real people or real statements.
+            </div>
+
+            <div class="filterbar" id="tfilter">
+              <button class="fbtn active" data-f="all" data-kind="stance">
+                All
+              </button>
+              <button class="fbtn" data-f="yes" data-kind="stance">
+                Supports
+              </button>
+              <button class="fbtn" data-f="no" data-kind="stance">
+                Opposes
+              </button>
+              <span
+                style="border-left: 1px solid var(--line); margin: 0 4px"
+              ></span>
+              <button class="fbtn active" data-f="all" data-kind="who">
+                Everyone
+              </button>
+              <button class="fbtn" data-f="ind" data-kind="who">
+                Residents
+              </button>
+              <button class="fbtn" data-f="org" data-kind="who">
+                Organizations
+              </button>
+            </div>
+
+            <div class="testi" data-stance="yes" data-who="ind">
+              <div class="t-top">
+                <div class="avatar">JM</div>
+                <span class="t-org">J. M., Lowell</span
+                ><span class="verified">VERIFIED RESIDENT</span
+                ><span class="stance yes">Supports</span>
+              </div>
+              <p>
+                "My landlord raised our rent $400 in one year and there was
+                nothing we could do. We've lived in this neighborhood for nine
+                years and my kids are in school here. A cap tied to inflation
+                wouldn't freeze anyone's rent — it would just let families
+                plan."
+              </p>
+              <div class="t-meta">
+                Renter · submitted to MAPLE ·
+                <span class="chip sample">mock submission</span>
+              </div>
+            </div>
+
+            <div class="testi" data-stance="no" data-who="ind">
+              <div class="t-top">
+                <div class="avatar">RT</div>
+                <span class="t-org">R. T., Worcester</span
+                ><span class="verified">VERIFIED RESIDENT</span
+                ><span class="stance no">Opposes</span>
+              </div>
+              <p>
+                "I own a three-decker and live on the first floor. The exemption
+                is supposed to cover me, but I rent the other two units and the
+                rules around turnover are confusing. I'd rather see help with
+                property taxes and insurance, which are what actually drive my
+                rent increases."
+              </p>
+              <div class="t-meta">
+                Small property owner · submitted to MAPLE ·
+                <span class="chip sample">mock submission</span>
+              </div>
+            </div>
+
+            <div class="testi" data-stance="yes" data-who="ind">
+              <div class="t-top">
+                <div class="avatar">DA</div>
+                <span class="t-org">D. A., Springfield</span
+                ><span class="verified">VERIFIED RESIDENT</span
+                ><span class="stance yes">Supports</span>
+              </div>
+              <p>
+                "I'm a home health aide. Every raise I get goes straight to rent
+                and then some. I'm not asking for free housing — I'm asking to
+                not get priced out of the city I take care of people in."
+              </p>
+              <div class="t-meta">
+                Renter · submitted to MAPLE ·
+                <span class="chip sample">mock submission</span>
+              </div>
+            </div>
+
+            <div class="testi" data-stance="yes" data-who="org">
+              <div class="t-top">
+                <div class="avatar">TC</div>
+                <span class="t-org">Tenant association (mock)</span
+                ><span class="verified">VERIFIED ORG</span
+                ><span class="stance yes">Supports</span>
+              </div>
+              <p>
+                "Our members have watched longtime neighbors leave one by one as
+                rents climbed. We support a predictable, inflation-linked cap
+                with the small-owner and new-construction exemptions intact."
+              </p>
+              <div class="t-meta">
+                Resident organization · submitted to MAPLE ·
+                <span class="chip sample">mock submission</span>
+              </div>
+            </div>
+
+            <div class="testi" data-stance="no" data-who="org">
+              <div class="t-top">
+                <div class="avatar">PO</div>
+                <span class="t-org">Property owners' group (mock)</span
+                ><span class="verified">VERIFIED ORG</span
+                ><span class="stance no">Opposes</span>
+              </div>
+              <p>
+                "We represent small and mid-size landlords who maintain older
+                housing stock. We're concerned a turnover cap removes the
+                ability to recover the cost of major repairs, and we'd prefer a
+                compensated approach."
+              </p>
+              <div class="t-meta">
+                Owner organization · submitted to MAPLE ·
+                <span class="chip sample">mock submission</span>
+              </div>
+            </div>
+
+            <div class="empty" style="margin-top: 14px">
+              <b>Share how this question would affect you</b>Submitted with your
+              verified identity, shown with your chosen display name and
+              community, never edited, and kept as part of the permanent public
+              record.<br /><br /><a
+                class="btn btn-primary"
+                style="display: inline-block; width: auto; padding: 9px 22px"
+                href="#"
+                >Share your perspective</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ FOR & AGAINST ============ -->
+        <section class="tabpane" id="foragainst">
+          <div class="two">
+            <div class="card">
+              <h3>Official YES campaign position</h3>
+              <div class="block official" style="margin-bottom: 0">
+                <div class="b-top">
+                  <span class="b-title">Keep Massachusetts Home</span
+                  ><span class="chip official">Official info</span>
+                </div>
+                <p>
+                  "This modern rent-stabilization ballot initiative will protect
+                  tenants from big corporate investors who unreasonably increase
+                  rents."
+                </p>
+                <button class="stmt-link" data-stmt="yes">
+                  Full statement →
+                </button>
+                <div class="meta">
+                  Registered ballot committee
+                  <button class="cite" data-s="r9">source</button> · On record
+                  for yes: Boston Mayor Michelle Wu
+                  <button class="cite" data-s="r2">source</button>, Boston City
+                  Council (9–3 resolution)
+                  <button class="cite" data-s="r11">source</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Official NO campaign position</h3>
+              <div class="block official" style="margin-bottom: 0">
+                <div class="b-top">
+                  <span class="b-title">Housing for Massachusetts</span
+                  ><span class="chip official">Official info</span>
+                </div>
+                <p>
+                  "Our campaign is focused on policies that protect property
+                  owners, renters, housing production, and community budgets."
+                  Describes the measure as the most restrictive rent control
+                  program in the country.
+                </p>
+                <button class="stmt-link" data-stmt="no">
+                  Full statement →
+                </button>
+                <div class="meta">
+                  Registered ballot committee
+                  <button class="cite" data-s="r21">source</button> · On record
+                  for no: Gov. Maura Healey
+                  <button class="cite" data-s="r18">source</button>, Holyoke
+                  Mayor Joshua Garcia
+                  <button class="cite" data-s="r12">source</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="argcols">
+            <div class="card argcard">
+              <h2>YES arguments</h2>
+              <div class="syn">
+                <div class="syn-t">
+                  Affordability &amp; displacement
+                  <button class="cite" data-s="r14,r20">sources</button>
+                </div>
+                <p>
+                  A Massachusetts renter needs an average of $45.90/hour to
+                  afford a two-bedroom apartment. Supporters argue uncapped
+                  increases are displacing workers, seniors, and young families,
+                  and that a predictable ceiling tied to inflation addresses the
+                  most acute harm directly.
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  Tenant stability is a documented effect
+                  <button class="cite" data-s="r15">source</button>
+                </div>
+                <p>
+                  Peer-reviewed research on San Francisco found covered tenants
+                  were significantly more likely to remain in their homes,
+                  especially older and longer-tenured renters — the effect
+                  supporters say Massachusetts renters need most.
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  The design exempts small owners and new construction
+                  <button class="cite" data-s="r1,r3">sources</button>
+                </div>
+                <p>
+                  Owner-occupied buildings of four or fewer units are exempt,
+                  and new construction is exempt for ten years. Supporters argue
+                  this targets large portfolio owners while shielding the small
+                  landlords and new supply that critics worry about.
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  Covering turnover closes the eviction incentive
+                  <button class="cite" data-s="r2,r1">sources</button>
+                </div>
+                <p>
+                  Where caps reset at vacancy, owners gain an incentive to push
+                  tenants out. Supporters argue applying the cap at turnover
+                  removes that incentive — the lesson they draw from other
+                  states' programs.
+                </p>
+              </div>
+            </div>
+
+            <div class="card argcard">
+              <h2>NO arguments</h2>
+              <div class="syn">
+                <div class="syn-t">
+                  Production &amp; supply risk
+                  <button class="cite" data-s="r18,r15">sources</button>
+                </div>
+                <p>
+                  Gov. Healey and opponents argue caps deter investment: "you
+                  effectively halt production." The San Francisco study found
+                  covered landlords reduced rental supply about 15%, which
+                  raised citywide rents and offset part of the affordability
+                  benefit.
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  No state has tried this design
+                  <button class="cite" data-s="r2,r17">sources</button>
+                </div>
+                <p>
+                  California's and Oregon's statewide caps allow rents to reset
+                  between tenants; this measure's would not. Opponents argue an
+                  untested design is the wrong instrument for a supply-driven
+                  housing crisis.
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  Municipal fiscal exposure
+                  <button class="cite" data-s="r9">source</button>
+                </div>
+                <p>
+                  A report by the Greater Boston Real Estate Board with the
+                  Tufts Center for State Policy Analysis projects a 6–9%
+                  reduction in the residential tax base, pressuring city and
+                  town budgets. (Supporters dispute the projection; see claim
+                  mapping below.)
+                </p>
+              </div>
+              <div class="syn">
+                <div class="syn-t">
+                  Alternatives exist
+                  <button class="cite" data-s="r13,r5">sources</button>
+                </div>
+                <p>
+                  Opponents point to compensated stabilization (MassLandlords'
+                  proposal) and local-option approaches discussed in the
+                  Legislature as ways to address rent burden without a statewide
+                  mandate.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Analysis &amp; open questions</h2>
+            <div class="syn">
+              <div class="syn-t">
+                Areas of consensus <span class="chip synth">AI synthesis</span
+                ><button
+                  class="src-btn"
+                  data-s="r2,r3,r9,r13,r14,r20,r21"
+                  style="margin: 0 0 0 8px"
+                >
+                  View sources
+                </button>
+              </div>
+              <ul>
+                <li>
+                  Massachusetts has a housing affordability crisis; rent burden
+                  is among the highest in the country
+                </li>
+                <li>
+                  The state needs substantially more housing production
+                  regardless of this measure's fate
+                </li>
+                <li>
+                  Both campaigns accept that displacement pressure on tenants is
+                  real — they disagree on the remedy
+                </li>
+                <li>
+                  The measure's exemptions (owner-occupied ≤4 units; new
+                  construction for 10 years) are not in dispute, only their
+                  sufficiency
+                </li>
+              </ul>
+            </div>
+            <div class="syn">
+              <div class="syn-t">
+                Areas of disagreement
+                <span class="chip synth">AI synthesis</span
+                ><button
+                  class="src-btn"
+                  data-s="r2,r9,r13,r18,r20,r21"
+                  style="margin: 0 0 0 8px"
+                >
+                  View sources
+                </button>
+              </div>
+              <ul>
+                <li>
+                  Whether a cap that floats with inflation deters construction
+                  and maintenance given the 10-year exemption
+                </li>
+                <li>
+                  Whether covering turnover closes an eviction loophole or
+                  removes owners' main path to recover renovation costs
+                </li>
+                <li>
+                  Whether the 6–9% tax-base projection's methodology applies to
+                  this measure's design
+                </li>
+                <li>
+                  Whether one statewide rule or municipal opt-in is the right
+                  scale for rent policy
+                </li>
+              </ul>
+            </div>
+            <div class="syn">
+              <div class="syn-t">
+                Open questions <span class="chip synth">AI synthesis</span
+                ><button
+                  class="src-btn"
+                  data-s="r2,r15,r17"
+                  style="margin: 0 0 0 8px"
+                >
+                  View sources
+                </button>
+              </div>
+              <ul>
+                <li>
+                  No U.S. state has run a statewide cap that binds at turnover —
+                  direct evidence on this design at this scale does not exist
+                </li>
+                <li>
+                  How would a CPI-linked cap interact with insurance and utility
+                  costs that have risen faster than inflation?
+                </li>
+                <li>
+                  What enforcement capacity would municipalities need, and how
+                  would it be funded?
+                </li>
+              </ul>
+            </div>
+            <div class="syn">
+              <div class="syn-t">
+                Claim mapping <span class="chip synth">AI synthesis</span>
+              </div>
+              <div class="claim-line">
+                <b>"Rent control reduces new housing construction"</b
+                ><span class="verdict"
+                  >Findings differ across studies — a San Francisco study found
+                  supply reductions among covered owners
+                  <button class="cite" data-s="r15">source</button>; a
+                  Massachusetts study found small construction effects, with
+                  larger effects on maintenance and conversion
+                  <button class="cite" data-s="r17">source</button>; this
+                  measure's 10-year exemption has no studied equivalent</span
+                >
+              </div>
+              <div class="claim-line">
+                <b>"The measure would shrink the residential tax base 6–9%"</b
+                ><span class="verdict"
+                  >Single-source projection extrapolated from Cambridge and St.
+                  Paul studies <button class="cite" data-s="r9">source</button>;
+                  disputed by the supporting campaign
+                  <button class="cite" data-s="r9">source</button>; no
+                  independent replication to date</span
+                >
+              </div>
+              <div class="claim-line">
+                <b>"Rent stabilization keeps tenants in their homes"</b
+                ><span class="verdict"
+                  >Supported by peer-reviewed evidence; the same study finds an
+                  offsetting citywide supply effect
+                  <button class="cite" data-s="r15">source</button></span
+                >
+              </div>
+              <div class="claim-line">
+                <b
+                  >"This would be the most restrictive rent control program in
+                  the country"</b
+                ><span class="verdict"
+                  >No other state's cap applies at turnover statewide
+                  <button class="cite" data-s="r2">source</button>;
+                  "restrictive" as a characterization comes from the campaigns
+                  <button class="cite" data-s="r21">source</button></span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ RESEARCH & STUDIES ============ -->
+        <section class="tabpane" id="research">
+          <div class="card">
+            <h2>Research &amp; Studies</h2>
+            <p class="sub">
+              Everything cited by the campaigns, in coverage, or in deliberation
+              — producer and affiliation always named. MAPLE does not rank or
+              exclude research by conclusion.
+            </p>
+
+            <div class="evgroup">
+              <h4>Peer-reviewed research</h4>
+              <div class="evitem">
+                Diamond, R., McQuade, T. &amp; Qian, F. (2019). "The Effects of
+                Rent Control Expansion on Tenants, Landlords, and Inequality:
+                Evidence from San Francisco." <i>American Economic Review</i>,
+                109(9).
+                <span class="find"
+                  >Covered tenants 10–20% more likely to stay; covered landlords
+                  reduced rental supply ~15%, raising citywide rents.
+                  <a href="#">Open source ↗</a></span
+                >
+              </div>
+              <div class="evitem">
+                Autor, D., Palmer, C. &amp; Pathak, P. (2014). "Housing Market
+                Spillovers: Evidence from the End of Rent Control in Cambridge,
+                Massachusetts." <i>Journal of Political Economy</i>, 122(3).
+                <span class="find"
+                  >After decontrol, property values rose substantially —
+                  including at never-controlled buildings nearby.
+                  <a href="#">Open source ↗</a></span
+                >
+              </div>
+              <div class="evitem">
+                Sims, D. (2007). "Out of Control: What Can We Learn from the End
+                of Massachusetts Rent Control?"
+                <i>Journal of Urban Economics</i>, 61(1).
+                <span class="find"
+                  >Decontrol had small effects on new construction; larger
+                  effects ran through maintenance and conversion of existing
+                  stock. <a href="#">Open source ↗</a></span
+                >
+              </div>
+            </div>
+
+            <div class="evgroup">
+              <h4>Reports from interested organizations</h4>
+              <div class="evitem">
+                Greater Boston Real Estate Board with Tufts Center for State
+                Policy Analysis
+                <span class="affil"
+                  >(industry-commissioned; sponsor opposes the measure)</span
+                >: "Projected fiscal effects of the 2026 rent control
+                initiative" (2026).
+                <span class="find"
+                  >Projects a 6–9% reduction in the residential tax base,
+                  extrapolating from Cambridge (2014) and St. Paul (2022).
+                  <a
+                    href="https://www.wbur.org/news/2026/03/12/rent-control-ballot-initiative-affordability-housing"
+                    >Coverage ↗</a
+                  ></span
+                >
+              </div>
+              <div class="evitem">
+                MassLandlords
+                <span class="affil"
+                  >(property-owner trade association; member of the No
+                  coalition)</span
+                >: "Compensated rent stabilization" white paper (2025–26).
+                <span class="find"
+                  >Argues the ballot language removes owners' right to
+                  compensation; proposes an alternative framework.
+                  <a
+                    href="https://masslandlords.net/policy/rent-control/2026-ballot-initiative-explained/"
+                    >Open source ↗</a
+                  ></span
+                >
+              </div>
+              <div class="evitem">
+                National Low Income Housing Coalition
+                <span class="affil"
+                  >(affordable-housing advocacy organization)</span
+                >: <i>Out of Reach</i> (2025).
+                <span class="find"
+                  >A Massachusetts renter needs an average of $45.90/hour to
+                  afford a two-bedroom at fair market rent.
+                  <a href="#">Open source ↗</a></span
+                >
+              </div>
+            </div>
+
+            <div class="evgroup">
+              <h4>How comparable measures work elsewhere</h4>
+              <div class="evitem">
+                California (statewide cap, 2019) and Oregon (statewide cap,
+                2019) limit annual increases but allow rents to reset between
+                tenants. St. Paul, MN voters approved a 3% cap in 2021, later
+                amended to exempt new construction. No state has adopted a
+                statewide cap that binds at turnover.
+                <span class="find"><a href="#">Comparison detail ↗</a></span>
+              </div>
+            </div>
+
+            <div class="evgroup">
+              <h4>Government data</h4>
+              <div class="evitem">
+                <span class="find" style="margin-top: 0"
+                  >None listed yet for this question. OCPF filings appear under
+                  Campaign Finance; Department of Revenue and Census housing
+                  data will be added as they are cited in the debate.</span
+                >
+              </div>
+            </div>
+
+            <div class="suggest">
+              <b style="font-size: 14px; flex-basis: 100%">Suggest a source</b>
+              <input
+                type="url"
+                placeholder="Paste a link to a study or report"
+                aria-label="Source URL"
+              />
+              <a
+                class="btn btn-primary"
+                style="width: auto; padding: 9px 18px"
+                href="#"
+                >Submit for review</a
+              >
+              <span class="note"
+                >Submissions are reviewed by MAPLE administrators. Accepted
+                sources are listed with producer and affiliation named,
+                regardless of conclusion. <a href="#">Sourcing policy</a></span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ DELIBERATION ============ -->
+        <section class="tabpane" id="deliberation">
+          <div class="card">
+            <h2>
+              Deliberation on this question
+              <span class="chip sample"
+                >Sample layout — deliberations begin fall 2026</span
+              >
+            </h2>
+            <p class="sub">
+              Massachusetts residents meet in facilitated groups — in person
+              through GenUnity and the Mass Voter Table's Democracy Hubs, and
+              online every Wednesday at 7pm — to reason through this question
+              together. Sessions are recorded and synthesized with
+              <a href="https://github.com/dembrane/echo">Dembrane ECHO</a>;
+              anonymized transcripts are public, so every synthesized claim
+              below can be checked against what was actually said.
+            </p>
+            <div class="dstrip">
+              <div class="it"><b>3</b>in-person cohorts</div>
+              <div class="it"><b>2</b>online sessions</div>
+              <div class="it"><b>87</b>deliberators</div>
+              <div class="it"><b>6</b>regions</div>
+              <div class="it"><b>5</b>public transcripts</div>
+            </div>
+            <p class="note-foot">
+              Deliberators are recruited across geography, age, housing
+              situation (renters, owners, landlords), and politics, with
+              informed consent for recording and publication.
+              <a href="#">How deliberations work →</a>
+            </p>
+          </div>
+
+          <div class="card">
+            <h2>Themes from deliberation</h2>
+            <p class="sub">
+              Each theme shows where groups agreed, where they split, and the
+              trade-off they weighed — synthesized from session transcripts;
+              every theme links to its transcript segments.
+              <span class="chip sample">Illustrative</span>
+            </p>
+
+            <div class="theme">
+              <h4>
+                Stability vs. supply wasn't abstract — people argued from their
+                own buildings
+              </h4>
+              <div class="adt">
+                <div class="col agree">
+                  <h6>Where groups agreed</h6>
+                  Displacement is real and accelerating; "do nothing" was almost
+                  nobody's first choice, including most landlord participants.
+                </div>
+                <div class="col disagree">
+                  <h6>Where they split</h6>
+                  Whether a statewide cap or a local option is the right scale —
+                  Western MA participants were warier of one statewide rule than
+                  Boston-area participants.
+                </div>
+                <div class="col trade">
+                  <h6>The trade-off weighed</h6>
+                  Protection for current tenants now vs. risk to future renters
+                  if construction or maintenance slows.
+                </div>
+              </div>
+              <div class="dq">
+                "I'm not against my tenants having predictability. I'm against
+                being the only part of the housing system asked to absorb the
+                cost."<span class="who"
+                  >Small landlord — Worcester cohort ·
+                  <a href="#">transcript segment</a> (illustrative)</span
+                >
+              </div>
+            </div>
+
+            <div class="theme">
+              <h4>
+                The turnover cap was the single most contested design detail
+              </h4>
+              <div class="adt">
+                <div class="col agree">
+                  <h6>Where groups agreed</h6>
+                  Caps that reset at vacancy create an incentive to push tenants
+                  out — most participants found vacancy coverage coherent once
+                  explained.
+                </div>
+                <div class="col disagree">
+                  <h6>Where they split</h6>
+                  Whether that justifies a stricter cap than any other state's,
+                  or argues instead for stronger anti-harassment enforcement.
+                </div>
+                <div class="col trade">
+                  <h6>The trade-off weighed</h6>
+                  Closing the eviction incentive vs. removing owners' main path
+                  to recover renovation costs.
+                </div>
+              </div>
+            </div>
+
+            <div class="theme">
+              <h4>Trust in the evidence itself became a topic</h4>
+              <div class="adt">
+                <div class="col agree">
+                  <h6>Where groups agreed</h6>
+                  Participants wanted to know who funded each study before
+                  weighing it; affiliation labels changed how findings landed.
+                </div>
+                <div class="col disagree">
+                  <h6>Where they split</h6>
+                  Whether the tax-base projection should be discounted as
+                  advocacy or engaged as the best available estimate.
+                </div>
+                <div class="col trade">
+                  <h6>The trade-off weighed</h6>
+                  Acting on imperfect projections vs. waiting for evidence that
+                  may only exist after a policy is tried.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Anonymized transcripts</h2>
+            <p class="sub">
+              Full session transcripts with names and identifying details
+              removed. The synthesis above is generated from these — check it.
+              <span class="chip sample">Sample listing</span>
+            </p>
+            <div class="transcript">
+              <div>
+                <span class="t-name"
+                  >Worcester in-person cohort, session 2</span
+                >
+                <div class="t-meta">
+                  Oct 2026 · 14 participants · 2h 10m · facilitated by GenUnity
+                </div>
+              </div>
+              <a href="#">Read transcript →</a>
+            </div>
+            <div class="transcript">
+              <div>
+                <span class="t-name">Springfield Democracy Hub session</span>
+                <div class="t-meta">
+                  Oct 2026 · 12 participants · 1h 45m · with Mass Voter Table
+                </div>
+              </div>
+              <a href="#">Read transcript →</a>
+            </div>
+            <div class="transcript">
+              <div>
+                <span class="t-name">Statewide online session 1</span>
+                <div class="t-meta">Nov 2026 · 22 participants · 1h 30m</div>
+              </div>
+              <a href="#">Read transcript →</a>
+            </div>
+            <p class="note-foot">
+              Recording, transcription, and theme extraction run on Dembrane
+              ECHO. Participants consent to publication; redaction follows our
+              <a href="#">privacy policy</a>.
+            </p>
+          </div>
+        </section>
+
+        <!-- ============ MEDIA COVERAGE ============ -->
+        <section class="tabpane" id="media">
+          <div class="card">
+            <div class="syn" style="margin-bottom: 0">
+              <div class="syn-t">
+                AI synthesis of coverage
+                <span class="chip synth">AI synthesis</span
+                ><button
+                  class="src-btn"
+                  data-s="r2,r3,r5,r6,r7,r8,r9,r10,r11"
+                  style="margin: 0 0 0 8px"
+                >
+                  View sources (9)
+                </button>
+              </div>
+              <p>
+                Coverage has moved through four phases: the signature drive, the
+                opposition launch, the dispute over the GBREB/Tufts fiscal
+                report, and legislative negotiations over an alternative. The
+                6–9% tax-base figure is widely repeated in coverage and traces
+                to a single industry-commissioned report.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Coverage timeline</h2>
+            <p class="sub">
+              Reported news, grouped by phase. Outlet always named; opinion is
+              labeled and kept separate.
+            </p>
+            <div class="tl">
+              <div class="tl-phase">
+                <h4>Legislative alternative</h4>
+                <div class="ph-when">June 2026</div>
+                <div class="art">
+                  <span class="outlet">CommonWealth Beacon</span
+                  ><a
+                    href="https://commonwealthbeacon.org/housing/rent-control-backers-scrambling-to-find-legislative-road-away-from-the-ballot/"
+                    >Rent control backers scrambling to find legislative road
+                    away from the ballot</a
+                  ><span class="a-type">News</span>
+                </div>
+                <div class="art">
+                  <span class="outlet">WBUR</span
+                  ><a
+                    href="https://www.wbur.org/news/2026/06/03/rent-control-ballot-question-compromise-bill"
+                    >To avoid a costly ballot fight, supporters float a
+                    compromise</a
+                  ><span class="a-type">News</span>
+                </div>
+                <div class="art">
+                  <span class="outlet">NBC Boston</span
+                  ><a
+                    href="https://www.nbcboston.com/news/politics/campaign-proposes-legislation-as-alternative-to-mass-rent-control/3959782/"
+                    >Campaign proposes legislation as alternative to rent
+                    control</a
+                  ><span class="a-type">News</span>
+                </div>
+              </div>
+              <div class="tl-phase">
+                <h4>The evidence dispute</h4>
+                <div class="ph-when">February – March 2026</div>
+                <div class="art">
+                  <span class="outlet">WBUR</span
+                  ><a
+                    href="https://www.wbur.org/news/2026/03/12/rent-control-ballot-initiative-affordability-housing"
+                    >Real estate group warns proposal could lower property taxes
+                    for cities and towns</a
+                  ><span class="a-type">News</span>
+                </div>
+                <div class="art">
+                  <span class="outlet">WWLP</span
+                  ><a
+                    href="https://www.wwlp.com/news/massachusetts/poll-shows-more-support-for-rent-control-tax-cut/"
+                    >Poll shows more support for rent control, tax cut</a
+                  ><span class="a-type">News</span>
+                </div>
+              </div>
+              <div class="tl-phase">
+                <h4>Opposition launch &amp; legal challenge</h4>
+                <div class="ph-when">December 2025 – February 2026</div>
+                <div class="art">
+                  <span class="outlet">Boston.gov</span
+                  ><a
+                    href="https://www.boston.gov/news/council-adopts-resolution-supporting-2026-rent-stabilization-ballot-question"
+                    >Council adopts resolution supporting rent stabilization
+                    question (9–3)</a
+                  ><span class="a-type">Gov't</span>
+                </div>
+                <div class="art">
+                  <span class="outlet">MassLandlords</span
+                  ><a
+                    href="https://masslandlords.net/housing-for-massachusetts-coalition-spearheads-the-vote-no-on-rent-control-campaign/"
+                    >Housing for Massachusetts coalition launches "Vote No"
+                    campaign</a
+                  ><span class="a-type">Advocacy</span>
+                </div>
+              </div>
+              <div class="tl-phase">
+                <h4>Signature drive</h4>
+                <div class="ph-when">November 2025</div>
+                <div class="art">
+                  <span class="outlet">WBUR</span
+                  ><a
+                    href="https://www.wbur.org/news/2025/11/20/rent-control-ballot-question-massachusetts-2026-michelle-wu"
+                    >What to know about the emerging rent control ballot
+                    fight</a
+                  ><span class="a-type">News</span>
+                </div>
+                <div class="art">
+                  <span class="outlet">CBS Boston</span
+                  ><a
+                    href="https://www.cbsnews.com/boston/news/rent-control-ballot-question-massachusetts"
+                    >Supporters say they have enough signatures for ballot
+                    question</a
+                  ><span class="a-type">News</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="two">
+            <div class="card">
+              <h2>Editorial positions</h2>
+              <p class="sub">
+                Where editorial boards have come down — separate from reported
+                news
+              </p>
+              <div class="empty">
+                <b>No editorial board positions on file yet</b>When
+                Massachusetts editorial boards endorse Yes or No, they appear
+                here with outlet, date, and link.
+              </div>
+            </div>
+            <div class="card">
+              <h2>Polling</h2>
+              <p class="sub">
+                Every poll with its methodology; exact question wording shown
+                when available
+              </p>
+              <div class="poll">
+                <b style="font-size: 14px">UNH Survey Center</b>
+                <button class="cite" data-s="r19">source</button>
+                <div class="pollbar">
+                  <div class="p-yes" style="width: 56%">56% support</div>
+                  <div class="p-und" style="width: 44%">
+                    oppose / unsure — split to come
+                  </div>
+                </div>
+                <div class="p-meta">
+                  Reported early 2026 · MA registered voters · sample size,
+                  margin of error, oppose/unsure breakdown, and exact wording
+                  not yet on file
+                </div>
+              </div>
+              <div class="poll">
+                <b style="font-size: 14px">Statewide ballot-questions poll</b>
+                <button class="cite" data-s="r10">source</button>
+                <p style="font-size: 13.5px; margin: 8px 0 4px">
+                  Majority support reported; 21% opposed, 21% neutral or unsure.
+                </p>
+                <div class="p-meta">
+                  Feb 2026 · exact support figure, sample, margin of error, and
+                  wording not yet on file
+                </div>
+              </div>
+              <p class="note-foot">
+                MAPLE shows pollster, field dates, sample, margin of error, and
+                verbatim question for every poll — wording moves results, so a
+                topline never appears without its question.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CAMPAIGN FINANCE ============ -->
+        <section class="tabpane" id="finance">
+          <div class="card">
+            <h2>Campaign finance</h2>
+            <p class="sub">
+              Who is funding each side, from Massachusetts Office of Campaign
+              and Political Finance (OCPF) filings. Two things tend to matter
+              most to voters: how much each side has, and where the money comes
+              from — especially how much is raised inside Massachusetts versus
+              out of state. Dollar totals for this question are filed with OCPF
+              closer to the election; the structure below shows what will
+              appear.
+            </p>
+
+            <div class="fin-summary">
+              <div class="fin-card">
+                <div>
+                  <span class="fc-name">Keep Massachusetts Home</span
+                  ><span class="fc-stance yes">Yes</span>
+                </div>
+                <div class="fc-total fin-pending" style="font-size: 18px">
+                  Awaiting OCPF filings
+                </div>
+                <div class="fc-sub">
+                  Coalition of tenant advocates, labor unions, and community
+                  organizations
+                </div>
+                <div class="geobar">
+                  <span class="g-na"
+                    >In-state / out-of-state split shown once itemized receipts
+                    are filed</span
+                  >
+                </div>
+              </div>
+              <div class="fin-card">
+                <div>
+                  <span class="fc-name">Housing for Massachusetts</span
+                  ><span class="fc-stance no">No</span>
+                </div>
+                <div class="fc-total fin-pending" style="font-size: 18px">
+                  Awaiting OCPF filings
+                </div>
+                <div class="fc-sub">
+                  Realtor associations and multifamily property owners
+                  <button class="cite" data-s="r7">source</button>
+                </div>
+                <div class="geobar">
+                  <span class="g-na"
+                    >In-state / out-of-state split shown once itemized receipts
+                    are filed</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <p
+              style="font-size: 12.5px; color: var(--muted); margin-bottom: 8px"
+            >
+              Each committee's full detail — top donors, in-state vs.
+              out-of-state totals, spending by category, and links to every
+              filing — opens below.
+            </p>
+
+            <details class="fin-detail">
+              <summary>Keep Massachusetts Home — full detail</summary>
+              <div style="padding: 8px 0 4px">
+                <div class="fin-h">Totals</div>
+                <div class="fin-row">
+                  <span>Total raised</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-row">
+                  <span>Total spent</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-row">
+                  <span>Cash on hand</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-h">Where the money comes from</div>
+                <div class="fin-row">
+                  <span>Raised inside Massachusetts</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-row">
+                  <span>Raised out of state</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-row">
+                  <span>From individuals vs. organizations</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-h">Top donors</div>
+                <div class="fin-row">
+                  <span class="fin-pending"
+                    >Name · city/state · employer or affiliation · amount —
+                    listed from itemized OCPF receipts</span
+                  ><span></span>
+                </div>
+                <div class="fin-h">Spending by category</div>
+                <div class="fin-row">
+                  <span class="fin-pending"
+                    >Media, staff, signature gathering, overhead — from itemized
+                    OCPF expenditures</span
+                  ><span></span>
+                </div>
+                <div class="fin-h">Filings</div>
+                <div class="fin-row">
+                  <span
+                    ><a href="#">All OCPF reports for this committee ↗</a></span
+                  ><span></span>
+                </div>
+              </div>
+            </details>
+
+            <details class="fin-detail">
+              <summary>Housing for Massachusetts — full detail</summary>
+              <div style="padding: 8px 0 4px">
+                <div class="fin-h">Totals</div>
+                <div class="fin-row">
+                  <span>Total raised</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-row">
+                  <span>Total spent</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-row">
+                  <span>Cash on hand</span
+                  ><span class="fin-pending">awaiting OCPF filings</span>
+                </div>
+                <div class="fin-h">Where the money comes from</div>
+                <div class="fin-row">
+                  <span>Raised inside Massachusetts</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-row">
+                  <span>Raised out of state</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-row">
+                  <span>From individuals vs. organizations</span
+                  ><span class="fin-pending">from itemized receipts</span>
+                </div>
+                <div class="fin-h">
+                  Reported funders
+                  <button class="cite" data-s="r7">source</button>
+                </div>
+                <div class="fin-row">
+                  <span>Massachusetts Association of Realtors</span
+                  ><span class="fin-pending"
+                    >in-state · amount from filings</span
+                  >
+                </div>
+                <div class="fin-row">
+                  <span>National Association of Realtors</span
+                  ><span class="fin-pending"
+                    >out-of-state · amount from filings</span
+                  >
+                </div>
+                <div class="fin-row">
+                  <span>Equity Residential</span
+                  ><span class="fin-pending"
+                    >out-of-state · amount from filings</span
+                  >
+                </div>
+                <div class="fin-row">
+                  <span>AvalonBay Communities</span
+                  ><span class="fin-pending"
+                    >out-of-state · amount from filings</span
+                  >
+                </div>
+                <div class="fin-h">Spending by category</div>
+                <div class="fin-row">
+                  <span class="fin-pending"
+                    >Media, staff, signature gathering, overhead — from itemized
+                    OCPF expenditures</span
+                  ><span></span>
+                </div>
+                <div class="fin-h">Filings</div>
+                <div class="fin-row">
+                  <span
+                    ><a href="#">All OCPF reports for this committee ↗</a></span
+                  ><span></span>
+                </div>
+              </div>
+            </details>
+
+            <p class="note-foot">
+              Funder names are as reported in news coverage
+              <button class="cite" data-s="r7">source</button>; dollar amounts
+              and each donor's city and state appear only from OCPF itemized
+              filings. MAPLE does not estimate amounts. Whether a contribution
+              counts as in-state or out-of-state is based on the donor's address
+              as filed with OCPF.
+            </p>
+          </div>
+        </section>
+
+        <!-- ============ IMPLEMENTATION ============ -->
+        <section class="tabpane" id="implementation">
+          <div class="card">
+            <h2>Implementation</h2>
+            <p class="sub">
+              If voters approve this measure, it becomes law — but the
+              Legislature, state agencies, and sometimes the courts determine
+              how it actually takes effect. This tab lays out what the law
+              itself sets, what it would cost, the legal questions raised, and
+              what would still be left to decide.
+            </p>
+          </div>
+
+          <div class="card">
+            <h2>1. What the law itself sets</h2>
+            <div class="scenario" style="margin-top: 4px">
+              <p>
+                The cap applies to covered units using rents in place as of
+                <b>January 31, 2026</b> as the baseline. Annual increases are
+                limited to the lower of inflation (CPI) or 5%, including at
+                turnover. <b>Exempt:</b> owner-occupied buildings of four or
+                fewer units, and new construction for its first ten years.
+                <span class="placeholder"
+                  >The effective date and enforcement provisions appear here
+                  from the certified text once published.</span
+                >
+                <button class="cite" data-s="r1,r3">sources</button>
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2. What it would cost</h2>
+            <p class="sub">
+              The official fiscal statement is the anchor; campaign claims about
+              money are shown against it, each attributed.
+            </p>
+            <div class="block official">
+              <div class="b-top">
+                <span class="b-title"
+                  >Official statement of fiscal consequences</span
+                ><span class="chip sample"
+                  >Sample — replaced by the official statement when the
+                  Information for Voters is published</span
+                >
+              </div>
+              <p>
+                The proposed law may have fiscal consequences for state and
+                municipal government finances; the amount cannot be determined
+                with certainty.
+              </p>
+              <div class="meta">
+                As required by law, statements of fiscal consequences are
+                written by the Executive Office for Administration and Finance
+                and published in the Information for Voters. The 2024 statements
+                were one sentence each; this sample follows that form.
+              </div>
+            </div>
+            <div class="adt" style="margin: 12px 0">
+              <div class="col trade">
+                <h6>Households</h6>
+                Not addressed — the statement covers government finances, not
+                rent levels. <span class="chip sample">Sample</span>
+              </div>
+              <div class="col trade">
+                <h6>Municipal finances</h6>
+                Possible consequences; amount described as undetermined.
+                <span class="chip sample">Sample</span>
+              </div>
+              <div class="col trade">
+                <h6>State finances</h6>
+                Possible consequences; amount described as undetermined.
+                <span class="chip sample">Sample</span>
+              </div>
+            </div>
+            <div class="syn" style="margin-bottom: 0">
+              <div class="syn-t">
+                Fiscal claims that go beyond the official statement
+                <span class="chip synth">AI synthesis</span>
+              </div>
+              <div class="claim-line">
+                <b
+                  >"The measure would shrink the residential tax base 6–9% and
+                  pressure municipal budgets"</b
+                ><span class="verdict"
+                  >Made by the Greater Boston Real Estate Board, citing its
+                  report with Tufts cSPA — a projection the official statement
+                  does not make; extrapolated from Cambridge and St. Paul
+                  studies; disputed by the supporting campaign
+                  <button class="cite" data-s="r9">source</button></span
+                >
+              </div>
+              <div class="claim-line">
+                <b
+                  >"Predictable rents reduce displacement costs borne by
+                  communities"</b
+                ><span class="verdict"
+                  >Made by supporting organizations — a benefit claim the
+                  official statement does not address
+                  <button class="cite" data-s="r3,r20">sources</button></span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>3. Legal questions raised</h2>
+            <p class="sub">
+              Arguments about how the law would hold up, each shown with who
+              raises it. MAPLE does not predict rulings or offer legal advice.
+            </p>
+            <div class="claim-line">
+              <b>Takings and fair rate of return</b
+              ><span class="verdict"
+                >Raised by property-owner organizations as likely post-passage
+                litigation — the argument that a cap binding at turnover denies
+                owners a fair return; untested for this design
+                <button class="cite" data-s="r24">source</button></span
+              >
+            </div>
+            <div class="claim-line">
+              <b>Interaction with existing tenant-landlord law</b
+              ><span class="verdict"
+                >Identified in coverage and owner-association analyses as an
+                open drafting question: how the cap interfaces with Ch. 93A and
+                existing eviction protections
+                <button class="cite" data-s="r24">source</button></span
+              >
+            </div>
+            <div class="claim-line">
+              <b>Amendment by the Legislature</b
+              ><span class="verdict"
+                >Under the state constitution, voter-approved statutes can be
+                amended or repealed by the Legislature after passage
+                <button class="cite" data-s="r23">source</button></span
+              >
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>4. What would still be undecided</h2>
+            <p class="sub">
+              Questions the text doesn't settle — the starting list for
+              legislators and agencies, drawn from the documented reasoning
+              across this page.
+            </p>
+            <ul style="padding-left: 18px; font-size: 14px">
+              <li style="margin-bottom: 6px">
+                Enforcement capacity and funding — what municipalities would
+                need, and whether any of it is funded
+              </li>
+              <li style="margin-bottom: 6px">
+                How a CPI-linked cap interacts with insurance and utility costs
+                that have risen faster than inflation
+              </li>
+              <li style="margin-bottom: 6px">
+                What happens to rents already raised above the January 31, 2026
+                baseline
+              </li>
+              <li style="margin-bottom: 6px">
+                Guidance for owners and tenants on coverage, exemptions, and
+                turnover
+              </li>
+            </ul>
+            <div class="note-foot">
+              These appear across For &amp; Against (open questions) and in
+              deliberation.
+              <span class="chip sample"
+                >Deliberation entries are illustrative until sessions begin in
+                fall 2026.</span
+              >
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>5. After the vote</h2>
+            <div class="empty">
+              <b>Tracking begins if the measure passes</b>Implementing bills,
+              committee action, agency guidance, and any court challenges will
+              be tracked here and linked to their MAPLE bill pages — keeping the
+              public record of reasoning connected to what the Legislature does
+              with the result.
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============ SOURCE MODAL ============ -->
+    <div class="modal-back" id="srcModal" hidden>
+      <div class="modal" role="dialog" aria-label="Source details">
+        <div class="modal-h">
+          <b id="modalTitle">Source details</b
+          ><button onclick="closeModal()" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body" id="srcModalBody"></div>
+      </div>
+    </div>
+
+    <script>
+      const SOURCES = {
+        r1: {
+          t: "An Initiative Petition to Protect Tenants by Limiting Rent Increases — certified petition text",
+          w: "Secretary of the Commonwealth / Office of the Attorney General",
+          d: "Certified Sep 3, 2025",
+          k: "official",
+          u: "#",
+          n: "The full legal text of the measure, including coverage, baseline, and exemption provisions.",
+        },
+        r2: {
+          t: "What to know about the emerging 2026 rent control ballot question fight in Massachusetts",
+          w: "WBUR (Nik DeCosta-Klipa)",
+          d: "Nov 20, 2025",
+          k: "outside",
+          u: "https://www.wbur.org/news/2025/11/20/rent-control-ballot-question-massachusetts-2026-michelle-wu",
+          n: "Explainer covering the cap mechanics, turnover provision, and early positions.",
+        },
+        r3: {
+          t: "Rent control proposal has enough signatures for Massachusetts ballot, supporters say",
+          w: "CBS News Boston",
+          d: "Nov 2025",
+          k: "outside",
+          u: "https://www.cbsnews.com/boston/news/rent-control-ballot-question-massachusetts",
+          n: "Signature filing; exemptions for owner-occupied ≤4 units and 10-year new construction; campaign statements from Carolyn Chou and Rose Webster-Smith.",
+        },
+        r4: {
+          t: "Massachusetts Rent Control Initiative (2026)",
+          w: "Ballotpedia",
+          d: "Accessed Jun 2026",
+          k: "outside",
+          u: "https://ballotpedia.org/Massachusetts_Rent_Control_Initiative_(2026)",
+          n: "Procedural timeline, 1994 ban history, and SJC challenge filing date.",
+        },
+        r5: {
+          t: "Rent control backers scrambling to find legislative road away from the ballot",
+          w: "CommonWealth Beacon (Jennifer Smith & Chris Lisinski)",
+          d: "Jun 2, 2026",
+          k: "outside",
+          u: "https://commonwealthbeacon.org/housing/rent-control-backers-scrambling-to-find-legislative-road-away-from-the-ballot/",
+          n: "Compromise negotiations; quotes from both campaigns.",
+        },
+        r6: {
+          t: "To avoid a costly ballot question fight, rent control supporters are floating a compromise",
+          w: "WBUR",
+          d: "Jun 3, 2026",
+          k: "outside",
+          u: "https://www.wbur.org/news/2026/06/03/rent-control-ballot-question-compromise-bill",
+          n: "Local-option compromise terms.",
+        },
+        r7: {
+          t: "Campaign proposes legislation as alternative to MA rent control",
+          w: "NBC Boston / State House News Service",
+          d: "Jun 2026",
+          k: "outside",
+          u: "https://www.nbcboston.com/news/politics/campaign-proposes-legislation-as-alternative-to-mass-rent-control/3959782/",
+          n: "Reports opposition committee funders: MA Association of Realtors, National Association of Realtors, Equity Residential, AvalonBay Communities.",
+        },
+        r8: {
+          t: "Rent control proponents offer compromise with local option instead of statewide cap",
+          w: "Boston.com",
+          d: "Jun 3, 2026",
+          k: "outside",
+          u: "https://www.boston.com/news/local-news/2026/06/03/rent-control-proponents-offer-compromise-with-local-option-instead-of-statewide-cap/",
+          n: "July 1 second-round signature deadline; compromise terms.",
+        },
+        r9: {
+          t: "Real estate group warns rent control ballot proposal could lower property taxes for cities and towns",
+          w: "WBUR",
+          d: "Mar 12, 2026",
+          k: "outside",
+          u: "https://www.wbur.org/news/2026/03/12/rent-control-ballot-initiative-affordability-housing",
+          n: "GBREB / Tufts cSPA report projecting a 6–9% residential tax-base reduction; methodology (Cambridge 2014, St. Paul 2022); responses from both campaigns.",
+        },
+        r10: {
+          t: "Poll shows more support for rent control, tax cut",
+          w: "WWLP / Nexstar",
+          d: "Feb 2026",
+          k: "outside",
+          u: "https://www.wwlp.com/news/massachusetts/poll-shows-more-support-for-rent-control-tax-cut/",
+          n: "Statewide poll on six potential 2026 questions: 21% opposed rent control, 21% neutral/unsure; cost of living and housing were respondents' top issues.",
+        },
+        r11: {
+          t: "Council Adopts Resolution Supporting 2026 Rent Stabilization Ballot Question",
+          w: "City of Boston (Boston.gov)",
+          d: "Jan 2026",
+          k: "official",
+          u: "https://www.boston.gov/news/council-adopts-resolution-supporting-2026-rent-stabilization-ballot-question",
+          n: "Boston City Council resolution, adopted 9–3.",
+        },
+        r12: {
+          t: "Housing for Massachusetts Coalition Spearheads the 'Vote No on Rent Control' Campaign",
+          w: "MassLandlords (advocacy; member of the No coalition)",
+          d: "Apr 2026",
+          k: "outside",
+          u: "https://masslandlords.net/housing-for-massachusetts-coalition-spearheads-the-vote-no-on-rent-control-campaign/",
+          n: "Opposition coalition launch, December 2025; Holyoke Mayor Joshua Garcia's stated opposition.",
+        },
+        r13: {
+          t: "2026 Ballot Initiative Explained — Rent Control",
+          w: "MassLandlords (trade association; member of the No coalition)",
+          d: "Dec 2025, updated Jan 2026",
+          k: "outside",
+          u: "https://masslandlords.net/policy/rent-control/2026-ballot-initiative-explained/",
+          n: "White paper arguing for compensated rent stabilization as an alternative.",
+        },
+        r14: {
+          t: "Out of Reach 2025 — Massachusetts (cited in coverage)",
+          w: "National Low Income Housing Coalition (advocacy organization)",
+          d: "Jul 2025",
+          k: "outside",
+          u: "#",
+          n: "Finds a Massachusetts renter needs an average of $45.90/hour to afford a two-bedroom at fair market rent.",
+        },
+        r15: {
+          t: "The Effects of Rent Control Expansion on Tenants, Landlords, and Inequality: Evidence from San Francisco",
+          w: "Diamond, McQuade & Qian — American Economic Review 109(9)",
+          d: "2019",
+          k: "outside",
+          u: "#",
+          n: "Peer-reviewed. Covered tenants 10–20% more likely to stay; covered landlords reduced rental supply ~15%, raising citywide rents.",
+        },
+        r16: {
+          t: "Housing Market Spillovers: Evidence from the End of Rent Control in Cambridge, Massachusetts",
+          w: "Autor, Palmer & Pathak — Journal of Political Economy 122(3)",
+          d: "2014",
+          k: "outside",
+          u: "#",
+          n: "Peer-reviewed. Property values rose substantially after decontrol, including spillovers to never-controlled buildings.",
+        },
+        r17: {
+          t: "Out of Control: What Can We Learn from the End of Massachusetts Rent Control?",
+          w: "Sims — Journal of Urban Economics 61(1)",
+          d: "2007",
+          k: "outside",
+          u: "#",
+          n: "Peer-reviewed. Decontrol had small effects on new construction; larger effects on maintenance and conversion.",
+        },
+        r18: {
+          t: "Gov. Healey on the rent control ballot question (Boston Public Radio remarks)",
+          w: "Reported by WBSM / WWLP",
+          d: "Dec 2025",
+          k: "outside",
+          u: "https://wbsm.com/massachusetts-rent-control-poll-2026/",
+          n: '"I\'m a no, because if you look at the studies, you effectively halt production."',
+        },
+        r19: {
+          t: "UNH Survey Center poll on the rent control question",
+          w: "University of New Hampshire Survey Center, reported by WBSM",
+          d: "Early 2026",
+          k: "outside",
+          u: "https://wbsm.com/massachusetts-rent-control-poll-2026/",
+          n: "56% of Massachusetts voters support the measure. Full crosstabs and wording not yet on file.",
+        },
+        r20: {
+          t: "Keep Massachusetts Home — campaign statements",
+          w: "Keep Massachusetts Home (registered Yes committee)",
+          d: "2025–26",
+          k: "official",
+          u: "#",
+          n: "Campaign position statements as reported in WBUR and CommonWealth Beacon coverage.",
+        },
+        r21: {
+          t: "Housing for Massachusetts — campaign statements (Conor Yunits, spokesperson)",
+          w: "Housing for Massachusetts (registered No committee)",
+          d: "2025–26",
+          k: "official",
+          u: "https://www.wwlp.com/news/massachusetts/local-option-under-discussion-as-possible-rent-control-compromise/",
+          n: "Campaign position statements as reported by WWLP and CommonWealth Beacon.",
+        },
+        r22: {
+          t: "OCPF committee registrations and filings",
+          w: "Massachusetts Office of Campaign and Political Finance",
+          d: "Ongoing",
+          k: "official",
+          u: "#",
+          n: "Authoritative source for committee totals, donors, and expenditures.",
+        },
+        r23: {
+          t: "Massachusetts Constitution, Article 48 (The Initiative)",
+          w: "Commonwealth of Massachusetts",
+          d: "—",
+          k: "official",
+          u: "#",
+          n: "Governs the initiative process, including legislative amendment of voter-approved statutes.",
+        },
+        r24: {
+          t: "Massachusetts Rent Control Ballot 2026: Property Owner Guide",
+          w: "Small Property Owners Association (property-owner association; opposes the measure)",
+          d: "May 2026",
+          k: "outside",
+          u: "https://spoa.com/learn/massachusetts-rent-control-ballot-measure-2026-guide",
+          n: "Owner-side legal analysis raising takings/fair-return and Ch. 93A interaction arguments.",
+        },
+      };
+      const STMTS = {
+        yes: {
+          h: "A YES vote \u2014 full statements",
+          blocks: [
+            {
+              k: "sample",
+              c: "Sample",
+              t: "What a yes vote would do",
+              x: "Limit rent increases on certain residential rental units to the increase in the consumer price index or 5%, whichever is lower, including between tenancies, with exceptions including owner-occupied buildings of four or fewer units and new construction during its first ten years.",
+              m: "The certified statement replaces this sample when the Information for Voters is published.",
+            },
+            {
+              k: "official",
+              c: "Official info",
+              t: "Keep Massachusetts Home \u2014 campaign statement as reported",
+              x: '"This modern rent-stabilization ballot initiative will protect tenants from big corporate investors who unreasonably increase rents."',
+              m: "Registered Yes committee, 2025\u201326. The campaign's official 150-word argument appears here when the Information for Voters is published.",
+            },
+          ],
+        },
+        no: {
+          h: "A NO vote \u2014 full statements",
+          blocks: [
+            {
+              k: "sample",
+              c: "Sample",
+              t: "What a no vote would do",
+              x: "Make no change in the law regarding rents for residential rental units.",
+              m: "The certified statement replaces this sample when the Information for Voters is published.",
+            },
+            {
+              k: "official",
+              c: "Official info",
+              t: "Housing for Massachusetts \u2014 campaign statement as reported",
+              x: '"Our campaign is focused on policies that protect property owners, renters, housing production, and community budgets."',
+              m: "Registered No committee, 2025\u201326. The campaign's official 150-word argument appears here when the Information for Voters is published.",
+            },
+          ],
+        },
+      };
+      function openStmt(id) {
+        const st = STMTS[id];
+        if (!st) return;
+        document.getElementById("modalTitle").textContent = st.h;
+        document.getElementById("srcModalBody").innerHTML = st.blocks
+          .map(
+            (b) =>
+              `<div class="srcline"><span class="chip ${b.k}">${b.c}</span><div class="s-title">${b.t}</div><div class="s-note" style="font-size:13px;line-height:1.55">${b.x}</div><div class="s-who" style="margin-top:5px">${b.m}</div></div>`,
+          )
+          .join("");
+        document.getElementById("srcModal").hidden = false;
+      }
+      const KIND_LABEL = {
+        official: "Official info",
+        outside: "Outside content",
+        maple: "Shared on MAPLE",
+        synth: "AI synthesis",
+      };
+      function openSrc(ids) {
+        document.getElementById("modalTitle").textContent = "Source details";
+        const body = document.getElementById("srcModalBody");
+        body.innerHTML = ids
+          .split(",")
+          .map((id) => {
+            const s = SOURCES[id.trim()];
+            if (!s) return "";
+            return `<div class="srcline"><span class="chip ${s.k}">${KIND_LABEL[s.k]}</span>
+      <div class="s-title">${s.t}</div>
+      <div class="s-who">${s.w} · ${s.d}</div>
+      <div class="s-note">${s.n}</div>
+      ${s.u && s.u !== "#" ? `<a href="${s.u}" target="_blank" rel="noopener">Open source ↗</a>` : `<span class="s-who">Link not yet on file</span>`}
+    </div>`;
+          })
+          .join("");
+        document.getElementById("srcModal").hidden = false;
+      }
+      function closeModal() {
+        document.getElementById("srcModal").hidden = true;
+      }
+      document.addEventListener("click", (e) => {
+        const st = e.target.closest(".stmt-link");
+        if (st) {
+          e.preventDefault();
+          openStmt(st.dataset.stmt);
+          return;
+        }
+        const c = e.target.closest(".cite,.src-btn");
+        if (c) {
+          e.preventDefault();
+          openSrc(c.dataset.s);
+          return;
+        }
+        if (e.target.id === "srcModal") closeModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      function go(id) {
+        document
+          .querySelectorAll(".tabpane")
+          .forEach((p) => p.classList.toggle("show", p.id === id));
+        document
+          .querySelectorAll(".tabbar button")
+          .forEach((b) => b.classList.toggle("active", b.dataset.tab === id));
+        window.scrollTo({
+          top: document.querySelector(".tabbar").offsetTop - 10,
+          behavior: "smooth",
+        });
+      }
+      document
+        .querySelectorAll(".tabbar button")
+        .forEach((b) => b.addEventListener("click", () => go(b.dataset.tab)));
+      function segSwap(btn, showId) {
+        btn.parentElement
+          .querySelectorAll("button")
+          .forEach((x) => x.classList.remove("on"));
+        btn.classList.add("on");
+        document.getElementById("official").style.display =
+          showId === "official" ? "" : "none";
+        document.getElementById("plainlang").style.display =
+          showId === "plainlang" ? "" : "none";
+      }
+      (function () {
+        const bar = document.getElementById("tfilter");
+        if (!bar) return;
+        const state = { stance: "all", who: "all" };
+        bar.querySelectorAll(".fbtn").forEach((btn) =>
+          btn.addEventListener("click", () => {
+            const kind = btn.dataset.kind;
+            bar
+              .querySelectorAll('.fbtn[data-kind="' + kind + '"]')
+              .forEach((x) => x.classList.remove("active"));
+            btn.classList.add("active");
+            state[kind] = btn.dataset.f;
+            bar.parentElement.querySelectorAll(".testi").forEach((el) => {
+              const okStance =
+                state.stance === "all" || el.dataset.stance === state.stance;
+              const okWho = state.who === "all" || el.dataset.who === state.who;
+              el.style.display = okStance && okWho ? "" : "none";
+            });
+          }),
+        );
+      })();
+    </script>
+  </body>
+</html>

@@ -19,6 +19,8 @@ import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
 import ConceptRentControl from "./components/concept-rent-control";
 import BallotQuestions from "./components/ballot-questions";
+import ContentSchemataRentControl from "./components/content-schemata-rent-control";
+import RentControlAlt from "./components/rent-control-alt";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
 function DisclaimerBar({ children }: { children: ReactNode }) {
@@ -87,6 +89,20 @@ const PROTOTYPES: Prototype[] = [
         <ConceptRentControl />
       </>
     ),
+  },
+  {
+    id: "BQ1",
+    path: "ballotQuestions/2026/rent-control",
+    label: "Rent Control",
+    group: "ballot-questions",
+    element: <ContentSchemataRentControl />,
+  },
+  {
+    id: "BQ2-alt",
+    path: "ballotQuestions/rent-control-alt",
+    label: "Rent Control (alt)",
+    group: "ballot-questions",
+    element: <RentControlAlt />,
   },
 ];
 
