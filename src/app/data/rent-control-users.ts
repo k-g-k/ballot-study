@@ -3,11 +3,13 @@
 // (see Rentcontrol-ballotpedia.pdf). Rendered in the Public Perspectives tab
 // as if each had registered a MAPLE account with an uploaded avatar.
 //
-// Avatars: Wikipedia page images where the entity has one (all portraits);
-// otherwise the organization's or city's own site icon. Four accounts have no
-// usable image on file (AIM's favicon is 16px; Homes for All Massachusetts and
-// the City of Agawam expose no icon; New England Community Project's site
-// couldn't be confirmed) — those fall back to initials in the UI.
+// Avatars: for people ("Office of …" accounts and legislators) the image is
+// always a portrait of the actual person (Wikipedia page images, visually
+// verified) — never a city seal. Organizations use their own site logo. Where
+// no portrait or usable logo exists anywhere on file (Wikipedia, Ballotpedia,
+// and the city/org site were all checked), the account falls back to initials:
+// AIM, Homes for All Massachusetts, New England Community Project, and the
+// offices of Mayors Beauregard, Johnson, Keefe, Mazzarella, and Nicholson.
 
 import avatarMlri from "../../assets/avatars/mlri.png";
 import avatarWu from "../../assets/avatars/wu.jpg";
@@ -19,30 +21,30 @@ import avatarMassFiscal from "../../assets/avatars/mass-fiscal.png";
 import avatarNaiop from "../../assets/avatars/naiop-ma.jpg";
 import avatarSpoa from "../../assets/avatars/spoa.jpg";
 import avatarHealey from "../../assets/avatars/healey.jpg";
-import avatarBeauregard from "../../assets/avatars/beauregard.png";
 import avatarDePena from "../../assets/avatars/depena.png";
 import avatarGarcia from "../../assets/avatars/garcia.jpg";
-import avatarKeefe from "../../assets/avatars/keefe.png";
 import avatarKoch from "../../assets/avatars/koch.jpg";
-import avatarMazzarella from "../../assets/avatars/mazzarella.jpg";
 import avatarMitchell from "../../assets/avatars/mitchell.jpg";
-import avatarNicholson from "../../assets/avatars/nicholson.png";
 import avatarPetty from "../../assets/avatars/petty.jpg";
 import avatarMariano from "../../assets/avatars/mariano.jpg";
+import avatarHousingForMA from "../../assets/avatars/housing-for-ma.jpg";
+import avatarMassHousingCoalition from "../../assets/avatars/mass-housing-coalition.jpg";
+import avatarSeiu509 from "../../assets/avatars/seiu-509.png";
+import avatarHomesForAll from "../../assets/avatars/homes-for-all-ma.png";
+import avatarKeepMAHome from "../../assets/avatars/keep-ma-home.png";
 
-// "organization" covers advocacy groups, trade associations, AND government
-// offices for now; government offices carry `governmentOfficial: true` so they
-// can be split into their own user type later. "legislator" is already its own
-// type (individual members of the General Court).
-export type PositionUserType = "organization" | "legislator";
+// "organization" — advocacy groups and trade associations (icon: bullhorn).
+// "legislator" — individual members of the General Court (icon: scales).
+// "government" — executive-office accounts ("Office of …" for governors and
+//   mayors; icon: lectern). Formerly organization accounts with a
+//   governmentOfficial flag; now their own user type.
+export type PositionUserType = "organization" | "legislator" | "government";
 export type PositionStance = "supports" | "opposes";
 
 export interface PositionUser {
   id: string;
   name: string;
   userType: PositionUserType;
-  /** Organization accounts that are government offices — future distinct user type. */
-  governmentOfficial?: boolean;
   /** Short account descriptor shown under the name. */
   descriptor: string;
   stance: PositionStance;
@@ -50,6 +52,8 @@ export interface PositionUser {
   avatar?: string;
   /** Initials for the fallback avatar (required when `avatar` is absent). */
   initials?: string;
+  /** Sample viewer data: whether the prototype's current user follows this account. */
+  followedByViewer?: boolean;
 }
 
 export const POSITION_USERS: PositionUser[] = [
@@ -60,7 +64,7 @@ export const POSITION_USERS: PositionUser[] = [
     userType: "organization",
     descriptor: "Housing-justice coalition — led the YES campaign",
     stance: "supports",
-    initials: "HFA",
+    avatar: avatarHomesForAll,
   },
   {
     id: "necp",
@@ -79,13 +83,38 @@ export const POSITION_USERS: PositionUser[] = [
     avatar: avatarMlri,
   },
   {
+    id: "keep-ma-home",
+    name: "Keep Massachusetts Home",
+    userType: "organization",
+    descriptor: "Committee leading the YES campaign",
+    stance: "supports",
+    avatar: avatarKeepMAHome,
+  },
+  {
+    id: "springfield-no-one-leaves",
+    name: "Springfield No One Leaves",
+    userType: "organization",
+    descriptor: "Tenant-organizing nonprofit",
+    stance: "supports",
+    initials: "SNL",
+  },
+  {
+    id: "seiu-509",
+    name: "SEIU Local 509",
+    userType: "organization",
+    descriptor: "Human-service workers & educators union",
+    stance: "supports",
+    avatar: avatarSeiu509,
+    followedByViewer: true,
+  },
+  {
     id: "office-wu",
     name: "Office of Boston Mayor Michelle Wu",
-    userType: "organization",
-    governmentOfficial: true,
-    descriptor: "City of Boston",
+    userType: "government",
+    descriptor: "Mayor of the City of Boston (Nonpartisan)",
     stance: "supports",
     avatar: avatarWu,
+    followedByViewer: true,
   },
 
   // ── Opposing — organizations ───────────────────────────────────────────────
@@ -104,6 +133,7 @@ export const POSITION_USERS: PositionUser[] = [
     descriptor: "Real-estate trade association",
     stance: "opposes",
     avatar: avatarGbreb,
+    followedByViewer: true,
   },
   {
     id: "mass-realtors",
@@ -154,30 +184,45 @@ export const POSITION_USERS: PositionUser[] = [
     avatar: avatarSpoa,
   },
 
-  // ── Opposing — government offices (organization accounts, flagged) ────────
+  {
+    id: "housing-for-ma",
+    name: "Housing for Massachusetts",
+    userType: "organization",
+    descriptor: "Committee leading the NO campaign",
+    stance: "opposes",
+    avatar: avatarHousingForMA,
+  },
+  {
+    id: "mass-housing-coalition",
+    name: "Massachusetts Housing Coalition",
+    userType: "organization",
+    descriptor: "Housing-industry coalition",
+    stance: "opposes",
+    avatar: avatarMassHousingCoalition,
+  },
+
+  // ── Opposing — executive offices ───────────────────────────────────────────
   {
     id: "office-healey",
     name: "Office of Gov. Maura Healey",
-    userType: "organization",
-    governmentOfficial: true,
-    descriptor: "Commonwealth of Massachusetts",
+    userType: "government",
+    descriptor: "Governor for the State of Massachusetts (D)",
     stance: "opposes",
     avatar: avatarHealey,
+    followedByViewer: true,
   },
   {
     id: "office-beauregard",
     name: "Office of Methuen Mayor David Beauregard Jr.",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Methuen",
     stance: "opposes",
-    avatar: avatarBeauregard,
+    initials: "DB",
   },
   {
     id: "office-depena",
     name: "Office of Lawrence Mayor Brian DePeña",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Lawrence",
     stance: "opposes",
     avatar: avatarDePena,
@@ -185,8 +230,7 @@ export const POSITION_USERS: PositionUser[] = [
   {
     id: "office-garcia",
     name: "Office of Holyoke Mayor Joshua Garcia",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Holyoke",
     stance: "opposes",
     avatar: avatarGarcia,
@@ -194,8 +238,7 @@ export const POSITION_USERS: PositionUser[] = [
   {
     id: "office-johnson",
     name: "Office of Agawam Mayor Christopher Johnson",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Agawam",
     stance: "opposes",
     initials: "CJ",
@@ -203,17 +246,15 @@ export const POSITION_USERS: PositionUser[] = [
   {
     id: "office-keefe",
     name: "Office of Revere Mayor Patrick Keefe Jr.",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Revere",
     stance: "opposes",
-    avatar: avatarKeefe,
+    initials: "PK",
   },
   {
     id: "office-koch",
     name: "Office of Quincy Mayor Thomas Koch",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Quincy",
     stance: "opposes",
     avatar: avatarKoch,
@@ -221,35 +262,31 @@ export const POSITION_USERS: PositionUser[] = [
   {
     id: "office-mazzarella",
     name: "Office of Leominster Mayor Dean Mazzarella",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Leominster",
     stance: "opposes",
-    avatar: avatarMazzarella,
+    initials: "DM",
   },
   {
     id: "office-mitchell",
     name: "Office of New Bedford Mayor Jon Mitchell",
-    userType: "organization",
-    governmentOfficial: true,
-    descriptor: "City of New Bedford",
+    userType: "government",
+    descriptor: "Mayor of the City of New Bedford (D)",
     stance: "opposes",
     avatar: avatarMitchell,
   },
   {
     id: "office-nicholson",
     name: "Office of Gardner Mayor Michael Nicholson",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Gardner",
     stance: "opposes",
-    avatar: avatarNicholson,
+    initials: "MN",
   },
   {
     id: "office-petty",
     name: "Office of Worcester Mayor Joseph Petty",
-    userType: "organization",
-    governmentOfficial: true,
+    userType: "government",
     descriptor: "City of Worcester",
     stance: "opposes",
     avatar: avatarPetty,
@@ -258,9 +295,10 @@ export const POSITION_USERS: PositionUser[] = [
   // ── Opposing — legislator ──────────────────────────────────────────────────
   {
     id: "mariano",
-    name: "Ronald Mariano",
+    name: "Rep. Ronald Mariano",
     userType: "legislator",
-    descriptor: "Speaker of the Massachusetts House of Representatives (D–Quincy)",
+    descriptor:
+      "Speaker of the House · Represents the 3rd Norfolk District — Quincy, Weymouth & Holbrook (D)",
     stance: "opposes",
     avatar: avatarMariano,
   },
