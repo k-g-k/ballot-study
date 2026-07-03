@@ -4,7 +4,6 @@ import {
   SynthSummaryCard,
   Card,
   Timeline,
-  AnalysisSection,
   SynthSourcesNote,
   CitationBlock,
   Facts,
@@ -92,128 +91,71 @@ export function BackgroundTab() {
         </div>
       </div>
 
-      <Card
-        title="Implementation"
-        subtitle="What passage would set in motion — next steps, fiscal consequences, and legal questions."
+      {/* What happens if it passes — AI-synthesis pattern. */}
+      <SynthSummaryCard
+        title="What happens if it passes"
+        ids={["petition", "spoaGuide"]}
+        prompt="Summarize what would happen if the measure passes — effective date and baseline, exemptions, the enforcement and guidance work left to the Legislature and agencies, expected litigation, and what the official fiscal statement says. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
       >
-        <div className="space-y-[24px]">
-          {/* What happens if it passes — AI-synthesis pattern. */}
-          <AnalysisSection
-            title="What happens if it passes"
-            ids={["petition", "spoaGuide"]}
-            prompt="Summarize what would happen if the measure passes — effective date and baseline, exemptions, the enforcement and guidance work left to the Legislature and agencies, expected litigation, and what the official fiscal statement says. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+        <p>
+          The cap would take effect using rents in place as of January 31, 2026
+          as the baseline — or the most recent rent if a unit was then vacant —
+          with the exemptions set out in the official summary under Bibliography;
+          units rented with a mobile housing voucher stay covered even though
+          other publicly regulated units are exempt. The Legislature and agencies
+          would then set enforcement and guidance, and owner groups have signaled
+          likely court challenges. The official fiscal statement says any effect
+          on state and municipal finances cannot be determined with certainty.
+        </p>
+      </SynthSummaryCard>
+
+      {/* What it would cost — the official statement anchors; campaign claims
+          are shown against it, each attributed. */}
+      <Card
+        title="What it would cost"
+        subtitle="The official fiscal statement is the anchor; campaign claims about money are shown against it, each attributed."
+      >
+        <div className="space-y-[16px]">
+          <CitationBlock
+            kind="official"
+            title="Official statement of fiscal consequences"
           >
-            <p className="font-['Nunito'] text-[14px] text-black leading-[1.55] mb-[6px]">
-              The cap would take effect using rents in place as of January 31,
-              2026 as the baseline — or the most recent rent if a unit was then
-              vacant — with the exemptions set out in the official summary under
-              Bibliography; units rented with a mobile housing voucher stay
-              covered even though other publicly regulated units are exempt. The
-              Legislature and agencies would then set enforcement and guidance,
-              and owner groups have signaled likely court challenges. The
-              official fiscal statement says any effect on state and municipal
-              finances cannot be determined with certainty.
+            <p className="font-['Nunito'] italic text-[12px] text-[#808080] mt-[2px]">
+              Sample — replaced by the official statement when the Information
+              for Voters is published.
             </p>
-          </AnalysisSection>
+            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[6px] leading-[1.5]">
+              “The proposed law may have fiscal consequences for state and
+              municipal government finances; the amount cannot be determined with
+              certainty.”
+            </p>
+            <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[6px] leading-[1.5]">
+              As required by law, statements of fiscal consequences are written
+              by the Executive Office for Administration and Finance and
+              published in the Information for Voters. The 2024 statements were
+              one sentence each; this sample follows that form.
+            </p>
+          </CitationBlock>
 
-          {/* What it would cost — the official statement anchors; campaign
-              claims are shown against it, each attributed. */}
+          {/* Attributed campaign claims — outside info, green citation blocks. */}
           <div>
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black">
-              What it would cost
-            </p>
-            <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[12px] leading-[1.5]">
-              The official fiscal statement is the anchor; campaign claims about
-              money are shown against it, each attributed.
-            </p>
-            <div className="space-y-[16px]">
-              <CitationBlock
-                kind="official"
-                title="Official statement of fiscal consequences"
-              >
-                <p className="font-['Nunito'] italic text-[12px] text-[#808080] mt-[2px]">
-                  Sample — replaced by the official statement when the
-                  Information for Voters is published.
-                </p>
-                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[6px] leading-[1.5]">
-                  “The proposed law may have fiscal consequences for state and
-                  municipal government finances; the amount cannot be determined
-                  with certainty.”
-                </p>
-                <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[6px] leading-[1.5]">
-                  As required by law, statements of fiscal consequences are
-                  written by the Executive Office for Administration and Finance
-                  and published in the Information for Voters. The 2024
-                  statements were one sentence each; this sample follows that
-                  form.
-                </p>
-              </CitationBlock>
-
-              {/* Attributed campaign claims — outside info, green citation
-                  blocks, one per quote. */}
-              <div>
-                <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
-                  Fiscal claims that go beyond the official statement
-                </p>
-                <div className="space-y-[12px]">
-                  <CitationBlock
-                    kind="outside"
-                    title="“The measure would shrink the residential tax base 6–9% and pressure municipal budgets”"
-                  >
-                    <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-                      Made by the Greater Boston Real Estate Board, citing its
-                      report with Tufts CSPA — a projection the official
-                      statement does not make; extrapolated from Cambridge and
-                      St. Paul studies; disputed by the supporting campaign.
-                    </p>
-                    <div className="mt-[6px]">
-                      <SynthSourcesNote
-                        ids={["tuftsWBUR", "tuftsGlobe"]}
-                        variant="plain"
-                        linkClass="text-[#166534] hover:text-[#0f4a26]"
-                      />
-                    </div>
-                  </CitationBlock>
-                  <CitationBlock
-                    kind="outside"
-                    title="“Predictable rents reduce displacement costs borne by communities”"
-                  >
-                    <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-                      Made by supporting organizations — a benefit claim the
-                      official statement does not address.
-                    </p>
-                    <div className="mt-[6px]">
-                      <SynthSourcesNote
-                        ids={["cbsSigs", "keepMAHome"]}
-                        variant="plain"
-                        linkClass="text-[#166534] hover:text-[#0f4a26]"
-                      />
-                    </div>
-                  </CitationBlock>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Legal questions raised — citation blocks colored by source kind. */}
-          <div>
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black">
-              Legal questions raised
-            </p>
-            <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[12px] leading-[1.5]">
-              Arguments about how the law would hold up, each shown with who
-              raises it. MAPLE does not predict rulings or offer legal advice.
+            <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+              Fiscal claims that go beyond the official statement
             </p>
             <div className="space-y-[12px]">
-              <CitationBlock kind="outside" title="Takings and fair rate of return">
+              <CitationBlock
+                kind="outside"
+                title="“The measure would shrink the residential tax base 6–9% and pressure municipal budgets”"
+              >
                 <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-                  Raised by property-owner organizations as likely post-passage
-                  litigation — the argument that a cap binding at turnover denies
-                  owners a fair return; untested for this design.
+                  Made by the Greater Boston Real Estate Board, citing its report
+                  with Tufts CSPA — a projection the official statement does not
+                  make; extrapolated from Cambridge and St. Paul studies;
+                  disputed by the supporting campaign.
                 </p>
                 <div className="mt-[6px]">
                   <SynthSourcesNote
-                    ids={["spoaGuide"]}
+                    ids={["tuftsWBUR", "tuftsGlobe"]}
                     variant="plain"
                     linkClass="text-[#166534] hover:text-[#0f4a26]"
                   />
@@ -221,28 +163,18 @@ export function BackgroundTab() {
               </CitationBlock>
               <CitationBlock
                 kind="outside"
-                title="Interaction with existing tenant-landlord law"
+                title="“Predictable rents reduce displacement costs borne by communities”"
               >
                 <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-                  Identified in coverage and owner-association analyses as an
-                  open drafting question: how the cap interfaces with Ch. 93A and
-                  existing eviction protections.
+                  Made by supporting organizations — a benefit claim the official
+                  statement does not address.
                 </p>
                 <div className="mt-[6px]">
                   <SynthSourcesNote
-                    ids={["spoaGuide"]}
+                    ids={["cbsSigs", "keepMAHome"]}
                     variant="plain"
                     linkClass="text-[#166534] hover:text-[#0f4a26]"
                   />
-                </div>
-              </CitationBlock>
-              <CitationBlock kind="official" title="Amendment by the Legislature">
-                <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
-                  Under the state constitution, voter-approved statutes can be
-                  amended or repealed by the Legislature after passage.
-                </p>
-                <div className="mt-[6px]">
-                  <SynthSourcesNote ids={["article48"]} variant="plain" />
                 </div>
               </CitationBlock>
             </div>
@@ -256,6 +188,55 @@ export function BackgroundTab() {
         subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
       >
         <StakeholderGrid rows={RC.stakeholders} />
+      </Card>
+
+      {/* Legal questions raised — citation blocks colored by source kind. */}
+      <Card
+        title="Legal questions raised"
+        subtitle="Arguments about how the law would hold up, each shown with who raises it. MAPLE does not predict rulings or offer legal advice."
+      >
+        <div className="space-y-[12px]">
+          <CitationBlock kind="outside" title="Takings and fair rate of return">
+            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+              Raised by property-owner organizations as likely post-passage
+              litigation — the argument that a cap binding at turnover denies
+              owners a fair return; untested for this design.
+            </p>
+            <div className="mt-[6px]">
+              <SynthSourcesNote
+                ids={["spoaGuide"]}
+                variant="plain"
+                linkClass="text-[#166534] hover:text-[#0f4a26]"
+              />
+            </div>
+          </CitationBlock>
+          <CitationBlock
+            kind="outside"
+            title="Interaction with existing tenant-landlord law"
+          >
+            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+              Identified in coverage and owner-association analyses as an open
+              drafting question: how the cap interfaces with Ch. 93A and existing
+              eviction protections.
+            </p>
+            <div className="mt-[6px]">
+              <SynthSourcesNote
+                ids={["spoaGuide"]}
+                variant="plain"
+                linkClass="text-[#166534] hover:text-[#0f4a26]"
+              />
+            </div>
+          </CitationBlock>
+          <CitationBlock kind="official" title="Amendment by the Legislature">
+            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+              Under the state constitution, voter-approved statutes can be
+              amended or repealed by the Legislature after passage.
+            </p>
+            <div className="mt-[6px]">
+              <SynthSourcesNote ids={["article48"]} variant="plain" />
+            </div>
+          </CitationBlock>
+        </div>
       </Card>
 
       <Card title="Related Context">
