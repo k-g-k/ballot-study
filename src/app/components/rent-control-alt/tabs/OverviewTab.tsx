@@ -19,7 +19,6 @@ export function OverviewTab({
         prompt="Summarize Petition No. 25-21 in plain language for a general audience: what the measure does, who it covers, and how the two campaigns frame it. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
       >
         <p>{RC.overviewSummary}</p>
-        <p>{RC.overviewFraming}</p>
       </SynthSummaryCard>
 
       {/* Yes / No comparison — organizers, funding, testifying orgs, official statements */}
