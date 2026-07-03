@@ -96,6 +96,8 @@ export interface Arg {
   quote?: { text: string; who: string; ids: string[] };
 }
 export type ArgSet = { yes: Arg[]; no: Arg[] };
+// "all" rolls up every source category; the rest narrow to one.
+export type ArgFilter = "all" | ArgSourceTag;
 
 // ── Timeline milestone ──────────────────────────────────────────────────────
 export interface TL {
