@@ -2,18 +2,30 @@
 
 **Live demo:** https://ballot-pi.vercel.app/
 
-An interactive prototype exploring information-architecture concepts for ballot-question pages —
-a React + Vite + Tailwind single-page app with a top switcher between three concepts:
+An interactive prototype exploring how a Massachusetts ballot question could be
+presented on MAPLE — a React + Vite + Tailwind single-page app. The main page is a
+rent-control ballot-question deep-dive with tabbed sections (Overview, For &
+Against, Public Perspectives, Citizen Deliberations, Campaign Finance, Background,
+Bibliography), built as a reusable system so other ballot questions can reuse the
+same layout by supplying their own data. Earlier exploratory concepts remain in
+the repo under `_archive/` folders and are not part of the live app.
 
-- **Content Schemata** — content inventory organized by tab
-- **For & Against Example** — arguments synthesis + research evidence (AI-generated demo content)
-- **Rent Control Example** — a real-content example based on public sources
+> ⚠️ Prototype only. Content, campaign positions, testimony, citations, and AI
+> syntheses are illustrative — not real ballot-measure data.
 
-> ⚠️ Prototype only. Some content is AI-generated for demonstration and is not real ballot-measure data.
+## Origins & evolution
+
+This began as a design prototype in **Figma Make** — the original is published at
+**[grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)**. It was
+then exported to this React + Vite + Tailwind codebase and refactored into a
+reusable system: generic rendering components under `src/app/components/ballot/`,
+driven by question content under `src/app/data/`, so a new ballot question can
+reuse the same layout without rebuilding it. See [`CLAUDE.md`](./CLAUDE.md) for the
+current architecture and conventions.
 
 ## Tech stack
 
-React 18 · Vite 6 · Tailwind CSS v4 · shadcn/ui (Radix) · TypeScript
+React 18 · Vite 6 · Tailwind CSS v4 · React Router · TypeScript
 
 ## Getting started
 
@@ -24,6 +36,19 @@ npm install     # install dependencies
 npm run dev     # start the dev server (prints a localhost URL)
 npm run build   # production build → dist/
 ```
+
+## Working in the code
+
+New to this repo? The architecture, the reusable component library, and recipes
+for common changes (move a card, add a card/tab, stand up a new ballot question)
+live in **[`CLAUDE.md`](./CLAUDE.md)** — which Claude Code auto-loads, so your
+Claude already knows the conventions and what to reuse.
+
+To get oriented fast, paste this to your Claude:
+
+> Read CLAUDE.md, then walk me through this codebase — the layering, the reusable
+> `ballot/` components, where content lives, and the recipe for adding a card or a
+> new ballot question. Point out what to reuse so I don't reinvent anything.
 
 ## Deployment
 

@@ -5,10 +5,34 @@ pages. The flagship page is the **rent-control deep-dive** at
 `/ballotQuestions/rent-control-alt`, built as a reusable system so a new ballot
 question can reuse the same layout by supplying its own data.
 
+> **New to this repo?** Paste this to your Claude to get oriented: *"Read
+> CLAUDE.md, then walk me through this codebase — the layering, the reusable
+> `ballot/` components, where content lives, and the recipe for adding a card or
+> a new ballot question. Point out what to reuse so I don't reinvent anything."*
+
 - Dev server: `npm run dev` — the collapsible **Dev Nav** (bottom-left, dev only)
   lists every routable prototype.
 - Check before committing: `npx tsc --noEmit` and `npm run build` (both should be
   clean; the build's "chunk > 500 kB" note is a harmless warning).
+
+## Reuse first — don't reinvent the wheel
+
+Before writing a new component or new styling, **check what already exists and
+compose it.** This codebase is built as a small system on purpose.
+
+- **Rendering blocks already exist** in `src/app/components/ballot/` — browse the
+  barrel `components/ballot/index.ts` or the component catalog below before
+  building anything. Most UI is a composition of existing primitives + sections.
+- **Content is data, not JSX.** To change wording, edit `src/app/data/rent-control/`
+  (`content.ts` / `sources.ts`) — do not hard-code copy into components.
+- **Only add a new component when nothing composes.** When you do, put it in the
+  right layer (primitive vs. section vs. page), keep it prop-driven, and export it
+  from the barrel so the next person finds it.
+- **Match the existing patterns**, don't invent parallel ones: Tailwind arbitrary
+  values, `font-['Nunito']` / `font-['Lexend']`; citations via `<Cite>` /
+  `<SourceNote>` / `<SynthSourcesNote>` resolving through `<SourcesProvider>`;
+  colored provenance blocks via `<CitationBlock kind=…>`; filter pills via
+  `<FilterChip>`; cards via `<Card>` / `<SynthSummaryCard>`.
 
 ## Architecture — the layering rule
 
