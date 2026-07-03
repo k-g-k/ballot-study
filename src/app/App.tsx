@@ -75,7 +75,7 @@ const PROTOTYPES: Prototype[] = [
   },
 ];
 
-const DEFAULT_PATH = "/prototype/2024-ballot-question/audit/e-content-schemata";
+const DEFAULT_PATH = "/ballotQuestions/rent-control-alt";
 
 // Collapsible navigation panel flush against the bottom-right edge of the
 // screen. Rendered only in development (see Layout) — Vite strips it from
