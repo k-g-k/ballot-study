@@ -1,14 +1,15 @@
-import { SynthSummaryCard, Card, StakeholderGrid } from "../../ballot";
+import { SynthSummaryCard, Card } from "../../ballot";
 import { RC } from "../../../data/rent-control";
 import { VoteCard } from "../vote-card";
-import { FollowedTestimonyCard } from "../testimony";
+import { FollowedTestimonyCard, type StanceFilter } from "../testimony";
 
 export function OverviewTab({
   onOpenFinance,
   onViewTestimony,
 }: {
   onOpenFinance?: () => void;
-  onViewTestimony?: () => void;
+  // Given the stance to open Organization Testimony with (Yes → endorsing).
+  onViewTestimony?: (stance: StanceFilter) => void;
 }) {
   return (
     <div className="flex flex-col gap-[16px]">
@@ -26,25 +27,14 @@ export function OverviewTab({
         <VoteCard
           d={RC.overviewVotes.yes}
           onOpenFinance={onOpenFinance}
-          onViewTestimony={onViewTestimony}
+          onViewTestimony={() => onViewTestimony?.("endorsing")}
         />
         <VoteCard
           d={RC.overviewVotes.no}
           onOpenFinance={onOpenFinance}
-          onViewTestimony={onViewTestimony}
+          onViewTestimony={() => onViewTestimony?.("opposing")}
         />
       </div>
-
-      {/* Featured testimony from followed accounts — also on Public Perspectives. */}
-      <FollowedTestimonyCard />
-
-      {/* Scope — per-group impact tiles */}
-      <Card
-        title="Stakeholder Impact"
-        subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
-      >
-        <StakeholderGrid rows={RC.stakeholders} />
-      </Card>
 
       <SynthSummaryCard
         title="Research & Evidence"
@@ -66,11 +56,15 @@ export function OverviewTab({
         </p>
       </SynthSummaryCard>
 
+      {/* Featured testimony from followed accounts — also on Public Perspectives. */}
+      <FollowedTestimonyCard />
+
       <Card title="Still deciding? Ask MAPLE about this measure">
         <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
           Ask a plain question —{" "}
           <span className="italic">
-            "I own a two-family and live upstairs; would my building be covered?"
+            "I own a two-family and live upstairs; would my building be
+            covered?"
           </span>{" "}
           — here on the page or through your own AI assistant. Answers draw only
           from the sources on this page and cite them.

@@ -115,10 +115,22 @@ export function SynthSourcesNote({
 }) {
   const sources = useSources();
   const [open, setOpen] = useState(false);
+  // Open downward by default; flip up when there isn't room below the trigger.
+  const [placement, setPlacement] = useState<"down" | "up">("down");
   const wrapRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    const el = wrapRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const POPOVER_MAX = 440; // max-h-[420px] + margin
+      setPlacement(
+        spaceBelow < POPOVER_MAX && spaceAbove > spaceBelow ? "up" : "down",
+      );
+    }
     const onDown = (e: MouseEvent) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -159,7 +171,9 @@ export function SynthSourcesNote({
     <div
       role="dialog"
       aria-label="Sources"
-      className="absolute left-0 top-full mt-[8px] w-[440px] max-w-[80vw] max-h-[420px] overflow-y-auto bg-white border border-[#d1d1d1] rounded-[8px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] p-[18px] z-30 text-left"
+      className={`absolute left-0 ${
+        placement === "up" ? "bottom-full mb-[8px]" : "top-full mt-[8px]"
+      } w-[440px] max-w-[80vw] max-h-[420px] overflow-y-auto bg-white border border-[#d1d1d1] rounded-[8px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] p-[18px] z-30 text-left`}
     >
       {prompt && (
         <div className="border-b border-dotted border-[#d1d1d1] mb-[14px] pb-[14px]">

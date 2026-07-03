@@ -10,10 +10,12 @@
 // resolves source ids against this question's registry.
 
 import { useState, useRef, useEffect } from "react";
+import { X } from "lucide-react";
 import { MapleTopNav, BreadcrumbBack, PageHeading } from "../maple-shared";
 import { SourcesProvider, KIND_DOT, type SrcKind } from "../ballot";
 import { RC, SOURCES } from "../../data/rent-control";
 import { TABS, type TabId } from "./tabs";
+import type { StanceFilter } from "./testimony";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { BackgroundTab } from "./tabs/BackgroundTab";
 import { ForAgainstTab } from "./tabs/ForAgainstTab";
@@ -21,9 +23,16 @@ import { PublicPerspectivesTab } from "./tabs/PublicPerspectivesTab";
 import { CitizenDeliberationsTab } from "./tabs/CitizenDeliberationsTab";
 import { CampaignFinanceTab } from "./tabs/CampaignFinanceTab";
 import { BibliographyTab } from "./tabs/BibliographyTab";
+import { MapleFab } from "./maple-fab";
 
 export default function RentControlAlt() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+  // Dismissible prototype notice — dismissal lives in component state, so it
+  // persists across tab switches (the shell stays mounted) but resets on reload.
+  const [noticeOpen, setNoticeOpen] = useState(true);
+  // Which stance Organization Testimony opens with — set when a Vote card's
+  // "View Testimony" is clicked, reset by any ordinary tab navigation.
+  const [orgFilter, setOrgFilter] = useState<StanceFilter>("all");
   const columnRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +54,7 @@ export default function RentControlAlt() {
   // if the user is already above that point, don't move at all.
   const handleTabChange = (id: TabId) => {
     setActiveTab(id);
+    setOrgFilter("all");
     const el = columnRef.current;
     if (!el) return;
     // Measure from the non-sticky column: a stuck sticky element reports its
@@ -57,8 +67,36 @@ export default function RentControlAlt() {
     <SourcesProvider value={SOURCES}>
       <div className="bg-[#ededed] min-h-screen min-w-[950px]">
         {/* Chrome matches BQ1 (content-schemata-rent-control): top nav + breadcrumb. */}
-        <MapleTopNav />
-        <BreadcrumbBack to="/ballotQuestions" label="Return to ballot questions" />
+        {/* Top nav with the prototype notice anchored to it — absolutely
+            positioned so it overlaps the nav bar slightly and scrolls away
+            together with it (the nav is not sticky). */}
+        <div className="relative">
+          <MapleTopNav />
+          {noticeOpen && (
+            <div className="absolute top-0  inset-0 z-30 flex items-center justify-center px-6 pointer-events-none">
+              <div className="pointer-events-auto inline-flex items-start gap-[8px] rounded-[8px] px-[14px] py-[10px] bg-[#fef3c7]/95 border border-[#f59e0b] shadow-[0_6px_18px_rgba(0,0,0,0.16)]">
+                <span className="text-[16px] leading-none">⚠️</span>
+                <p className="font-['Nunito'] text-[13px] leading-[1.5] text-[#92400e] max-w-[900px]">
+                  <span className="font-bold">Design prototype.</span> This page
+                  is a design prototype for demonstration only. Content,
+                  testimony, positions, citations, and AI syntheses are
+                  illustrative only.
+                </p>
+                <button
+                  onClick={() => setNoticeOpen(false)}
+                  aria-label="Dismiss notice"
+                  className="shrink-0 mt-[1px] text-[#92400e] hover:text-[#5c2d0a] cursor-pointer"
+                >
+                  <X className="w-[15px] h-[15px]" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        <BreadcrumbBack
+          to="/ballotQuestions"
+          label="Return to ballot questions"
+        />
         <div className="max-w-[1200px] w-full mx-auto pt-[8px] pb-[16px] px-6">
           <PageHeading>Proposed Ballot Question (2026)</PageHeading>
         </div>
@@ -68,7 +106,10 @@ export default function RentControlAlt() {
           className="max-w-[1200px] w-full mx-auto flex flex-col px-6 pb-[24px]"
         >
           {/* Hero — pins at the viewport top once the heading scrolls away. */}
-          <div ref={heroRef} className="sticky top-0 z-10 bg-[#ededed] pb-[16px]">
+          <div
+            ref={heroRef}
+            className="sticky top-0 z-10 bg-[#ededed] pt-[16px] pb-[16px]"
+          >
             <div className="bg-white rounded-[12px] overflow-clip pt-[36px] pr-[36px] pb-[36px] pl-[36px]">
               <div className="flex gap-[24px] items-center w-full">
                 <div className="flex-1">
@@ -171,12 +212,17 @@ export default function RentControlAlt() {
                 {activeTab === "overview" && (
                   <OverviewTab
                     onOpenFinance={() => handleTabChange("finance")}
-                    onViewTestimony={() => handleTabChange("perspectives")}
+                    onViewTestimony={(stance) => {
+                      setOrgFilter(stance);
+                      setActiveTab("perspectives");
+                    }}
                   />
                 )}
                 {activeTab === "background" && <BackgroundTab />}
                 {activeTab === "for-against" && <ForAgainstTab />}
-                {activeTab === "perspectives" && <PublicPerspectivesTab />}
+                {activeTab === "perspectives" && (
+                  <PublicPerspectivesTab orgFilter={orgFilter} />
+                )}
                 {activeTab === "deliberations" && <CitizenDeliberationsTab />}
                 {/* {activeTab === "media" && <MediaCoverageTab />} */}
                 {activeTab === "finance" && <CampaignFinanceTab />}
@@ -186,6 +232,7 @@ export default function RentControlAlt() {
           </div>
         </div>
       </div>
+      <MapleFab />
     </SourcesProvider>
   );
 }

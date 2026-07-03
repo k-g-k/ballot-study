@@ -156,6 +156,6 @@ export const TESTIMONY: TestimonyItem[] = [
     userId: "mariano",
     stance: "no-position",
     date: "June 24, 2026",
-    body: "I am not going to take a position on this ballot question but I do not believe the rent control question that is on the ballot is going to improve the ability for housing investors to get into the marketplace, I think the barriers are very high, the amount of money that it's going to cost, it's almost going to keep people from even entering into it, I think that the question that's on the ballot really defeats the whole purpose of adding more housing to start, so we need to come up with ways, as the Senate president said, some new and inventive ways, because these old ways are not working...",
+    body: "I am not going to take a position on this ballot question but I do not believe the rent control question that is on the ballot is going to improve the ability for housing investors to get into the marketplace, I think the barriers are very high, the amount of money that it's going to cost, it's almost going to keep people from even entering into it, I think that the question that's on the ballot really defeats the whole purpose of adding more housing to start, so we need to come up with ways, some new and inventive ways, because these old ways are not working...",
   },
 ];

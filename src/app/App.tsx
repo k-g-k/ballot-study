@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import {
   Link,
@@ -147,10 +147,36 @@ function DevNav() {
 // Persistent chrome. In production this is just the routed content; the dev nav
 // only renders during `npm run dev`.
 function Layout() {
+  // Dev Nav is hidden by default (even in dev). Toggle it with ⌘/Ctrl+Shift+D;
+  // the choice persists in localStorage. Keep adding new prototypes to the
+  // PROTOTYPES registry regardless — they appear here whenever it's enabled.
+  const [devNav, setDevNav] = useState(
+    () =>
+      typeof localStorage !== "undefined" &&
+      localStorage.getItem("maple-devnav") === "1",
+  );
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.shiftKey &&
+        (e.key === "D" || e.key === "d")
+      ) {
+        e.preventDefault();
+        setDevNav((v) => {
+          const next = !v;
+          localStorage.setItem("maple-devnav", next ? "1" : "0");
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <Outlet />
-      {import.meta.env.DEV && <DevNav />}
+      {import.meta.env.DEV && devNav && <DevNav />}
     </div>
   );
 }

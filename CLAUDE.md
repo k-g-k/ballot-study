@@ -84,6 +84,8 @@ sites stay clean: `<Cite ids={["petition"]} />`, `<SourceNote ids={[…]} />`,
 - Tailwind with arbitrary values everywhere (`text-[14px]`, `text-[#334156]`).
   Fonts: `font-['Nunito']` (body), `font-['Lexend']` (display).
 - `App.tsx` holds a single `PROTOTYPES` registry that drives both routes and the
-  Dev Nav.
+  Dev Nav. The Dev Nav is **hidden by default** — toggle it with **⌘/Ctrl+Shift+D**
+  (persisted in `localStorage`). Keep registering new prototypes in `PROTOTYPES`
+  regardless; they show up whenever it's enabled.
 - Superseded early drafts are parked (unrouted) in `components/_archive/` and
   `data/_archive/`; they are not part of the build graph's live pages.

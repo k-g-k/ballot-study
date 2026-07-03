@@ -142,7 +142,7 @@ export function TestimonyList({
 // Filter chips + pagination appear only once the feed reaches FEED_CONTROLS_MIN.
 const FEED_PAGE_SIZE = 5;
 const FEED_CONTROLS_MIN = 5;
-type StanceFilter = "all" | "endorsing" | "opposing" | "no-position";
+export type StanceFilter = "all" | "endorsing" | "opposing" | "no-position";
 const STANCE_FILTERS: { id: StanceFilter; label: string }[] = [
   { id: "all", label: "All" },
   { id: "endorsing", label: "Endorsing" },
@@ -155,6 +155,7 @@ export function TestimonyFeed({
   showTypeIcon = true,
   showDescriptor = true,
   includeFollowingFilter = false,
+  initialFilter = "all",
 }: {
   items: TestimonyItem[];
   showTypeIcon?: boolean;
@@ -162,8 +163,10 @@ export function TestimonyFeed({
   /** Add a "Following" toggle that narrows any stance filter to accounts the
       viewer follows. */
   includeFollowingFilter?: boolean;
+  /** Stance filter to open with (e.g. when arriving from a Vote card). */
+  initialFilter?: StanceFilter;
 }) {
-  const [filter, setFilter] = useState<StanceFilter>("all");
+  const [filter, setFilter] = useState<StanceFilter>(initialFilter);
   // Following is an overlay, not a stance: it combines with every stance chip.
   const [followingOnly, setFollowingOnly] = useState(false);
   const [page, setPage] = useState(0);
@@ -312,7 +315,11 @@ export function FollowedTestimonyCard() {
   );
 }
 
-export function OrganizationTestimonyCard() {
+export function OrganizationTestimonyCard({
+  initialFilter,
+}: {
+  initialFilter?: StanceFilter;
+}) {
   return (
     <Card
       title="Organization Testimony"
@@ -322,6 +329,7 @@ export function OrganizationTestimonyCard() {
         items={testimonyFor((u) => u.userType === "organization")}
         showDescriptor={false}
         includeFollowingFilter
+        initialFilter={initialFilter}
       />
     </Card>
   );

@@ -1,17 +1,38 @@
+import { useRef, useEffect } from "react";
 import { Card, EmptyState } from "../../ballot";
 import { testimonyFor } from "../../../data/rent-control";
 import {
   FollowedTestimonyCard,
   OrganizationTestimonyCard,
   TestimonyList,
+  type StanceFilter,
 } from "../testimony";
 
-export function PublicPerspectivesTab() {
+export function PublicPerspectivesTab({
+  orgFilter = "all",
+}: {
+  orgFilter?: StanceFilter;
+}) {
+  const orgRef = useRef<HTMLDivElement>(null);
+  // Arriving from a Vote card (a stance filter is set) → jump to Organization
+  // Testimony, offset below the sticky hero.
+  useEffect(() => {
+    if (orgFilter !== "all") {
+      requestAnimationFrame(() => {
+        orgRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, [orgFilter]);
   return (
     <div className="flex flex-col gap-[16px]">
       <FollowedTestimonyCard />
 
-      <OrganizationTestimonyCard />
+      <div
+        ref={orgRef}
+        style={{ scrollMarginTop: "calc(var(--hero-h, 0px) + 16px)" }}
+      >
+        <OrganizationTestimonyCard initialFilter={orgFilter} />
+      </div>
 
       <Card
         title="Elected Official Testimony"

@@ -8,6 +8,7 @@ import {
   SynthSourcesNote,
   CitationBlock,
   Facts,
+  StakeholderGrid,
 } from "../../ballot";
 import { RC } from "../../../data/rent-control";
 
@@ -247,6 +248,14 @@ export function BackgroundTab() {
             </div>
           </div>
         </div>
+      </Card>
+
+      {/* Scope — per-group impact tiles */}
+      <Card
+        title="Stakeholder Impact"
+        subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
+      >
+        <StakeholderGrid rows={RC.stakeholders} />
       </Card>
 
       <Card title="Related Context">
