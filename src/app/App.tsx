@@ -9,17 +9,12 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import ConceptOne from "./components/concept-one";
-import ConceptTwo from "./components/concept-two";
-import ConceptThree from "./components/concept-three";
 import BallotQuestion from "./components/ballot-question";
 import ContentSchemata from "./components/content-schemata";
 import ConceptF from "./components/concept-f";
 import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
-import ConceptRentControl from "./components/concept-rent-control";
 import BallotQuestions from "./components/ballot-questions";
-import ContentSchemataRentControl from "./components/content-schemata-rent-control";
 import RentControlAlt from "./components/rent-control-alt";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
@@ -37,9 +32,7 @@ function DisclaimerBar({ children }: { children: ReactNode }) {
 // Route sections, used to group prototypes in the dev nav.
 const GROUPS = [
   { key: "ballot-questions", title: "MAPLE · Ballot Questions" },
-  { key: "legislator-profile", title: "Legislator Profile" },
   { key: "2024-audit", title: "2024 Ballot Question · Audit" },
-  { key: "2026-rent", title: "2026 Ballot Question · Rent" },
 ] as const;
 
 type GroupKey = (typeof GROUPS)[number]["key"];
@@ -55,9 +48,6 @@ type Prototype = {
 // Every prototype A–I is routable by URL. Navigation is dev-only (see DevNav).
 const PROTOTYPES: Prototype[] = [
   { id: "BQ", path: "ballotQuestions", label: "2026 Index", group: "ballot-questions", element: <BallotQuestions /> },
-  { id: "A", path: "prototype/legislator-profile/a-compact", label: "Compact", group: "legislator-profile", element: <ConceptOne /> },
-  { id: "B", path: "prototype/legislator-profile/b-standard", label: "Standard", group: "legislator-profile", element: <ConceptTwo /> },
-  { id: "C", path: "prototype/legislator-profile/c-full", label: "Full", group: "legislator-profile", element: <ConceptThree /> },
   { id: "D", path: "prototype/2024-ballot-question/audit/d-original", label: "Original", group: "2024-audit", element: <BallotQuestion /> },
   { id: "E", path: "prototype/2024-ballot-question/audit/e-content-schemata", label: "Content Schemata", group: "2024-audit", element: <ContentSchemata /> },
   { id: "F", path: "prototype/2024-ballot-question/audit/f-foragainst-1", label: "For & Against 1", group: "2024-audit", element: <ConceptF /> },
@@ -77,30 +67,9 @@ const PROTOTYPES: Prototype[] = [
     ),
   },
   {
-    id: "I",
-    path: "prototype/2026-ballot-question/rent/i-ballotpedia-test",
-    label: "Ballotpedia test",
-    group: "2026-rent",
-    element: (
-      <>
-        <DisclaimerBar>
-          This initiative was removed from the November 2026 ballot by the Massachusetts Supreme Judicial Court on June 23, 2026. Content is sourced from Ballotpedia and Massachusetts official government sources. Displayed as if it were on the ballot for prototype purposes.
-        </DisclaimerBar>
-        <ConceptRentControl />
-      </>
-    ),
-  },
-  {
-    id: "BQ1",
-    path: "ballotQuestions/2026/rent-control",
-    label: "Rent Control",
-    group: "ballot-questions",
-    element: <ContentSchemataRentControl />,
-  },
-  {
-    id: "BQ2-alt",
+    id: "BQ2",
     path: "ballotQuestions/rent-control-alt",
-    label: "Rent Control (alt)",
+    label: "Rent Control",
     group: "ballot-questions",
     element: <RentControlAlt />,
   },

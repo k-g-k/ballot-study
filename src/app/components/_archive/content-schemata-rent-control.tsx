@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Check, X, Users } from "lucide-react";
-import { BreadcrumbBack, MapleTopNav, PageHeading } from "./maple-shared";
-import imgScreenshot from "../../imports/B2/2054e5a4b64ba614f10d70a8f875d30fc2074b4e.png";
-import imgImage1 from "../../imports/B2/6da9b0c0d0d379ad14b8c41301da222f17bbe4a5.png";
-import imgImage5 from "../../imports/B2/8fa55f3d54e09cd1ef96735352eaf57c5d68e0a3.png";
-import imgImage2 from "../../imports/B2/f281b799d3bcfb6e348ba78f5e6c7430177f2352.png";
-import imgImage3 from "../../imports/B2/d381bc8eade23a1d313b202a4c2dea1a3ac69661.png";
-import imgImage4 from "../../imports/B2/feed02efd8b5cc0863cee0ffc4228f479dc27bb6.png";
-import imgImage6 from "../../imports/B2/a0d621eadb04bcfc3bacc0257c95c4239eca28c8.png";
+import { BreadcrumbBack, MapleTopNav, PageHeading } from ".././maple-shared";
+import imgScreenshot from "../../../imports/B2/2054e5a4b64ba614f10d70a8f875d30fc2074b4e.png";
+import imgImage1 from "../../../imports/B2/6da9b0c0d0d379ad14b8c41301da222f17bbe4a5.png";
+import imgImage5 from "../../../imports/B2/8fa55f3d54e09cd1ef96735352eaf57c5d68e0a3.png";
+import imgImage2 from "../../../imports/B2/f281b799d3bcfb6e348ba78f5e6c7430177f2352.png";
+import imgImage3 from "../../../imports/B2/d381bc8eade23a1d313b202a4c2dea1a3ac69661.png";
+import imgImage4 from "../../../imports/B2/feed02efd8b5cc0863cee0ffc4228f479dc27bb6.png";
+import imgImage6 from "../../../imports/B2/a0d621eadb04bcfc3bacc0257c95c4239eca28c8.png";
 
 type TabId =
   | "overview"

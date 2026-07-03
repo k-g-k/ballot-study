@@ -27,7 +27,7 @@ const QUESTIONS_2026: BallotQuestion[] = [
     title: "Protect Tenants by Limiting Rent Increases",
     description:
       "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
-    href: "/ballotQuestions/2026/rent-control",
+    href: "/ballotQuestions/rent-control-alt",
   },
   {
     title: "Single-Family Home Zoning Regulation",

@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   MapleNav, Breadcrumb, TopicTag, StatusBadge, SectionLabel,
   StatPill, ElectionBar, L, MAPLE_DARK_NAVY,
-} from "./maple-shared";
+} from ".././maple-shared";
 import { FileText, CheckSquare, BarChart2, Vote, DollarSign, ChevronRight } from "lucide-react";
 
 const SECTIONS = [

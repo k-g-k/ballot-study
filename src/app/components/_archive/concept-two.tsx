@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   MapleNav, Breadcrumb, TopicTag, StatusBadge, SectionLabel,
   ElectionBar, ProfileBanner, L, MAPLE_DARK_NAVY,
-} from "./maple-shared";
+} from ".././maple-shared";
 import { MessageSquare, BookOpen, TrendingUp, ChevronRight } from "lucide-react";
 
 const TABS = [
