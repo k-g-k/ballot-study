@@ -94,7 +94,7 @@ export const RC = {
     yes: {
       vote: "yes",
       summary:
-        "Establishes the statewide cap — annual rent increases limited to CPI or 5%, whichever is lower.",
+        "Establishes the statewide cap.",
       organizerIds: ["keep-ma-home", "homes-for-all-ma"],
       funding: "$748K",
       sideLabel: "Endorsing Orgs",
@@ -106,7 +106,7 @@ export const RC = {
     no: {
       vote: "no",
       summary:
-        "Makes no change in the law; the statewide ban on rent control in place since 1994 remains.",
+        "Makes no change in the law.",
       organizerIds: ["housing-for-ma"],
       funding: "$458K",
       sideLabel: "Opposing Orgs",
