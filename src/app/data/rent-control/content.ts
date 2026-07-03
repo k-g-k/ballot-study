@@ -27,7 +27,7 @@ export const RC = {
   tags: ["Housing Policy", "Tenant Rights", "Rental Market"],
 
   overviewSummary:
-    "This initiative would cap annual rent increases on most residential units at either inflation (CPI) or 5% whichever is lower, and would apply between tenancies, measured from the rent in place on January 31, 2026. It would end the statewide ban on rent control that Massachusetts voters approved in 1994. After clearing the signature and certification stages, it advanced to the Legislature; because lawmakers did not enact it, a second round of signatures sends it toward the November 2026 statewide ballot.",
+    "This plan would limit yearly rent increases for most apartments to either the rate of inflation or 5%, whichever is lower — reversing the statewide ban on rent control that voters in Massachusetts approved back in 1994.",
 
   yes: "The rent cap takes effect statewide for covered residential units. Annual increases may not exceed CPI or 5% (whichever is lower), measured from each unit's January 31, 2026 base rent, and the cap applies even when a new tenant moves in.",
   no: "No change in the law. The statewide ban on rent control — in effect since voters approved Question 9 in 1994 — remains, and landlords of non-exempt units keep full discretion over rent pricing.",
