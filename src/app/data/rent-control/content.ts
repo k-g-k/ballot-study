@@ -27,7 +27,7 @@ export const RC = {
   tags: ["Housing Policy", "Tenant Rights", "Rental Market"],
 
   overviewSummary:
-    "This plan would limit how much landlords can increase rent for most apartments to either the rate of inflation or 5%, whichever is lower, including between tenants — reversing the statewide ban on rent control that voters in Massachusetts approved back in 1994.",
+    "This plan would limit how much landlords can increase rent for most apartments to either the rate of inflation or 5%, whichever is lower, even for new leases — reversing the statewide ban on rent control that voters in Massachusetts approved back in 1994.",
 
   yes: "The rent cap takes effect statewide for covered residential units. Annual increases may not exceed CPI or 5% (whichever is lower), measured from each unit's January 31, 2026 base rent, and the cap applies even when a new tenant moves in.",
   no: "No change in the law. The statewide ban on rent control — in effect since voters approved Question 9 in 1994 — remains, and landlords of non-exempt units keep full discretion over rent pricing.",
@@ -93,8 +93,7 @@ export const RC = {
   overviewVotes: {
     yes: {
       vote: "yes",
-      summary:
-        "Establishes the statewide cap.",
+      summary: "Establishes the statewide cap.",
       organizerIds: ["keep-ma-home", "homes-for-all-ma"],
       funding: "$748K",
       sideLabel: "Endorsing Orgs",
@@ -105,8 +104,7 @@ export const RC = {
     },
     no: {
       vote: "no",
-      summary:
-        "Makes no change in the law.",
+      summary: "Makes no change in the law.",
       organizerIds: ["housing-for-ma"],
       funding: "$458K",
       sideLabel: "Opposing Orgs",
