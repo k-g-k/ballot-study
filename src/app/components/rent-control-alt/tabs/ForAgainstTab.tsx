@@ -57,26 +57,19 @@ export function ForAgainstTab() {
         title="Arguments at a Glance"
         subtitle="Synthesized from supporter and opponent positions."
       >
-        <div className="flex items-center gap-[6px] flex-wrap mb-[16px]">
-          {ARG_FILTERS.map(({ id, label }) => (
-            <FilterChip
-              key={id}
-              active={argFilter === id}
-              onClick={() => setArgFilter(id)}
-            >
-              {label}
-            </FilterChip>
-          ))}
-        </div>
         <div className="flex gap-[16px] max-lg:flex-col">
           <ArgColumn
             title="YES Arguments"
-            args={argFilter === "all" ? RC.yesArgs : RC.argsBySource[argFilter].yes}
+            args={
+              argFilter === "all" ? RC.yesArgs : RC.argsBySource[argFilter].yes
+            }
           />
           <div className="w-[1px] bg-[#e5e7eb] shrink-0 max-lg:hidden" />
           <ArgColumn
             title="NO Arguments"
-            args={argFilter === "all" ? RC.noArgs : RC.argsBySource[argFilter].no}
+            args={
+              argFilter === "all" ? RC.noArgs : RC.argsBySource[argFilter].no
+            }
           />
         </div>
         {/* No attribution when the selected source type has no arguments. */}

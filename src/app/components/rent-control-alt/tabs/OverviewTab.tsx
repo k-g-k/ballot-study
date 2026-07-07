@@ -35,26 +35,6 @@ export function OverviewTab({
         />
       </div>
 
-      <SynthSummaryCard
-        title="Research & Evidence"
-        subtitle="Confirmed studies relevant to the debate. Affiliation is named; MAPLE does not rank research by conclusion."
-        ids={["academicResearch", "tuftsGlobe"]}
-        prompt="Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-      >
-        <p>
-          The peer-reviewed literature is consistent on the trade-off: rent
-          control keeps covered tenants in place, but reduces rental supply over
-          time. Cambridge's 1994 decontrol raised property values even at
-          never-controlled buildings nearby; in San Francisco, covered landlords
-          cut rental supply about 15%, raising citywide rents; and the end of
-          Massachusetts rent control had small effects on new construction, with
-          larger effects on maintenance and conversion. The widely cited 6–9%
-          tax-base projection does not come from this literature — it traces to
-          a single industry-commissioned analysis extrapolating from Cambridge
-          and St. Paul.
-        </p>
-      </SynthSummaryCard>
-
       {/* Featured testimony from followed accounts — also on Public Perspectives. */}
       <FollowedTestimonyCard />
 
