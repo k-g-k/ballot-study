@@ -1,5 +1,4 @@
-// BQ3 / BQ4 — the Chapter 62F reform ballot-question deep-dive page, rendered
-// at both routes by the `variant` prop (see ./tabs.ts).
+// BQ3 — the Chapter 62F reform ballot-question deep-dive page.
 //
 // This file is only the SHELL: top nav, breadcrumb, sticky hero, the tab
 // sidebar + source-type legend, and the active-tab switch. Tab content lives in
@@ -15,20 +14,17 @@ import { X } from "lucide-react";
 import { MapleTopNav, BreadcrumbBack, PageHeading } from "../maple-shared";
 import { SourcesProvider, KIND_DOT, type SrcKind } from "../ballot";
 import { RC, SOURCES } from "../../data/tax-rebate-62f";
-import { TABS_MATT, TABS_GRACE, type TabId, type PageVariant } from "./tabs";
+import { TABS, type TabId } from "./tabs";
 import type { StanceFilter } from "./testimony";
 import { OverviewTab } from "./tabs/OverviewTab";
-import { BackgroundTab } from "./tabs/BackgroundTab";
 import { ForAgainstTab } from "./tabs/ForAgainstTab";
+import { CoverageUpdatesTab } from "./tabs/CoverageUpdatesTab";
 import { PublicPerspectivesTab } from "./tabs/PublicPerspectivesTab";
-import { CitizenDeliberationsTab } from "./tabs/CitizenDeliberationsTab";
-import { MediaCoverageTab } from "./tabs/MediaCoverageTab";
 import { CampaignFinanceTab } from "./tabs/CampaignFinanceTab";
 import { BibliographyTab } from "./tabs/BibliographyTab";
 import { MapleFab } from "./maple-fab";
 
-export function TaxRebate62FPage({ variant }: { variant: PageVariant }) {
-  const TABS = variant === "grace" ? TABS_GRACE : TABS_MATT;
+export function TaxRebate62FPage() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [noticeOpen, setNoticeOpen] = useState(true);
   // Default state opens on all unless navigated to by a specific route. Example:
@@ -50,6 +46,13 @@ export function TaxRebate62FPage({ variant }: { variant: PageVariant }) {
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);
+
+  // Each tab's closing call to action opens the one after it in the sidebar, so
+  // the destination follows TABS rather than being wired per tab.
+  const openNext = (from: TabId) => () => {
+    const next = TABS[TABS.findIndex((t) => t.id === from) + 1];
+    if (next) handleTabChange(next.id);
+  };
 
   // Without this, switching tabs would leave the page scrolled partway down the
   // previous tab's content.
@@ -210,22 +213,30 @@ export function TaxRebate62FPage({ variant }: { variant: PageVariant }) {
               <div className="flex flex-col gap-[16px] pb-[24px]">
                 {activeTab === "overview" && (
                   <OverviewTab
-                    variant={variant}
                     onOpenFinance={() => handleTabChange("finance")}
+                    onOpenUpdates={() => handleTabChange("updates")}
+                    onOpenArguments={openNext("overview")}
                     onViewTestimony={(stance) => {
                       setOrgFilter(stance);
                       setActiveTab("perspectives");
                     }}
                   />
                 )}
-                {activeTab === "background" && <BackgroundTab />}
-                {activeTab === "for-against" && <ForAgainstTab />}
-                {activeTab === "perspectives" && (
-                  <PublicPerspectivesTab orgFilter={orgFilter} />
+                {activeTab === "for-against" && (
+                  <ForAgainstTab onNext={openNext("for-against")} />
                 )}
-                {activeTab === "deliberations" && <CitizenDeliberationsTab />}
-                {activeTab === "media" && <MediaCoverageTab variant={variant} />}
-                {activeTab === "finance" && <CampaignFinanceTab />}
+                {activeTab === "updates" && (
+                  <CoverageUpdatesTab onNext={openNext("updates")} />
+                )}
+                {activeTab === "perspectives" && (
+                  <PublicPerspectivesTab
+                    orgFilter={orgFilter}
+                    onNext={openNext("perspectives")}
+                  />
+                )}
+                {activeTab === "finance" && (
+                  <CampaignFinanceTab onNext={openNext("finance")} />
+                )}
                 {activeTab === "bibliography" && <BibliographyTab />}
               </div>
             </div>

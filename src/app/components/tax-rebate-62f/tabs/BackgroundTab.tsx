@@ -21,7 +21,7 @@ export function PathToBallotCard({
   collapsedHeight?: number;
 }) {
   const [pathExpanded, setPathExpanded] = useState(false);
-  const height = pathExpanded ? undefined : collapsedHeight ?? 420;
+  const height = pathExpanded ? undefined : (collapsedHeight ?? 420);
   return (
     <div
       style={height ? { height } : undefined}
@@ -65,7 +65,13 @@ export function ContextHistoryCard() {
   return (
     <SynthSummaryCard
       title="Context and History"
-      ids={["petition", "h5006", "question3_1986", "question1_2022", "ballotpedia"]}
+      ids={[
+        "petition",
+        "h5006",
+        "question3_1986",
+        "question1_2022",
+        "ballotpedia",
+      ]}
       prompt="Summarize how Petition No. 25-17 reached the November 2026 ballot — filing, certification, signature rounds, and legislative review — plus the history of the 62F cap (Question 3, 1986) and the 2022 surtax (Question 1) it would fold in. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
     >
       <p>
@@ -74,18 +80,18 @@ export function ContextHistoryCard() {
         first-round signatures in November, of which 85,588 were certified —
         above the 74,574 required — sending the measure to the Legislature as
         House Bill 5006. Lawmakers did not act by the May 2026 deadline, so a
-        second round of signature collection began to place the question on
-        the November 2026 ballot.
+        second round of signature collection began to place the question on the
+        November 2026 ballot.
       </p>
       <p>
-        Chapter 62F dates to 1986, when voters approved Question 3 and
-        created a cap on allowable state tax revenue, refunding any excess to
-        taxpayers. The cap has been exceeded only twice in nearly forty
-        years — most recently in 2022, when it returned about $3 billion. In
-        2022 voters also approved Question 1, a 4% surtax on income above $1
-        million dedicated to education and transportation; that revenue is
-        not currently counted toward the 62F cap. This measure would change
-        both pieces of the formula.
+        Chapter 62F dates to 1986, when voters approved Question 3 and created a
+        cap on allowable state tax revenue, refunding any excess to taxpayers.
+        The cap has been exceeded only twice in nearly forty years — most
+        recently in 2022, when it returned about $3 billion. In 2022 voters also
+        approved Question 1, a 4% surtax on income above $1 million dedicated to
+        education and transportation; that revenue is not currently counted
+        toward the 62F cap. This measure would change both pieces of the
+        formula.
       </p>
     </SynthSummaryCard>
   );
@@ -105,8 +111,8 @@ export function WhatHappensCard() {
         would be recomputed from the net revenue the state actually collected
         the prior year, plus three-year wage growth — and revenue from the 2022
         income surtax would be counted toward the total. Because the base would
-        track real collections rather than the higher allowable maximum, the
-        cap would generally sit lower and be exceeded more often, triggering
+        track real collections rather than the higher allowable maximum, the cap
+        would generally sit lower and be exceeded more often, triggering
         automatic refunds in more years. The Department of Revenue and the
         Auditor would apply the revised formula; how the change interacts with
         the surtax's dedicated education-and-transportation purpose is an open
@@ -132,8 +138,8 @@ export function FiscalCard() {
           title="Official statement of fiscal consequences"
         >
           <p className="font-['Nunito'] italic text-[12px] text-[#808080] mt-[2px]">
-            Sample — replaced by the official statement when the Information
-            for Voters is published.
+            Sample — replaced by the official statement when the Information for
+            Voters is published.
           </p>
           <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[6px] leading-[1.5]">
             “The proposed law would change the calculation of the state tax
@@ -141,10 +147,10 @@ export function FiscalCard() {
             finances; the amount cannot be determined with certainty.”
           </p>
           <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[6px] leading-[1.5]">
-            As required by law, statements of fiscal consequences are written
-            by the Executive Office for Administration and Finance and
-            published in the Information for Voters. The 2024 statements were
-            one sentence each; this sample follows that form.
+            As required by law, statements of fiscal consequences are written by
+            the Executive Office for Administration and Finance and published in
+            the Information for Voters. The 2024 statements were one sentence
+            each; this sample follows that form.
           </p>
         </CitationBlock>
 
@@ -199,7 +205,8 @@ export function FiscalCard() {
 export function WhoIsImpactedCard() {
   return (
     <Card
-      title="Who is impacted?"
+      title="Who is impacted"
+      stickyTop="var(--hero-h, 0px)"
       subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
     >
       <StakeholderGrid rows={RC.stakeholders} />
@@ -237,7 +244,10 @@ export function BackgroundTab() {
         subtitle="Arguments about how the change would operate and hold up, each shown with who raises it. MAPLE does not predict rulings or offer legal advice."
       >
         <div className="space-y-[12px]">
-          <CitationBlock kind="outside" title="Conflict with the surtax earmark">
+          <CitationBlock
+            kind="outside"
+            title="Conflict with the surtax earmark"
+          >
             <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
               Raised by opponents: whether counting surtax revenue toward a
               refund cap can be squared with the constitutional dedication of
@@ -252,15 +262,12 @@ export function BackgroundTab() {
               />
             </div>
           </CitationBlock>
-          <CitationBlock
-            kind="outside"
-            title="The downward-drift mechanism"
-          >
+          <CitationBlock kind="outside" title="The downward-drift mechanism">
             <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
               Identified in fiscal analysis as a structural feature: basing each
-              year's cap on the prior year's actual collections means the ceiling
-              falls after weak years and refunds, with no floor or recovery
-              provision in the text.
+              year's cap on the prior year's actual collections means the
+              ceiling falls after weak years and refunds, with no floor or
+              recovery provision in the text.
             </p>
             <div className="mt-[6px]">
               <SynthSourcesNote

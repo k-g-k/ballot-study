@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Card } from "../../ballot";
 import { BIBLIOGRAPHY } from "../../../data/tax-rebate-62f";
@@ -42,19 +43,47 @@ function hostLabel(url: string) {
 // encyclopedia, expert opinion, news, advocacy). Entries are listed newest-first
 // and rendered APA-style as bullets; the whole citation links out to its source.
 export function BibliographyTab() {
+  // Two sticky tiers: the card title pins under the hero, and each section
+  // heading pins under the title. The title's height is measured rather than
+  // assumed so the second tier follows it if the type ever changes.
+  const cardRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    const card = cardRef.current;
+    const title = titleRef.current;
+    if (!card || !title) return;
+    const observer = new ResizeObserver(() => {
+      card.style.setProperty("--bib-title-h", `${title.offsetHeight}px`);
+    });
+    observer.observe(title);
+    return () => observer.disconnect();
+  }, []);
   return (
     <div className="flex flex-col gap-[16px]">
-      <Card
-        title="Bibliography"
-        subtitle="Every source used to create the contents of this ballot initiative, with the exception of user-submitted testimony, is cited below."
-      >
-        <div className="space-y-[24px]">
+      <div ref={cardRef} className="bg-white rounded-[8px] p-[24px]">
+        <h3
+          ref={titleRef}
+          style={{ top: "var(--hero-h, 0px)" }}
+          className="sticky z-[6] -mx-[24px] -mt-[24px] rounded-t-[8px] bg-white px-[24px] pt-[24px] pb-[4px] font-['Nunito'] font-normal text-[18px] text-black"
+        >
+          Bibliography
+        </h3>
+        <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[14px]">
+          Every source used to create the contents of this ballot initiative,
+          with the exception of user-submitted testimony, is cited below.
+        </p>
+        <div>
           {BIBLIOGRAPHY.map((sec) => (
             <div key={sec.section}>
-              <p className="font-['Nunito'] font-bold text-[15px] text-black mb-[10px]">
+              <p
+                style={{
+                  top: "calc(var(--hero-h, 0px) + var(--bib-title-h, 0px))",
+                }}
+                className="sticky z-[5] -mx-[24px] mb-[10px] bg-white px-[24px] py-[8px] font-['Nunito'] font-bold text-[15px] text-black"
+              >
                 {sec.section}
               </p>
-              <ul className="list-disc list-outside pl-[20px] space-y-[8px] marker:text-[#c9c9c9]">
+              <ul className="list-disc list-outside pl-[20px] space-y-[8px] pb-[24px] marker:text-[#c9c9c9]">
                 {sec.entries.map((e) => (
                   <li
                     key={e.title}
@@ -83,6 +112,21 @@ export function BibliographyTab() {
               </ul>
             </div>
           ))}
+        </div>
+      </div>
+      <Card title="Still deciding? Ask MAPLE about this measure">
+        <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+          Ask a plain question here on the page or through your own AI
+          assistant. Answers draw only from the sources on this page and cite
+          them.
+        </p>
+        <div className="flex items-center gap-[20px] mt-[16px] flex-wrap">
+          <button className="bg-white border-[1.5px] border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[20px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]">
+            Ask on MAPLE
+          </button>
+          <button className="font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] underline underline-offset-[4px] cursor-pointer">
+            Connect your assistant (MCP) →
+          </button>
         </div>
       </Card>
     </div>

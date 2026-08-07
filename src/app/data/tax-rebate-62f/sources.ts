@@ -50,7 +50,8 @@ export const SOURCES: Sources = {
     note: "The bill the Legislature took up during its review window; lawmakers did not act by the May 2026 deadline.",
   },
   ballotpedia: {
-    label: "Massachusetts Change State Tax Revenue Limit Initiative 2026 (Ballotpedia)",
+    label:
+      "Massachusetts Change State Tax Revenue Limit Initiative 2026 (Ballotpedia)",
     kind: "outside",
     url: "https://ballotpedia.org/Massachusetts_Change_State_Tax_Revenue_Limit_Initiative_(2026)",
     title: "Massachusetts Change State Tax Revenue Limit Initiative (2026)",
@@ -137,12 +138,14 @@ export const SOURCES: Sources = {
     kind: "outside",
     url: "https://www.wbur.org/news/2025/12/04/massachusetts-ballot-questions-2026-galvin",
     date: "Dec 4, 2025",
-    title: "Massachusetts could see a record number of ballot questions in 2026",
+    title:
+      "Massachusetts could see a record number of ballot questions in 2026",
     meta: "WBUR",
     note: "Overview of the certified 2026 field; describes the 62F question as changing the surplus cap to account for surtax revenue so rebates trigger more often.",
   },
   agReceives47: {
-    label: "Mass.gov — AG Campbell's Office Receives 47 Ballot Initiative Petitions",
+    label:
+      "Mass.gov — AG Campbell's Office Receives 47 Ballot Initiative Petitions",
     kind: "official",
     url: "https://www.mass.gov/news/ag-campbells-office-receives-47-ballot-initiative-petitions-proposing-42-laws-and-5-constitutional-amendments",
     date: "Aug 2025",
@@ -176,7 +179,8 @@ export const SOURCES: Sources = {
     kind: "outside",
     url: "https://commonwealthbeacon.org/ballot-questions/four-more-initiative-petitions-clear-signature-hurdle-for-2026-mass-ballot/",
     date: "Dec 2025",
-    title: "Four more initiative petitions clear signature hurdle for 2026 Mass. ballot",
+    title:
+      "Four more initiative petitions clear signature hurdle for 2026 Mass. ballot",
     meta: "CommonWealth Beacon",
     note: "Coverage of the first-round signature certification sending measures to the Legislature.",
   },
@@ -229,7 +233,8 @@ export const SOURCES: Sources = {
     label: "Massachusetts Question 3 (1986) — Ballotpedia",
     kind: "official",
     url: "https://ballotpedia.org/Massachusetts_Question_3,_State_Income_Tax_Surtax_Repeal_and_Revenue_Growth_Limit_Initiative_(1986)",
-    title: "Question 3: State Income Tax Surtax Repeal and Revenue Growth Limit (1986)",
+    title:
+      "Question 3: State Income Tax Surtax Repeal and Revenue Growth Limit (1986)",
     meta: "Massachusetts election results · Nov 1986",
     note: "The voter-approved measure that created the 62F revenue limit; sponsored by the Massachusetts High Technology Council and Citizens for Limited Taxation; passed 54.4%.",
   },
@@ -237,7 +242,8 @@ export const SOURCES: Sources = {
     label: "Massachusetts Question 1 (2022) — Ballotpedia",
     kind: "official",
     url: "https://ballotpedia.org/Massachusetts_Question_1,_Tax_on_Income_Above_$1_Million_for_Education_and_Transportation_Amendment_(2022)",
-    title: "Question 1: Tax on Income Above $1 Million for Education and Transportation (2022)",
+    title:
+      "Question 1: Tax on Income Above $1 Million for Education and Transportation (2022)",
     meta: "Massachusetts election results · Nov 2022",
     note: "The constitutional amendment creating the 4% surtax on income above $1M for education and transportation; approved 52.26%. Its revenue is the subject of this measure's carve-in.",
   },
@@ -266,7 +272,8 @@ export const SOURCES: Sources = {
     note: "The labor- and community-backed committee leading opposition to the 62F and income-tax questions.",
   },
   massFiscalPraise: {
-    label: "Massachusetts Fiscal Alliance — MassFiscal praises trio of 2026 ballot questions",
+    label:
+      "Massachusetts Fiscal Alliance — MassFiscal praises trio of 2026 ballot questions",
     kind: "outside",
     url: "https://www.massfiscal.org/massfiscal-praises-trio-2026-ballot-questions",
     date: "2026",
@@ -283,6 +290,57 @@ export const SOURCES: Sources = {
     meta: "Massachusetts Taxpayers Foundation (opposes the measure)",
     note: "A business-aligned fiscal watchdog that nonetheless opposes the tax questions, arguing the impacts would be counterproductive for fiscal sustainability.",
   },
+  cwbSenateRepeal: {
+    label: "CommonWealth Beacon — Senate move on the tax cap",
+    kind: "outside",
+    url: "https://commonwealthbeacon.org/politics/eleventh-hour-senate-move-could-upend-tax-rebate-ballot-question/",
+    title: "Eleventh-hour Senate move could upend tax rebate ballot question",
+    meta: "CommonWealth Beacon · Jul 2026",
+    note: "Reports an amendment repealing Chapter 62F outright, with at least 20 cosponsors in the 40-member Senate.",
+  },
+  shnsSpeakerTreads: {
+    label: "State House News Service — House response",
+    kind: "outside",
+    url: "https://www.statehousenews.com/news/economy/taxation/as-senate-weighs-tax-cap-repeal-speaker-treads-carefully-in-house/article_a04d259c-e9e1-4494-b412-270fdf856fb6.html",
+    title: "As Senate weighs tax cap repeal, speaker treads carefully in House",
+    meta: "State House News Service · Jul 2026",
+    note: "The House's more cautious posture toward the Senate repeal amendment.",
+  },
+  secBallotNumbers: {
+    label: "Secretary of the Commonwealth — ballot numbers",
+    kind: "official",
+    url: "https://www.sec.state.ma.us/divisions/news/left-story.htm",
+    title: "Ballot Question Numbers Assigned for November Ballot",
+    meta: "Elections Division · Jul 21, 2026",
+    note: "The announcement assigning this measure its number, Question 5, on the Nov. 3, 2026 ballot.",
+  },
+  cwbNumbers: {
+    label: "CommonWealth Beacon — numbers assigned",
+    kind: "outside",
+    url: "https://commonwealthbeacon.org/ballot-questions/marijuana-question-survives-as-all-nine-ballot-questions-get-their-numbers/",
+    title:
+      "Marijuana question survives as all nine ballot questions get their numbers",
+    meta: "CommonWealth Beacon · Jul 21, 2026",
+    note: "Reports the final nine-question field and the order assigned to each.",
+  },
+  wburFinalized: {
+    label: "WBUR — final ballot list",
+    kind: "outside",
+    url: "https://www.wbur.org/news/2026/07/22/massachusetts-ballot-question-order-challenges",
+    title:
+      "Massachusetts has finalized its list of 9 ballot questions for 2026. Now comes the tricky part",
+    meta: "WBUR · Jul 22, 2026",
+    note: "On the finalized ballot and the campaigns ahead.",
+  },
+  globeTaxCutOff: {
+    label: "Boston Globe — after the court rulings",
+    kind: "outside",
+    url: "https://www.bostonglobe.com/2026/06/22/business/massachusetts-tax-revenue-ballot-proposal/",
+    title:
+      "With tax cut off the ballot, the battle shifts to making excess revenue refunds more frequent",
+    meta: "Boston Globe · Jun 22, 2026",
+    note: "Coverage of 62F becoming the surviving tax question after the SJC struck the income-tax cut.",
+  },
   mapleTestimony: {
     label: "Testimony submitted to MAPLE (this question)",
     kind: "user",
@@ -292,7 +350,8 @@ export const SOURCES: Sources = {
     note: "Statements submitted by organization, executive-office, and legislator accounts, shown in their own words on the Public Perspectives tab.",
   },
   policyResearch: {
-    label: "Fiscal-policy research on tax and expenditure limits (see Research & Evidence)",
+    label:
+      "Fiscal-policy research on tax and expenditure limits (see Research & Evidence)",
     kind: "outside",
     url: "",
     title: "Research on tax and expenditure limits",

@@ -5,6 +5,32 @@ import {
   SynthSummaryCard,
 } from "../../ballot";
 import { RC, ARG_FILTER_IDS } from "../../../data/tax-rebate-62f";
+import {
+  WhoIsImpactedCard,
+  FiscalCard,
+  WhatHappensCard,
+} from "./BackgroundTab";
+import { NextStepCard } from "./NextStepCard";
+
+export function SummaryCard() {
+  return (
+    <SynthSummaryCard
+      title="Context Overview"
+      ids={["petition", "maoBrief", "massBudget", "mtfPosition", "masslive62F"]}
+      prompt="Summarize what the 62F reform measure would do and how each side frames it. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+    >
+      <p>
+        The measure would amend Massachusetts' Chapter 62F law to significantly
+        increase the frequency of taxpayer refunds. Supporters, including the
+        sponsoring campaign, business groups, and fiscal conservatives, argue it
+        fulfills promises to return over-collected taxes. Opponents, including
+        budget analysts, unions, and fiscal watchdogs, warn it would reduce the
+        state budget, threaten funding for schools and transportation, and favor
+        high earners with the largest refunds.
+      </p>
+    </SynthSummaryCard>
+  );
+}
 
 // Shared bullet list for the analysis cards below.
 function Bullets({ items }: { items: string[] }) {
@@ -43,22 +69,11 @@ export function DisagreementCard() {
   );
 }
 
-export function OpenQuestionsCard() {
-  return (
-    <SynthSummaryCard
-      title="Open Questions"
-      ids={["massBudget", "petition", "fairShare"]}
-      prompt="Identify the open questions about the 62F reform that the available evidence can't yet answer — legal, fiscal, and procedural. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-    >
-      <Bullets items={RC.openQuestions} />
-    </SynthSummaryCard>
-  );
-}
-
 export function ArgumentsAtAGlanceCard() {
   return (
     <Card
       title="Arguments at a Glance"
+      stickyTop="var(--hero-h, 0px)"
       subtitle="Synthesized from the ballot petition, both campaign committees, independent analyses, and testimony submitted to MAPLE."
     >
       <div className="flex gap-[24px] max-lg:flex-col">
@@ -75,13 +90,22 @@ export function ArgumentsAtAGlanceCard() {
   );
 }
 
-export function ForAgainstTab() {
+export function ForAgainstTab({ onNext }: { onNext?: () => void }) {
   return (
     <div className="flex flex-col gap-[16px]">
+      <SummaryCard />
       <ArgumentsAtAGlanceCard />
       <ConsensusCard />
       <DisagreementCard />
-      <OpenQuestionsCard />
+      <WhoIsImpactedCard />
+      <FiscalCard />
+      <WhatHappensCard />
+      <NextStepCard
+        title="See what people are saying"
+        body="Testimony submitted to MAPLE by organizations, officials, and residents, plus notes from live citizen discussions."
+        action="Public Perspectives"
+        onClick={onNext}
+      />
     </div>
   );
 }

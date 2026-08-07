@@ -1,7 +1,8 @@
 import { SynthSummaryCard, Card, FinanceLedger } from "../../ballot";
 import { RC } from "../../../data/tax-rebate-62f";
+import { NextStepCard } from "./NextStepCard";
 
-export function CampaignFinanceTab() {
+export function CampaignFinanceTab({ onNext }: { onNext?: () => void }) {
   return (
     <div className="flex flex-col gap-[16px]">
       <SynthSummaryCard
@@ -11,8 +12,8 @@ export function CampaignFinanceTab() {
       >
         <p>
           Through the January 20, 2026 filing window, the support side had
-          reported roughly $1.7 million, almost entirely in-kind — dominated by a
-          single $1.6 million in-kind contribution from the Massachusetts
+          reported roughly $1.7 million, almost entirely in-kind — dominated by
+          a single $1.6 million in-kind contribution from the Massachusetts
           Opportunity Alliance, with smaller amounts from the Massachusetts High
           Technology Council and the Pioneer Institute. The same committee,
           Taxpayers for an Affordable Massachusetts, also supports the companion
@@ -28,8 +29,17 @@ export function CampaignFinanceTab() {
         title="Who is funding each side"
         subtitle="From Massachusetts OCPF filings covering through January 20, 2026 — an early snapshot; the next scheduled reports were due September 2026."
       >
-        <FinanceLedger committees={RC.committees} ids={["ocpf", "ballotpedia"]} />
+        <FinanceLedger
+          committees={RC.committees}
+          ids={["ocpf", "ballotpedia"]}
+        />
       </Card>
+      <NextStepCard
+        title="Check every source"
+        body="Every document, article, and filing this page draws on, grouped by type and listed newest first."
+        action="Bibliography"
+        onClick={onNext}
+      />
     </div>
   );
 }

@@ -1,76 +1,98 @@
-import { useRef, useEffect } from "react";
-import { Card, EmptyState, SynthSummaryCard } from "../../ballot";
+import { useRef, useEffect, useState } from "react";
 import { testimonyFor } from "../../../data/tax-rebate-62f";
-import {
-  OrganizationTestimonyCard,
-  TestimonyList,
-  type StanceFilter,
-} from "../testimony";
+import { TestimonyFeed, type StanceFilter } from "../testimony";
+import { CitizenDeliberationsTab } from "./CitizenDeliberationsTab";
+import { NextStepCard } from "./NextStepCard";
+
+type Section = "testimony" | "discussions";
+
+const SECTIONS: { id: Section; label: string }[] = [
+  { id: "testimony", label: "Public Testimony" },
+  { id: "discussions", label: "Live Discussions" },
+];
 
 export function PublicPerspectivesTab({
   orgFilter = "all",
+  onNext,
 }: {
   orgFilter?: StanceFilter;
+  onNext?: () => void;
 }) {
-  const orgRef = useRef<HTMLDivElement>(null);
-  // Arriving from a Vote card (a stance filter is set) → jump to Organization
-  // Testimony, offset below the sticky hero.
+  const [section, setSection] = useState<Section>("testimony");
+  // The sub-tab bar pins under the sticky hero and the filter bar pins under
+  // that, so its height is mirrored into a CSS variable the same way the shell
+  // mirrors the hero's.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const subTabsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (orgFilter !== "all") {
-      requestAnimationFrame(() => {
-        orgRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
+    const root = rootRef.current;
+    const bar = subTabsRef.current;
+    if (!root || !bar) return;
+    const observer = new ResizeObserver(() => {
+      root.style.setProperty("--subtabs-h", `${bar.offsetHeight}px`);
+    });
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, []);
+  // Arriving from a Vote card sets a stance filter. The feed is the first thing
+  // on this section, so only the section needs switching — the shell has
+  // already clamped the scroll to the top of the column.
+  useEffect(() => {
+    if (orgFilter !== "all") setSection("testimony");
   }, [orgFilter]);
   return (
-    <div className="flex flex-col gap-[16px]">
-      <SynthSummaryCard
-        title="Summary of MAPLE Testimony"
-        ids={["mapleTestimony", "maoBrief", "massBudget", "mtfPosition", "masslive62F"]}
-        prompt="Summarize the testimony submitted to MAPLE on the 62F reform question — the supporters' and opponents' arguments, any legislator input, and whether residents have weighed in. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
-      >
-        <p>
-          Public perspectives split with supporters arguing the measure
-          restores a taxpayer-refund guarantee voters approved in 1986 — closing
-          a "loophole," reflecting spending that has outpaced wages, and, by one
-          estimate, returning about $19 billion over four decades — while
-          opponents warn it would shrink the budget and cut schools, transit, and
-          healthcare, steadily tighten the cap over time, and send the largest
-          refunds to high earners. A legislator also weighed in: Senate President
-          Karen Spilka opposed it, questioning who the measure is really written
-          for. No individual resident perspectives have been submitted on this
-          question yet.
-        </p>
-      </SynthSummaryCard>
-
+    <div ref={rootRef} className="flex flex-col gap-[16px]">
+      {/* -mb cancels the parent's flex gap; the gap below is supplied by the
+          filter bar's own top padding so it holds when both are stuck. */}
       <div
-        ref={orgRef}
-        style={{ scrollMarginTop: "calc(var(--hero-h, 0px) + 16px)" }}
+        ref={subTabsRef}
+        style={{ top: "var(--hero-h, 0px)" }}
+        className="sticky z-[9] flex gap-[24px] bg-[#ededed] pt-[4px] -mb-[16px]"
       >
-        <OrganizationTestimonyCard initialFilter={orgFilter} />
+        {SECTIONS.map((s) => {
+          const isActive = section === s.id;
+          return (
+            <button
+              key={s.id}
+              onClick={() => setSection(s.id)}
+              aria-current={isActive ? "page" : undefined}
+              className={`font-['Nunito'] font-bold text-[14px] pb-[4px] border-b-[2px] transition-colors cursor-pointer ${
+                isActive
+                  ? "text-[#12266f] border-[#12266f]"
+                  : "text-[#808080] border-transparent hover:text-[#12266f]"
+              }`}
+            >
+              {s.label}
+            </button>
+          );
+        })}
       </div>
 
-      <Card
-        title="Elected Official Testimony"
-        subtitle="Submitted by legislator, state executive office, and municipal accounts, under the same endorse / oppose / no position flow as every other account."
-      >
-        <TestimonyList
-          items={testimonyFor(
-            (u) => u.userType === "government" || u.userType === "legislator",
-          )}
-        />
-      </Card>
-
-      <Card
-        title="Individual Testimony"
-        subtitle="Submitted by verified Massachusetts residents, shown in their own words and never edited."
-      >
-        <EmptyState
-          title="No individual testimony on this question yet"
-          body="No resident submissions are on file for this question yet — be among the first to add your perspective. Public statements reported elsewhere are kept under For & Against and Media Coverage, where they can be traced to their source."
-          shareOnly
-        />
-      </Card>
+      {section === "discussions" && (
+        <div className="pt-[16px]">
+          <CitizenDeliberationsTab />
+        </div>
+      )}
+      {section === "testimony" && (
+        <div>
+          <TestimonyFeed
+            title="Testimony"
+            items={testimonyFor(() => true)}
+            initialFilter={orgFilter}
+            initialTypeFilter={orgFilter === "all" ? "all" : "organization"}
+            stickyTop="calc(var(--hero-h, 0px) + var(--subtabs-h, 0px))"
+            includeFollowingFilter
+            includeTypeFilter
+            asCards
+          />
+        </div>
+      )}
+      <NextStepCard
+        title="Learn more about how this has been covered"
+        body="Beyond what people submitted themselves: the news reporting, official filings, and the path this question took to the ballot."
+        action="Ballot Coverage"
+        onClick={onNext}
+      />
     </div>
   );
 }

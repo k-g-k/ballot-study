@@ -16,7 +16,6 @@ import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
 import BallotQuestions from "./components/ballot-questions";
 import RentControlAlt from "./components/rent-control-alt";
-import TaxRebate62FMatt from "./components/tax-rebate-62f/matt";
 import TaxRebate62FGrace from "./components/tax-rebate-62f/grace";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
@@ -78,16 +77,9 @@ const PROTOTYPES: Prototype[] = [
   {
     id: "BQ3",
     path: "ballotQuestions/tax-rebate-62f-grace",
-    label: "62F Tax Rebate (Grace)",
+    label: "62F Tax Rebate",
     group: "ballot-questions",
     element: <TaxRebate62FGrace />,
-  },
-  {
-    id: "BQ4",
-    path: "ballotQuestions/tax-rebate-62f-matt",
-    label: "62F Tax Rebate (Matt)",
-    group: "ballot-questions",
-    element: <TaxRebate62FMatt />,
   },
 ];
 

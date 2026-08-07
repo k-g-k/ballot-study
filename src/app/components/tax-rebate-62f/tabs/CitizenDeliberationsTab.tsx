@@ -27,8 +27,8 @@ export function CitizenDeliberationsTab() {
         </div>
         <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.55] mt-[14px]">
           Participants are recruited across geography, age, tax situation
-          (renters, homeowners, retirees, small-business owners), and politics, with informed consent for
-          recording and publication.{" "}
+          (renters, homeowners, retirees, small-business owners), and politics,
+          with informed consent for recording and publication.{" "}
           <button className={linkClass}>How discussions work →</button>
         </p>
       </Card>
@@ -46,7 +46,10 @@ export function CitizenDeliberationsTab() {
               <div className="flex gap-[24px] max-lg:flex-col max-lg:gap-[14px] mt-[12px]">
                 <DelibThemeCol label="Where groups agreed" text={th.agreed} />
                 <DelibThemeCol label="Where they split" text={th.split} />
-                <DelibThemeCol label="The trade-off weighed" text={th.tradeoff} />
+                <DelibThemeCol
+                  label="The trade-off weighed"
+                  text={th.tradeoff}
+                />
               </div>
             </div>
           ))}

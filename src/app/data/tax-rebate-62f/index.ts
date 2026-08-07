@@ -7,6 +7,7 @@ export { orgTestifiers, testimonyFor } from "./selectors";
 export {
   POSITION_USERS,
   type PositionUser,
+  type PositionUserType,
 } from "../tax-rebate-62f-users";
 export {
   TESTIMONY,

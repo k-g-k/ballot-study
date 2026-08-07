@@ -19,7 +19,11 @@ import avatarMTF from "../../assets/avatars/mtf.png";
 // "organization" — advocacy groups, unions, and trade associations.
 // "legislator" — individual members of the General Court.
 // "government" — executive-office accounts ("Office of …").
-export type PositionUserType = "organization" | "legislator" | "government";
+export type PositionUserType =
+  | "organization"
+  | "legislator"
+  | "government"
+  | "individual";
 export type PositionStance = "supports" | "opposes";
 
 export interface PositionUser {

@@ -63,10 +63,12 @@ export const RC = {
       basis: "Petition text; opposition framing",
     },
     {
-      group: "State budget writers",
+      group: "Public-sector workers & service users",
       impact: "cost",
-      body: "A lower, steadily tightening cap constrains how much revenue is available for the operating budget, and diversions into refunds reduce funds for programs and services.",
-      basis: "Petition text",
+      disputed: true,
+      body: "The opposition committee projects layoffs and service cuts if billions are diverted from the budget; the size of any impact depends on future revenue and is contested.",
+      basis:
+        "Protect Massachusetts Future — projection, not an official estimate",
     },
     {
       group: "Education & transportation (surtax-funded)",
@@ -76,12 +78,10 @@ export const RC = {
       basis: "Disputed — depends on legal interpretation of the surtax earmark",
     },
     {
-      group: "Public-sector workers & service users",
+      group: "State budget writers",
       impact: "cost",
-      disputed: true,
-      body: "The opposition committee projects layoffs and service cuts if billions are diverted from the budget; the size of any impact depends on future revenue and is contested.",
-      basis:
-        "Protect Massachusetts Future — projection, not an official estimate",
+      body: "A lower, steadily tightening cap constrains how much revenue is available for the operating budget, and diversions into refunds reduce funds for programs and services.",
+      basis: "Petition text",
     },
     {
       group: "Business & fiscal-conservative groups",
@@ -216,8 +216,8 @@ export const RC = {
     },
     {
       k: "Companion question",
-      v: "The same coalition is backing a separate 2026 question to cut the state income tax rate from 5% to 4%; the two are frequently discussed and funded together.",
-      ids: ["cwbBoogeyman", "masslive62F"],
+      v: "The same coalition backed a separate 2026 question to cut the state income tax rate from 5% to 4%; the two were discussed and funded together until the Supreme Judicial Court struck the income-tax question from the ballot in June, leaving this as the surviving tax question.",
+      ids: ["cwbBoogeyman", "masslive62F", "globeTaxCutOff"],
     },
     {
       k: "Other states",
@@ -561,7 +561,7 @@ export const RC = {
       cash: "$100,000",
       inKind: "$1,607,296",
       spent: "$1,607,296",
-      note: "Support is overwhelmingly in-kind, driven by the Massachusetts Opportunity Alliance; the committee also backs the companion income-tax-cut question.",
+      note: "Support is overwhelmingly in-kind, driven by the Massachusetts Opportunity Alliance; the committee also backed the companion income-tax-cut question, which the Supreme Judicial Court struck from the ballot in June.",
       donors: [
         {
           name: "Massachusetts Opportunity Alliance",
@@ -606,6 +606,81 @@ export const BALLOT_TIMELINE: {
   body?: string;
   articles: CoverageArticle[];
 }[] = [
+  {
+    when: "Jul 2026",
+    label: "Senate moves to repeal Chapter 62F outright",
+    body: "An amendment to an economic-development bill, filed by Sen. Jason Lewis, would repeal Chapter 62F entirely. At least 20 of the Senate's 40 members signed on as cosponsors. If it becomes law, Question 5 would have little practical effect, since the chapter it amends would no longer exist. The House has been more cautious.",
+    articles: [
+      {
+        outlet: "CommonWealth Beacon",
+        title:
+          "Eleventh-hour Senate move could upend tax rebate ballot question",
+        type: "NEWS",
+        url: SOURCES.cwbSenateRepeal.url,
+      },
+      {
+        outlet: "State House News Service",
+        title:
+          "As Senate weighs tax cap repeal, speaker treads carefully in House",
+        type: "NEWS",
+        url: SOURCES.shnsSpeakerTreads.url,
+      },
+    ],
+  },
+  {
+    when: "Jul 21, 2026",
+    label: "Certified and numbered Question 5",
+    body: "The Secretary of the Commonwealth certified nine questions for the November 3 ballot and assigned this measure Question 5. The Elections Division set the order to make best use of space on the ballot, using the length of each summary as the main consideration.",
+    articles: [
+      {
+        outlet: "Secretary of the Commonwealth",
+        title: "Ballot Question Numbers Assigned for November Ballot",
+        type: "GOV'T",
+        url: SOURCES.secBallotNumbers.url,
+      },
+      {
+        outlet: "CommonWealth Beacon",
+        title:
+          "Marijuana question survives as all nine ballot questions get their numbers",
+        type: "NEWS",
+        url: SOURCES.cwbNumbers.url,
+      },
+      {
+        outlet: "WBUR",
+        title:
+          "Massachusetts has finalized its list of 9 ballot questions for 2026. Now comes the tricky part",
+        type: "NEWS",
+        url: SOURCES.wburFinalized.url,
+      },
+    ],
+  },
+  {
+    when: "Jun 2026",
+    label: "Companion tax question struck; this one survives",
+    body: "The Supreme Judicial Court removed the companion income-tax-cut question from the ballot, along with the rent-control question. This measure was unaffected, leaving it as the surviving tax question of the cycle.",
+    articles: [
+      {
+        outlet: "Boston Globe",
+        title:
+          "With tax cut off the ballot, the battle shifts to making excess revenue refunds more frequent",
+        type: "NEWS",
+        url: SOURCES.globeTaxCutOff.url,
+      },
+    ],
+  },
+  {
+    when: "May 5, 2026",
+    label: "Legislature does not act",
+    body: "With no legislative approval by the deadline, second-round signature collection began.",
+    articles: [
+      {
+        outlet: "MAlegislature.gov",
+        title: "House Bill 5006 — the initiative's legislative form",
+        type: "GOV'T",
+        url: SOURCES.h5006.url,
+      },
+    ],
+  },
   {
     when: "Mar 2026",
     label: "Fiscal analysts weigh in",
@@ -944,7 +1019,8 @@ export const BIBLIOGRAPHY: {
       {
         author: "Secretary of the Commonwealth, Elections Division",
         date: "2025, December",
-        title: "State elections division certifies new batch of ballot questions",
+        title:
+          "State elections division certifies new batch of ballot questions",
         url: SOURCES.secCertifiesBatch.url,
       },
       {
@@ -960,7 +1036,8 @@ export const BIBLIOGRAPHY: {
         url: SOURCES.agSummary.url,
       },
       {
-        author: "Office of the Attorney General & Secretary of the Commonwealth",
+        author:
+          "Office of the Attorney General & Secretary of the Commonwealth",
         date: "2025",
         title:
           "An initiative petition for a law relative to limiting state tax collection growth and returning surpluses to taxpayers (Petition No. 25-17)",

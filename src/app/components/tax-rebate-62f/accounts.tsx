@@ -3,7 +3,7 @@
 // ballot library because it depends on that data model; generalize later by
 // lifting those types into ballot/types.
 
-import { Megaphone, Scale, Lectern } from "lucide-react";
+import { Megaphone, Scale, Lectern, UserRound } from "lucide-react";
 import type { PositionUser, TestimonyStance } from "../../data/tax-rebate-62f";
 
 export function UserAvatar({
@@ -62,6 +62,7 @@ const USER_TYPE_ICON: Record<
   organization: { Icon: Megaphone, label: "Organization" },
   legislator: { Icon: Scale, label: "Legislator" },
   government: { Icon: Lectern, label: "Executive office" },
+  individual: { Icon: UserRound, label: "Individual" },
 };
 
 export function UserTypeIcon({
