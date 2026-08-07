@@ -21,7 +21,7 @@ import type {
 import { SOURCES } from "./sources";
 
 export const RC = {
-  title: "Protect Tenants by Limiting Rent Increases",
+  title: "Limit Rent Increases",
   plain:
     "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
   tags: ["Housing Policy", "Tenant Rights", "Rental Market"],
@@ -670,3 +670,164 @@ export const ARG_FILTER_IDS: Record<ArgFilter, string[]> = {
   elected: ["mapleTestimony"],
   citizen: ["mapleTestimony"],
 };
+
+// Preserved AI synthesis of the peer-reviewed research — formerly the "Research
+// & Evidence" card on the Bibliography tab, kept here so it can be resurfaced
+// later (e.g. on the For & Against or Overview tab).
+export const RESEARCH_SYNTHESIS = {
+  ids: ["academicResearch", "tuftsGlobe"],
+  prompt:
+    "Summarize what the peer-reviewed research finds about rent control's effects on tenants, rental supply, and property values, and note where the widely cited fiscal projection diverges from that literature. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)",
+  text: "The peer-reviewed literature is consistent on the trade-off: rent control keeps covered tenants in place, but reduces rental supply over time. Cambridge's 1994 decontrol raised property values even at never-controlled buildings nearby; in San Francisco, covered landlords cut rental supply about 15%, raising citywide rents; and the end of Massachusetts rent control had small effects on new construction, with larger effects on maintenance and conversion. The widely cited 6–9% tax-base projection does not come from this literature — it traces to a single industry-commissioned analysis extrapolating from Cambridge and St. Paul.",
+};
+
+// ── Bibliography (APA) ──────────────────────────────────────────────────────
+// One flat, sectioned bibliography. Sections mirror the coverage-page source
+// types; entries within each are listed newest-first and written APA-style
+// (group author · date · title, title italicized except for periodical/news).
+export type BibEntry = { author: string; date: string; title: string; url: string };
+export const BIBLIOGRAPHY: {
+  section: string;
+  italicTitle: boolean;
+  entries: BibEntry[];
+}[] = [
+  {
+    section: "Official government documentation",
+    italicTitle: true,
+    entries: [
+      {
+        author: "Massachusetts General Court",
+        date: "2026, February",
+        title:
+          "House Bill 5008: An initiative petition to protect tenants by limiting rent increases",
+        url: SOURCES.h5008.url,
+      },
+      {
+        author: "Office of the Attorney General",
+        date: "2025, September",
+        title: "Summary of Petition No. 25-21",
+        url: SOURCES.agSummary.url,
+      },
+      {
+        author: "Office of the Attorney General & Secretary of the Commonwealth",
+        date: "2025",
+        title:
+          "An initiative petition to protect tenants by limiting rent increases (Petition No. 25-21)",
+        url: SOURCES.petition.url,
+      },
+      {
+        author: "Commonwealth of Massachusetts",
+        date: "n.d.",
+        title: "Massachusetts Constitution, Article 48: The Initiative",
+        url: SOURCES.article48.url,
+      },
+    ],
+  },
+  {
+    section: "Educational (Nonpartisan)",
+    italicTitle: true,
+    entries: [
+      {
+        author: "University of New Hampshire Survey Center",
+        date: "2026, February",
+        title: "Bay State Poll",
+        url: SOURCES.unhFeb.url,
+      },
+      {
+        author: "Ballotpedia",
+        date: "n.d.",
+        title: "Massachusetts Rent Control Initiative (2026)",
+        url: SOURCES.ballotpedia.url,
+      },
+      {
+        author: "Autor, Palmer & Pathak; Sims; Diamond, McQuade & Qian",
+        date: "2007–2019",
+        title: "Peer-reviewed research on the effects of rent control",
+        url: SOURCES.academicResearch.url,
+      },
+    ],
+  },
+  {
+    section: "News",
+    italicTitle: false,
+    entries: [
+      {
+        author: "CommonWealth Beacon",
+        date: "2026, June 2",
+        title:
+          "Rent control backers scrambling to find legislative road away from the ballot",
+        url: SOURCES.cwbCompromise.url,
+      },
+      {
+        author: "Boston Globe",
+        date: "2026, March 12",
+        title:
+          "Real estate-backed study warns rent control could tank property values",
+        url: SOURCES.tuftsGlobe.url,
+      },
+      {
+        author: "WBUR",
+        date: "2026, March 12",
+        title:
+          "Real estate group warns proposal could lower property taxes for cities and towns",
+        url: SOURCES.tuftsWBUR.url,
+      },
+      {
+        author: "WWLP",
+        date: "2026, February",
+        title: "Poll shows more support for rent control, tax cut",
+        url: SOURCES.wwlpPoll.url,
+      },
+      {
+        author: "State House News Service",
+        date: "2026",
+        title: "Supportive groups helped finance rent control signature gathering",
+        url: SOURCES.ocpfSHNS.url,
+      },
+      {
+        author: "Boston Globe",
+        date: "2025, December 23",
+        title:
+          "Rent control would 'effectively halt' housing production, Healey says",
+        url: SOURCES.healeyGlobe.url,
+      },
+      {
+        author: "Boston Globe",
+        date: "2025, November 25",
+        title: "Suffolk/Globe poll on 2026 ballot questions",
+        url: SOURCES.suffolkGlobe.url,
+      },
+      {
+        author: "CBS News Boston",
+        date: "2025, November 19",
+        title:
+          "Rent control proposal has enough signatures for Massachusetts ballot, supporters say",
+        url: SOURCES.cbsSigs.url,
+      },
+    ],
+  },
+  {
+    section: "Advocacy",
+    italicTitle: true,
+    entries: [
+      {
+        author: "Small Property Owners Association",
+        date: "2026, May",
+        title: "Massachusetts rent control ballot 2026: Property owner guide",
+        url: SOURCES.spoaGuide.url,
+      },
+      {
+        author: "Keep Massachusetts Home",
+        date: "n.d.",
+        title: "Keep Massachusetts Home [Ballot question committee]",
+        url: SOURCES.keepMAHome.url,
+      },
+      {
+        author: "Housing for Massachusetts",
+        date: "n.d.",
+        title: "Housing for Massachusetts [Ballot question committee]",
+        url: SOURCES.housingForMA.url,
+      },
+    ],
+  },
+];

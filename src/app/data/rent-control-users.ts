@@ -298,7 +298,7 @@ export const POSITION_USERS: PositionUser[] = [
     name: "Rep. Ronald Mariano",
     userType: "legislator",
     descriptor:
-      "Speaker of the House · Represents the 3rd Norfolk District — Quincy, Weymouth & Holbrook (D)",
+      "Speaker of the House · Represents the 3rd Norfolk District · Quincy, Weymouth & Holbrook (D)",
     stance: "opposes",
     avatar: avatarMariano,
   },

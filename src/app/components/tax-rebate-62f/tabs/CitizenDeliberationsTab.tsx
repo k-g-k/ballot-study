@@ -1,5 +1,5 @@
 import { Card, DelibStat, DelibThemeCol } from "../../ballot";
-import { DELIB_THEMES, DELIB_TRANSCRIPTS } from "../../../data/rent-control";
+import { DELIB_THEMES, DELIB_TRANSCRIPTS } from "../../../data/tax-rebate-62f";
 
 export function CitizenDeliberationsTab() {
   const linkClass =
@@ -21,13 +21,13 @@ export function CitizenDeliberationsTab() {
         <div className="flex gap-[10px] flex-wrap mt-[16px]">
           <DelibStat n="3" label="in-person cohorts" />
           <DelibStat n="2" label="online sessions" />
-          <DelibStat n="87" label="participants" />
+          <DelibStat n="44" label="participants" />
           <DelibStat n="6" label="regions" />
           <DelibStat n="5" label="public transcripts" />
         </div>
         <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.55] mt-[14px]">
-          Participants are recruited across geography, age, housing situation
-          (renters, owners, landlords), and politics, with informed consent for
+          Participants are recruited across geography, age, tax situation
+          (renters, homeowners, retirees, small-business owners), and politics, with informed consent for
           recording and publication.{" "}
           <button className={linkClass}>How discussions work →</button>
         </p>

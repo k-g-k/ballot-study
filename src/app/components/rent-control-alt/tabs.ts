@@ -16,7 +16,7 @@ export const TABS: { id: TabId; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "for-against", label: "For & Against" },
   { id: "perspectives", label: "Public Perspectives" },
-  { id: "deliberations", label: "Citizen Deliberations" },
+  { id: "deliberations", label: "Citizen Discussions" },
   // { id: "media", label: "Media Coverage" },
   { id: "finance", label: "Campaign Finance" },
   { id: "background", label: "Background" },

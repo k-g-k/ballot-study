@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { ChevronDown, Info } from "lucide-react";
 import { MAPLE_DARK_NAVY, MapleTopNav, PageHeading } from "./maple-shared";
+// Questions that have a deep-dive page source their card copy from the same
+// content module the page uses, so the index card and the page hero never drift.
+import { RC as RENT_CONTROL } from "../data/rent-control";
+import { RC as TAX_REBATE_62F } from "../data/tax-rebate-62f";
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 // A ballot question's presentation is driven by its state:
@@ -24,51 +28,64 @@ type BallotQuestion = {
 // is listed last as it is a different type of question than the initiatives.
 const QUESTIONS_2026: BallotQuestion[] = [
   {
-    title: "Protect Tenants by Limiting Rent Increases",
-    description:
-      "Establish rent control, limiting annual rent increases for residential units to the Consumer Price Index (CPI) or 5%, whichever is lower",
+    title: RENT_CONTROL.title,
+    description: RENT_CONTROL.plain,
+    // No number — renders the "?" placeholder.
     href: "/ballotQuestions/rent-control-alt",
+  },
+  {
+    title: "Public Records for the Legislature and Governor's Office",
+    description:
+      "Make records held by the state legislature and the governor's office public records",
+    number: 1,
   },
   {
     title: "Single-Family Home Zoning Regulation",
     description:
       "Require cities and towns to allow single-family homes on residentially zoned lots that meet minimum standards of at least 5,000 square feet in area",
+    number: 7,
   },
   {
     title: "Nonpartisan Primaries",
     description:
       "Eliminate political party primaries for state elections and create a single primary where candidates are listed regardless of their political party",
+    number: 3,
   },
   {
     title: "Nature For All Fund",
     description:
       "Create a fund for state money, titled the Nature for All Fund, that would be used to further efforts of nature conservation",
+    number: 6,
   },
   {
-    title: "State Tax Revenue Limit",
-    description:
-      "Change the limit of how much revenue the state can collect in a given year",
+    title: TAX_REBATE_62F.title,
+    description: TAX_REBATE_62F.plain,
+    number: 5,
+    href: "/ballotQuestions/tax-rebate-62f-grace",
   },
   {
     title: "Rollback Marijuana Legalization",
     description:
       "Repeal laws that permit the sale of recreational marijuana and the personal cultivation of cannabis in homes",
+    number: 8,
   },
   {
     title: "Election Day Voter Registration",
     description:
       "Allow eligible voters to register in person and vote at their polling place on election day.",
+    number: 4,
   },
   {
-    title:
-      "Allow Collective Bargaining for Committee for Public Counsel Services Employees",
+    title: "Collective Bargaining for CPCS Employees",
     description:
       "Permit employees of the Committee for Public Counsel Services to participate in collective bargaining practices",
+    number: 2,
   },
   {
     title: "Do Not Repeal New Gun Laws",
     description:
       "Uphold recently passed firearm regulations (H.4885) that became law in 2024",
+    number: 9,
   },
 ];
 
@@ -155,13 +172,11 @@ function QuestionCard({ q }: { q: BallotQuestion }) {
 
   const content = (
     <>
-      {/* Number column — temporarily hidden. Restore this <span> to show the
-          number (or its "?" placeholder) again in the unnumbered/numbered states.
       <span
         className="shrink-0 text-center"
         style={{
           fontFamily: "Lexend",
-          fontWeight: 100,
+          fontWeight: 200,
           fontSize: 44,
           lineHeight: 1,
           color: "#000",
@@ -171,7 +186,6 @@ function QuestionCard({ q }: { q: BallotQuestion }) {
       >
         {q.number ?? "?"}
       </span>
-      */}
 
       <div className="min-w-0 flex-1" style={{ opacity: muted }}>
         <h3

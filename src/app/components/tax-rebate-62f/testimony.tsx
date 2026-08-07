@@ -10,7 +10,7 @@ import {
   POSITION_USERS,
   testimonyFor,
   type TestimonyItem,
-} from "../../data/rent-control";
+} from "../../data/tax-rebate-62f";
 
 // Body text capped at three lines with an inline "Show more". A hidden measurer
 // binary-searches the longest prefix that, with "… Show more" appended, still
@@ -76,8 +76,6 @@ function ClampedBody({ text }: { text: string }) {
   );
 }
 
-// One testimony entry: avatar, account name + type icon + stance chip + date,
-// optional descriptor line, clamped body.
 export function TestimonyEntry({
   t,
   showTypeIcon = true,
@@ -108,7 +106,6 @@ export function TestimonyEntry({
               {user.name}
             </p>
             {showTypeIcon && <UserTypeIcon type={user.userType} />}
-            {/* Neutral / no-position testimony carries no stance chip. */}
             {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
             <span className="ml-auto font-['Nunito'] text-[12px] text-[#808080] whitespace-nowrap">
               {t.date}

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { Card, EmptyState, SynthSummaryCard } from "../../ballot";
-import { testimonyFor } from "../../../data/rent-control";
+import { testimonyFor } from "../../../data/tax-rebate-62f";
 import {
   OrganizationTestimonyCard,
   TestimonyList,
@@ -26,18 +26,20 @@ export function PublicPerspectivesTab({
     <div className="flex flex-col gap-[16px]">
       <SynthSummaryCard
         title="Summary of MAPLE Testimony"
-        ids={["mapleTestimony"]}
-        prompt="Summarize the testimony submitted to MAPLE on the rent-control question: what supporters argue, what opponents argue, and whether residents have weighed in. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
+        ids={["mapleTestimony", "maoBrief", "massBudget", "mtfPosition", "masslive62F"]}
+        prompt="Summarize the testimony submitted to MAPLE on the 62F reform question — the supporters' and opponents' arguments, any legislator input, and whether residents have weighed in. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
       >
         <p>
-          Supporters frame the measure as rent stabilization: predictable rents
-          for working families and a check on corporate investors, while still
-          letting local landlords earn a reasonable profit and allowing new
-          construction. Opponents frame it as a threat to housing production and
-          investment, warning it would shrink municipal tax bases and property
-          values, shift costs onto homeowners, and repeat what led voters to ban
-          rent control statewide in 1994. Neutral parties took no position while
-          voicing reservations, and no individual residents have submitted yet.
+          Public perspectives split with supporters arguing the measure
+          restores a taxpayer-refund guarantee voters approved in 1986 — closing
+          a "loophole," reflecting spending that has outpaced wages, and, by one
+          estimate, returning about $19 billion over four decades — while
+          opponents warn it would shrink the budget and cut schools, transit, and
+          healthcare, steadily tighten the cap over time, and send the largest
+          refunds to high earners. A legislator also weighed in: Senate President
+          Karen Spilka opposed it, questioning who the measure is really written
+          for. No individual resident perspectives have been submitted on this
+          question yet.
         </p>
       </SynthSummaryCard>
 

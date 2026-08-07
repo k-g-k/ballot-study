@@ -3,6 +3,7 @@
 // same components work for any ballot question.
 
 import { useState, useRef, useEffect } from "react";
+import type { ReactNode } from "react";
 import { Sparkles, ArrowUpRight } from "lucide-react";
 import { useSources } from "../sources-context";
 import { SRC_CHIP } from "../types";
@@ -104,6 +105,7 @@ export function SynthSourcesNote({
   variant = "ai",
   linkClass,
   inline = false,
+  extra,
 }: {
   ids: string[];
   prompt?: string;
@@ -112,6 +114,8 @@ export function SynthSourcesNote({
   linkClass?: string;
   /** Render as an inline trigger (e.g. at the end of a sentence). */
   inline?: boolean;
+  /** Extra content rendered in the trigger row, beside the trigger. */
+  extra?: ReactNode;
 }) {
   const sources = useSources();
   const [open, setOpen] = useState(false);
@@ -258,6 +262,7 @@ export function SynthSourcesNote({
           </span>
         )}
         {trigger}
+        {extra}
       </span>
       {popover}
     </span>

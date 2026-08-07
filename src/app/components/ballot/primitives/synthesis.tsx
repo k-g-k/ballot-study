@@ -15,12 +15,15 @@ export function SynthSummaryCard({
   ids,
   prompt,
   children,
+  extra,
 }: {
   title: string;
   subtitle?: string;
   ids: string[];
   prompt?: string;
   children: ReactNode;
+  /** Extra content rendered beside the AI Synthesis prompt/sources trigger. */
+  extra?: ReactNode;
 }) {
   return (
     <Card title={title} subtitle={subtitle}>
@@ -28,7 +31,7 @@ export function SynthSummaryCard({
         <div className="space-y-[12px] font-['Nunito'] text-[14px] text-black leading-[1.6]">
           {children}
         </div>
-        <SynthSourcesNote ids={ids} prompt={prompt} />
+        <SynthSourcesNote ids={ids} prompt={prompt} extra={extra} />
       </div>
     </Card>
   );

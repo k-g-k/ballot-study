@@ -1,43 +1,45 @@
-// BQ2-alt — the rent-control ballot-question deep-dive page.
+// BQ3 / BQ4 — the Chapter 62F reform ballot-question deep-dive page, rendered
+// at both routes by the `variant` prop (see ./tabs.ts).
 //
 // This file is only the SHELL: top nav, breadcrumb, sticky hero, the tab
-// sidebar + source-type legend, and the active-tab switch. Everything inside a
-// tab is a thin composition of ballot section components (../ballot) fed by the
-// question's content (../../data/rent-control) — so moving a card = moving a
-// JSX block in a tab file, and changing words = editing the data module.
+// sidebar + source-type legend, and the active-tab switch. Tab content lives in
+// ./tabs/*.tsx, built from ../ballot sections and data from
+// ../../data/tax-rebate-62f — so moving a card = moving a JSX block in a tab
+// file, and changing words = editing the data module.
 //
-// The whole page is wrapped in <SourcesProvider> so every citation component
-// resolves source ids against this question's registry.
+// Wrapped in <SourcesProvider> so citations resolve ids against this question's
+// sources. Parallels src/app/components/rent-control-alt/index.tsx.
 
 import { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { MapleTopNav, BreadcrumbBack, PageHeading } from "../maple-shared";
 import { SourcesProvider, KIND_DOT, type SrcKind } from "../ballot";
-import { RC, SOURCES } from "../../data/rent-control";
-import { TABS, type TabId } from "./tabs";
+import { RC, SOURCES } from "../../data/tax-rebate-62f";
+import { TABS_MATT, TABS_GRACE, type TabId, type PageVariant } from "./tabs";
 import type { StanceFilter } from "./testimony";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { BackgroundTab } from "./tabs/BackgroundTab";
 import { ForAgainstTab } from "./tabs/ForAgainstTab";
 import { PublicPerspectivesTab } from "./tabs/PublicPerspectivesTab";
 import { CitizenDeliberationsTab } from "./tabs/CitizenDeliberationsTab";
+import { MediaCoverageTab } from "./tabs/MediaCoverageTab";
 import { CampaignFinanceTab } from "./tabs/CampaignFinanceTab";
 import { BibliographyTab } from "./tabs/BibliographyTab";
 import { MapleFab } from "./maple-fab";
 
-export default function RentControlAlt() {
+export function TaxRebate62FPage({ variant }: { variant: PageVariant }) {
+  const TABS = variant === "grace" ? TABS_GRACE : TABS_MATT;
   const [activeTab, setActiveTab] = useState<TabId>("overview");
-  // Dismissible prototype notice — dismissal lives in component state, so it
-  // persists across tab switches (the shell stays mounted) but resets on reload.
   const [noticeOpen, setNoticeOpen] = useState(true);
-  // Which stance Organization Testimony opens with — set when a Vote card's
-  // "View Testimony" is clicked, reset by any ordinary tab navigation.
+  // Default state opens on all unless navigated to by a specific route. Example:
+  // clicking view testimony on the "Voting Yes" card on the overview page will
+  // navigate to this page with "Endorsing" already selected.
   const [orgFilter, setOrgFilter] = useState<StanceFilter>("all");
   const columnRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
 
-  // The sidebar pins just below the sticky hero; the hero's height varies with
-  // viewport width, so mirror it into a CSS variable the sidebar's `top` reads.
+  // The hero's height changes with window width, so it is measured here and
+  // stored as a CSS variable the sidebar uses to position itself.
   useEffect(() => {
     const column = columnRef.current;
     const hero = heroRef.current;
@@ -49,16 +51,16 @@ export default function RentControlAlt() {
     return () => observer.disconnect();
   }, []);
 
-  // The page scrolls natively. On tab switch, clamp the scroll back to where the
-  // tab content starts (heading stays scrolled away, hero/sidebar stay pinned);
-  // if the user is already above that point, don't move at all.
+  // Without this, switching tabs would leave the page scrolled partway down the
+  // previous tab's content.
   const handleTabChange = (id: TabId) => {
     setActiveTab(id);
     setOrgFilter("all");
     const el = columnRef.current;
     if (!el) return;
-    // Measure from the non-sticky column: a stuck sticky element reports its
-    // pinned position, not its document-flow position.
+    // The container is not sticky, so it reports its true position in the page.
+    // A sticky element that has frozen in place would instead report where it is
+    // pinned on screen.
     const target = el.getBoundingClientRect().top + window.scrollY;
     if (window.scrollY > target) window.scrollTo({ top: target });
   };
@@ -66,10 +68,6 @@ export default function RentControlAlt() {
   return (
     <SourcesProvider value={SOURCES}>
       <div className="bg-[#ededed] min-h-screen min-w-[950px]">
-        {/* Chrome matches BQ1 (content-schemata-rent-control): top nav + breadcrumb. */}
-        {/* Top nav with the prototype notice anchored to it — absolutely
-            positioned so it overlaps the nav bar slightly and scrolls away
-            together with it (the nav is not sticky). */}
         <div className="relative">
           <MapleTopNav />
           {noticeOpen && (
@@ -98,20 +96,22 @@ export default function RentControlAlt() {
           label="Return to ballot questions"
         />
         <div className="max-w-[1200px] w-full mx-auto pt-[8px] pb-[16px] px-6">
-          <PageHeading>Proposed Ballot Question (2026)</PageHeading>
+          <PageHeading>Ballot Question 5 (2026)</PageHeading>
         </div>
 
         <div
           ref={columnRef}
           className="max-w-[1200px] w-full mx-auto flex flex-col px-6 pb-[24px]"
         >
-          {/* Hero — pins at the viewport top once the heading scrolls away. */}
           <div
             ref={heroRef}
             className="sticky top-0 z-10 bg-[#ededed] pt-[16px] pb-[16px]"
           >
             <div className="bg-white rounded-[12px] overflow-clip pt-[36px] pr-[36px] pb-[36px] pl-[36px]">
               <div className="flex gap-[24px] items-center w-full">
+                <span className="shrink-0 w-[72px] text-center font-['Lexend'] font-extralight text-[56px] leading-none text-black">
+                  {RC.number}
+                </span>
                 <div className="flex-1">
                   <div className="flex flex-col gap-[12px]">
                     <div>
@@ -153,7 +153,6 @@ export default function RentControlAlt() {
             </div>
           </div>
 
-          {/* Sidebar + content — sidebar pins below the hero, content scrolls. */}
           <div className="flex gap-[24px] items-start">
             <div
               className="w-[224px] shrink-0 flex flex-col gap-[16px] sticky"
@@ -206,11 +205,12 @@ export default function RentControlAlt() {
               </div>
             </div>
 
-            {/* Tab content — normal document flow; the page itself scrolls. */}
+            {/* Tab content */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-col gap-[16px] pb-[24px]">
                 {activeTab === "overview" && (
                   <OverviewTab
+                    variant={variant}
                     onOpenFinance={() => handleTabChange("finance")}
                     onViewTestimony={(stance) => {
                       setOrgFilter(stance);
@@ -224,7 +224,7 @@ export default function RentControlAlt() {
                   <PublicPerspectivesTab orgFilter={orgFilter} />
                 )}
                 {activeTab === "deliberations" && <CitizenDeliberationsTab />}
-                {/* {activeTab === "media" && <MediaCoverageTab />} */}
+                {activeTab === "media" && <MediaCoverageTab variant={variant} />}
                 {activeTab === "finance" && <CampaignFinanceTab />}
                 {activeTab === "bibliography" && <BibliographyTab />}
               </div>

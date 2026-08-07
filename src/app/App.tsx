@@ -16,6 +16,8 @@ import ConceptG from "./components/concept-g";
 import ConceptH from "./components/concept-h";
 import BallotQuestions from "./components/ballot-questions";
 import RentControlAlt from "./components/rent-control-alt";
+import TaxRebate62FMatt from "./components/tax-rebate-62f/matt";
+import TaxRebate62FGrace from "./components/tax-rebate-62f/grace";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
 function DisclaimerBar({ children }: { children: ReactNode }) {
@@ -73,9 +75,23 @@ const PROTOTYPES: Prototype[] = [
     group: "ballot-questions",
     element: <RentControlAlt />,
   },
+  {
+    id: "BQ3",
+    path: "ballotQuestions/tax-rebate-62f-grace",
+    label: "62F Tax Rebate (Grace)",
+    group: "ballot-questions",
+    element: <TaxRebate62FGrace />,
+  },
+  {
+    id: "BQ4",
+    path: "ballotQuestions/tax-rebate-62f-matt",
+    label: "62F Tax Rebate (Matt)",
+    group: "ballot-questions",
+    element: <TaxRebate62FMatt />,
+  },
 ];
 
-const DEFAULT_PATH = "/ballotQuestions/rent-control-alt";
+const DEFAULT_PATH = "/ballotQuestions";
 
 // Collapsible navigation panel flush against the bottom-right edge of the
 // screen. Rendered only in development (see Layout) — Vite strips it from
