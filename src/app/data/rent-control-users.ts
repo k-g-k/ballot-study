@@ -1,7 +1,7 @@
 // User accounts for organizations and officials that have taken a public
-// position on the 2026 Massachusetts rent-control initiative, per Ballotpedia
-// (see Rentcontrol-ballotpedia.pdf). Rendered in the Public Perspectives tab
-// as if each had registered a MAPLE account with an uploaded avatar.
+// position on the 2026 Massachusetts rent-control initiative, per Ballotpedia.
+// Rendered in the Public Perspectives tab as if each had registered a MAPLE
+// account with an uploaded avatar.
 //
 // Avatars: for people ("Office of …" accounts and legislators) the image is
 // always a portrait of the actual person (Wikipedia page images, visually

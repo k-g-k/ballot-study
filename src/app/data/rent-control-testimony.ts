@@ -8,9 +8,8 @@
 // its own URL (e.g. /testimony/<id>) and be embedded elsewhere on the site —
 // keep ids unique and permanent once assigned.
 //
-// Quotes below are the public statements reported by Ballotpedia
-// (Rentcontrol-ballotpedia.pdf), recast as MAPLE submissions; submission dates
-// are prototype placeholders.
+// Quotes below are the public statements reported by Ballotpedia, recast as
+// MAPLE submissions; submission dates are prototype placeholders.
 
 export type TestimonyStance = "endorse" | "oppose" | "no-position";
 

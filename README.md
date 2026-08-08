@@ -23,6 +23,11 @@ driven by question content under `src/app/data/`, so a new ballot question can
 reuse the same layout without rebuilding it. See [`CLAUDE.md`](./CLAUDE.md) for the
 current architecture and conventions.
 
+## Credits
+
+Includes a photo from [Unsplash](https://unsplash.com), used under
+[license](https://unsplash.com/license), in an archived concept page.
+
 ## Tech stack
 
 React 18 · Vite 6 · Tailwind CSS v4 · React Router · TypeScript

@@ -1,7 +1,7 @@
 // Content for the 2026 Massachusetts rent-control ballot question.
 //
 // Extracted verbatim (content only) from the standalone prototype
-// `maple-rent-control-2026 june 30 copy.html`. No layout/UX is carried over — this
+// an early raw HTML export. No layout/UX is carried over — this
 // is a pure data module. Nothing imports it yet; display wiring is a later task.
 //
 // Placement of each block into our tab taxonomy (overview / background /
