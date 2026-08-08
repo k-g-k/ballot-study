@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   MapleNav, Breadcrumb, TopicTag, StatusBadge, SectionLabel,
   ElectionBar, StatPill, L, MAPLE_DARK_NAVY, MAPLE_ACTIVE_BG, MAPLE_ACTIVE_BORDER, MAPLE_ACTIVE_TEXT,
+  InitialsAvatar,
 } from ".././maple-shared";
 import { User, FileText, Vote, Mic, BarChart2, DollarSign, ChevronRight, MessageSquare } from "lucide-react";
 
@@ -45,11 +46,7 @@ export default function ConceptThree() {
 
       {/* Slim profile banner */}
       <div className="bg-white border-b border-border px-8 py-5 flex items-center gap-5">
-        <img
-          src={L.photo}
-          alt={L.name}
-          className="w-14 h-14 rounded-full object-cover ring-2 ring-border shrink-0"
-        />
+        <InitialsAvatar name={L.name} size={56} />
         <div className="flex-1 min-w-0">
           <h1 style={{ fontFamily: "Lexend", fontWeight: 600, fontSize: 20, color: "#1a1a1a" }}>{L.name}</h1>
           <p style={{ fontFamily: "Nunito", fontSize: 13, color: "#606060" }}>{L.title} · {L.district} District · MA House</p>

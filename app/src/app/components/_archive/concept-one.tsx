@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   MapleNav, Breadcrumb, TopicTag, StatusBadge, SectionLabel,
-  StatPill, ElectionBar, L, MAPLE_DARK_NAVY,
+  StatPill, ElectionBar, L, MAPLE_DARK_NAVY, InitialsAvatar,
 } from ".././maple-shared";
 import { FileText, CheckSquare, BarChart2, Vote, DollarSign, ChevronRight } from "lucide-react";
 
@@ -284,11 +284,7 @@ export default function ConceptOne() {
       {/* Hero */}
       <div className="bg-white border-b border-border">
         <div className="max-w-5xl mx-auto px-6 py-8 flex gap-6 items-start">
-          <img
-            src={L.photo}
-            alt={L.name}
-            className="w-24 h-24 rounded-full object-cover ring-2 ring-border shrink-0"
-          />
+          <InitialsAvatar name={L.name} size={96} />
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-3 flex-wrap mb-1">
               <h1 style={{ fontFamily: "Lexend", fontWeight: 600, fontSize: 28, color: "#1a1a1a" }}>{L.name}</h1>

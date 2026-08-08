@@ -25,8 +25,6 @@ export const L = {
   bills: 23,
   cosponsored: 87,
   raised: "$142k",
-  photo:
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&auto=format",
   priorities: [
     "Housing Justice",
     "Climate Action",
@@ -365,15 +363,37 @@ export function StatPill({
   );
 }
 
+// ─── Initials avatar ──────────────────────────────────────────────────────────
+// Stands in wherever an account has no official image of its own.
+export function InitialsAvatar({ name, size }: { name: string; size: number }) {
+  const initials = name
+    .split(" ")
+    .map((w) => w[0])
+    .join("");
+  return (
+    <div
+      aria-hidden="true"
+      className="rounded-full shrink-0 ring-2 ring-border flex items-center justify-center"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: "#e8eff7",
+        color: MAPLE_DARK_NAVY,
+        fontFamily: "Nunito",
+        fontWeight: 700,
+        fontSize: Math.round(size / 2.9),
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
 // ─── Profile Banner (shared compact version) ──────────────────────────────────
 export function ProfileBanner() {
   return (
     <div className="bg-white border-b border-border px-8 py-6 flex items-center gap-6">
-      <img
-        src={L.photo}
-        alt={L.name}
-        className="w-16 h-16 rounded-full object-cover shrink-0 ring-2 ring-border"
-      />
+      <InitialsAvatar name={L.name} size={64} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <h1
