@@ -18,8 +18,8 @@ the repo under `_archive/` folders and are not part of the live app.
 This began as a design prototype in **Figma Make** — the original is published at
 **[grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)**. It was
 then exported to this React + Vite + Tailwind codebase and refactored into a
-reusable system: generic rendering components under `src/app/components/ballot/`,
-driven by question content under `src/app/data/`, so a new ballot question can
+reusable system: generic rendering components under `app/src/app/components/ballot/`,
+driven by question content under `app/src/app/data/`, so a new ballot question can
 reuse the same layout without rebuilding it. See [`CLAUDE.md`](./CLAUDE.md) for the
 current architecture and conventions.
 

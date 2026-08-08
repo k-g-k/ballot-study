@@ -20,10 +20,10 @@ question can reuse the same layout by supplying its own data.
 Before writing a new component or new styling, **check what already exists and
 compose it.** This codebase is built as a small system on purpose.
 
-- **Rendering blocks already exist** in `src/app/components/ballot/` — browse the
+- **Rendering blocks already exist** in `app/src/app/components/ballot/` — browse the
   barrel `components/ballot/index.ts` or the component catalog below before
   building anything. Most UI is a composition of existing primitives + sections.
-- **Content is data, not JSX.** To change wording, edit `src/app/data/rent-control/`
+- **Content is data, not JSX.** To change wording, edit `app/src/app/data/rent-control/`
   (`content.ts` / `sources.ts`) — do not hard-code copy into components.
 - **Only add a new component when nothing composes.** When you do, put it in the
   right layer (primitive vs. section vs. page), keep it prop-driven, and export it
@@ -39,7 +39,7 @@ compose it.** This codebase is built as a small system on purpose.
 Data flows one direction: **content data → ballot library → page**. Nothing in a
 lower layer imports a higher one.
 
-1. **`src/app/data/rent-control/`** — the question's content, no JSX.
+1. **`app/src/app/data/rent-control/`** — the question's content, no JSX.
    - `sources.ts` — the source registry (`SOURCES`), keyed by id.
    - `content.ts` — `RC` (all structured data), deliberation data, arg-filter config.
    - `selectors.ts` — `orgTestifiers`, `testimonyFor` (join testimony ↔ accounts).
@@ -47,7 +47,7 @@ lower layer imports a higher one.
      and are re-exported through `data/rent-control/index.ts`.
    - Import everything from the barrel: `import { RC, SOURCES } from "../../data/rent-control"`.
 
-2. **`src/app/components/ballot/`** — the generic, question-agnostic library.
+2. **`app/src/app/components/ballot/`** — the generic, question-agnostic library.
    Depends only on its own `types.ts`, `helpers.ts`, and `sources-context.tsx`.
    - `primitives/` — generic UI: `Card`, `CitationBlock`, `Cite`, `SourceNote`,
      `SynthSourcesNote`, `SynthSummaryCard`, `AnalysisSection`, `AISynth`,
@@ -58,7 +58,7 @@ lower layer imports a higher one.
      `DelibThemeCol`.
    - Import from the barrel: `import { Card, StakeholderGrid } from "../ballot"`.
 
-3. **`src/app/components/rent-control-alt/`** — the page itself.
+3. **`app/src/app/components/rent-control-alt/`** — the page itself.
    - `index.tsx` — the **shell** only: nav, hero, tab sidebar + legend, tab switch.
      Wraps everything in `<SourcesProvider value={SOURCES}>`.
    - `tabs.ts` — `TABS` config + `TabId`.
