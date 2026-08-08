@@ -83,7 +83,7 @@ const PROTOTYPES: Prototype[] = [
   },
 ];
 
-const DEFAULT_PATH = "/ballotQuestions";
+const DEFAULT_PATH = "/ballotQuestions/tax-rebate-62f-grace";
 
 // Collapsible navigation panel flush against the bottom-right edge of the
 // screen. Rendered only in development (see Layout) — Vite strips it from

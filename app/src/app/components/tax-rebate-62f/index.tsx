@@ -94,11 +94,8 @@ export function TaxRebate62FPage() {
             </div>
           )}
         </div>
-        <BreadcrumbBack
-          to="/ballotQuestions"
-          label="Return to ballot questions"
-        />
-        <div className="max-w-[1200px] w-full mx-auto pt-[8px] pb-[16px] px-6">
+        <BreadcrumbBack label="Return to ballot questions" />
+        <div className="max-w-[1200px] w-full mx-auto pt-[4px] pb-[2px] px-6">
           <PageHeading>Ballot Question 5 (2026)</PageHeading>
         </div>
 

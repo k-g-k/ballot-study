@@ -200,22 +200,34 @@ export function MapleTopNav() {
 }
 
 // ─── Breadcrumb back link (e.g. "← Return to ballot questions") ──────────────
-export function BreadcrumbBack({ to, label }: { to: string; label: string }) {
+// Without `to` the row keeps its arrow and label but renders as plain text.
+// Pages that are themselves an entry point use that form, since there is no
+// prior page to return to.
+export function BreadcrumbBack({ to, label }: { to?: string; label: string }) {
+  const inner = (
+    <>
+      <ArrowLeft size={16} />
+      {label}
+    </>
+  );
+  const className = "inline-flex items-center gap-2 no-underline";
+  const style = {
+    fontFamily: "Nunito",
+    fontWeight: 700,
+    fontSize: 15,
+    color: MAPLE_DARK_NAVY,
+  };
   return (
     <div className="w-full px-6 py-2" style={{ backgroundColor: "#ededed" }}>
-      <Link
-        to={to}
-        className="inline-flex items-center gap-2 no-underline"
-        style={{
-          fontFamily: "Nunito",
-          fontWeight: 700,
-          fontSize: 15,
-          color: MAPLE_DARK_NAVY,
-        }}
-      >
-        <ArrowLeft size={16} />
-        {label}
-      </Link>
+      {to ? (
+        <Link to={to} className={className} style={style}>
+          {inner}
+        </Link>
+      ) : (
+        <span className={className} style={style}>
+          {inner}
+        </span>
+      )}
     </div>
   );
 }
