@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { Card } from "../../ballot";
 import { BIBLIOGRAPHY } from "../../../data/tax-rebate-62f";
 
 // Dates are authored APA-style ("2026, March 30"); IEEE puts the month first
@@ -42,7 +41,7 @@ function hostLabel(url: string) {
 // One bibliography card, grouped by source type (official documentation,
 // encyclopedia, expert opinion, news, advocacy). Entries are listed newest-first
 // and rendered APA-style as bullets; the whole citation links out to its source.
-export function BibliographyTab() {
+export function BibliographyTab({ onAskMaple }: { onAskMaple?: () => void }) {
   // Two sticky tiers: the card title pins under the hero, and each section
   // heading pins under the title. The title's height is measured rather than
   // assumed so the second tier follows it if the type ever changes.
@@ -114,21 +113,30 @@ export function BibliographyTab() {
           ))}
         </div>
       </div>
-      <Card title="Still deciding? Ask MAPLE about this measure">
-        <p className="font-['Nunito'] text-[14px] text-black leading-[1.6]">
+      {/* Tinted and bordered like the NextStepCard that closes every other tab,
+          so the last thing on the page reads as a way out rather than more
+          content. */}
+      <div className="bg-[#f9fafc] border border-[#dee2e6] rounded-[8px] p-[24px]">
+        <h3 className="font-['Nunito'] font-bold text-[16px] text-black">
+          Still deciding? Ask our AI agent, Maple, about this measure
+        </h3>
+        <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.5] mt-[2px]">
           Ask a plain question here on the page or through your own AI
           assistant. Answers draw only from the sources on this page and cite
           them.
         </p>
         <div className="flex items-center gap-[20px] mt-[16px] flex-wrap">
-          <button className="bg-white border-[1.5px] border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[20px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]">
-            Ask on MAPLE
+          <button
+            onClick={onAskMaple}
+            className="bg-white border-[1.5px] border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[20px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]"
+          >
+            Ask Maple
           </button>
           <button className="font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] underline underline-offset-[4px] cursor-pointer">
             Connect your assistant (MCP) →
           </button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function FilterChip({
       className={`font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[100px] border cursor-pointer transition-colors ${
         active
           ? "bg-[rgba(232,239,255,0.68)] border-[#c9d8ff] text-[#1e3f8a]"
-          : "bg-white border-[#d1d1d1] text-[#606060] hover:border-[#a0a0a0]"
+          : "bg-white border-[#d1d1d1] text-[#606060] hover:bg-[#f5f5f5]"
       } ${className}`}
     >
       {children}

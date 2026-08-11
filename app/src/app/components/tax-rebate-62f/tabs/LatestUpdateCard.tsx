@@ -25,18 +25,23 @@ export function LatestUpdateCard({
           <ArrowRight className="w-[13px] h-[13px]" />
         </button>
       </div>
-      <div className="border-l-[3px] border-[#12266f] pl-[14px]">
-        <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.08em] uppercase text-[#12266f]">
-          {latest.when}
-        </p>
-        <p className="font-['Nunito'] font-bold text-[15px] text-black mt-[4px]">
-          {latest.label}
-        </p>
-        {latest.body && (
-          <p className="font-['Nunito'] text-[14px] text-[#808080] leading-[1.55] mt-[4px]">
-            {latest.body}
+      {/* Same rule and dot as the full timeline, so one milestone here reads as
+          a slice of the chronology it links to. */}
+      <div className="ml-[6px] pl-[28px] border-l-[2px] border-[#e5e7eb]">
+        <div className="relative">
+          <span className="absolute left-[-35px] top-[4px] w-[13px] h-[13px] rounded-full bg-[#12266f]" />
+          <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.08em] uppercase text-[#12266f]">
+            {latest.when}
           </p>
-        )}
+          <p className="font-['Nunito'] font-bold text-[15px] text-black mt-[4px]">
+            {latest.label}
+          </p>
+          {latest.body && (
+            <p className="font-['Nunito'] text-[14px] text-[#808080] leading-[1.55] mt-[4px]">
+              {latest.body}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

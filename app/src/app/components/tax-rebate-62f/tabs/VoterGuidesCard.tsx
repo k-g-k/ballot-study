@@ -11,7 +11,7 @@ function GuideLink({ label }: { label: string }) {
       className="inline-flex items-baseline gap-[4px] text-left font-['Nunito'] font-bold text-[14px] text-[#12266f] leading-[1.4] hover:underline underline-offset-[3px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#12266f] rounded-[2px]"
     >
       {label}
-      <ArrowUpRight className="w-[13px] h-[13px] shrink-0 self-center" />
+      <ArrowUpRight className="w-[14px] h-[14px] shrink-0 self-center" />
     </button>
   );
 }

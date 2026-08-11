@@ -35,7 +35,18 @@ export function StakeholderGrid({ rows }: { rows: Stakeholder[] }) {
               </span>
             </div>
             <p className="font-['Nunito'] text-[13px] text-[#334156] leading-[1.5]">
-              {s.disputed && "⚠ "}
+              {s.disputed && (
+                // Hover explains the mark in place, so the card needs no
+                // legend and the meaning travels with the row.
+                <span className="relative inline-block group align-baseline">
+                  <span>⚠</span>
+                  <span className="absolute left-0 bottom-full mb-[6px] hidden group-hover:block w-[250px] bg-white border border-[#d1d1d1] rounded-[8px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] p-[10px] z-30 font-['Nunito'] text-[12px] text-[#334156] leading-[1.5] pointer-events-none">
+                    <span className="font-bold">Disputed:</span> opponents and
+                    proponents do not agree on this statement.
+                  </span>
+                </span>
+              )}
+              {s.disputed && " "}
               {s.body}
             </p>
             <p className="font-['Nunito'] text-[11px] text-[#808080] mt-[6px]">

@@ -25,13 +25,19 @@ import { SOURCES } from "./sources";
 export const RC = {
   /** Assigned ballot number for the Nov. 2026 state election. */
   number: 5,
-  title: "State Tax Revenue Limit and Rebate",
+  title: "State Revenue Limit & Rebate",
   plain:
-    "Recalculate the Chapter 62F tax-revenue cap from actual collections and count 2022 surtax revenue, so automatic taxpayer refunds are triggered more often",
+    "Change what the tax limit is based on and what counts toward it, making tax refunds more likely",
   tags: ["Tax Policy", "State Budget", "Taxpayer Refunds"],
 
+  // The Attorney General's certified summary, verbatim, as it appears on
+  // signature sheets and in the voter guide. Unlike most prose on this page,
+  // this is the real document text and should not be edited for style.
+  officialSummary:
+    "This proposed law would change the limit on how much revenue the state can collect in a given year. The proposal would limit state revenue in a given year to the net amount of state revenue from the year before, increased by a rate equal to the average growth of wages and salaries in Massachusetts over the most recent three years. If revenue collected by the state in a given year exceeds the limit, the excess amount would be refunded to taxpayers the following year. The proposed law would include all revenue from the surtax on incomes over $1 million when calculating the revenue limit and when determining whether state revenue exceeds the limit. The provisions of the proposed law would all be effective as of July 1, 2027. The proposed law states that, if any of its parts were declared invalid, the other parts would stay in effect.",
+
   overviewSummary:
-    "This initiative would update Chapter 62F, a law voters passed in 1986 that returns money to taxpayers when state tax collections exceed an annual cap. It would base each year's cap on the revenue the state actually collected the prior year (rather than the maximum it was allowed to collect) and would include revenue from the 2022 'millionaire's tax' on high earners. The combined effect is a lower cap that the state is more likely to exceed, meaning automatic refunds would be triggered more frequently than under current law, which has paid out only twice in nearly 40 years.",
+    "Question 5 would modify Chapter 62F, a voter-approved law that requires Massachusetts to send money back to taxpayers when it collects more than a certain limit in a year. Today that limit is based on the prior year's limit plus the average wage growth in Massachusetts over the last three years, and excludes the 2022 surtax on yearly income over $1 million, which funds education and transportation. Question 5 would include the surtax in the calculation and would change the base from last year's limit to last year's actual tax collections, triggering refunds more frequently.",
 
   yes: "The 62F cap is recalculated. Each year's limit is set from actual prior-year collections plus three-year wage growth, and surtax revenue counts toward the total — making the state more likely to exceed the cap and issue automatic refunds to taxpayers.",
   no: "No change in the law. Chapter 62F keeps its current formula, which bases the cap on the prior year's allowable limit and excludes 2022 surtax revenue; refunds continue to trigger only in the rare years collections run far ahead of the cap.",
@@ -54,40 +60,44 @@ export const RC = {
       group: "Taxpayers (all filers)",
       impact: "benefits",
       body: "More frequent automatic refunds when collections exceed the recalculated cap. Refunds are distributed in proportion to income tax paid, so higher earners receive larger dollar amounts.",
-      basis: "Petition text; proponent brief",
+      basis:
+        "Petition text; not disputed by either campaign",
+    },
+    {
+      group: "Residents using state services",
+      impact: "cost",
+      body: "Residents who rely on state-funded services would see reductions if refunds draw down the operating budget; which services, and by how much, depends on future revenue.",
+      basis:
+        "Opponent statements; the impact depends on future revenue",
     },
     {
       group: "Higher-income filers",
       impact: "benefits",
       body: "Because 62F refunds are proportional to tax liability, the largest per-filer refund dollars flow to the highest earners — a distribution opponents highlight and proponents do not dispute.",
-      basis: "Petition text; opposition framing",
+      basis:
+        "Petition text; not disputed by either campaign",
     },
     {
-      group: "Public-sector workers & service users",
+      group: "Public-sector workers",
       impact: "cost",
-      disputed: true,
-      body: "The opposition committee projects layoffs and service cuts if billions are diverted from the budget; the size of any impact depends on future revenue and is contested.",
+      body: "The opposition committee projects layoffs if billions are diverted from the budget; the size of any impact depends on future revenue and is not yet known.",
       basis:
-        "Protect Massachusetts Future — projection, not an official estimate",
+        "Opponent statements; the impact depends on future revenue",
+    },
+    {
+      group: "Business & fiscal-conservative groups",
+      impact: "benefits",
+      body: "Supporters view a tighter cap as restoring spending discipline and improving competitiveness. Some business-aligned fiscal watchdogs (MTF) nonetheless oppose it as destabilizing.",
+      basis:
+        "Proponent statements; MTF dissents",
     },
     {
       group: "Education & transportation (surtax-funded)",
       impact: "cost",
       disputed: true,
       body: "Opponents argue counting surtax revenue toward the cap could pull dollars voters dedicated to schools and transit into refunds; proponents dispute that the earmark is affected.",
-      basis: "Disputed — depends on legal interpretation of the surtax earmark",
-    },
-    {
-      group: "State budget writers",
-      impact: "cost",
-      body: "A lower, steadily tightening cap constrains how much revenue is available for the operating budget, and diversions into refunds reduce funds for programs and services.",
-      basis: "Petition text",
-    },
-    {
-      group: "Business & fiscal-conservative groups",
-      impact: "benefits",
-      body: "Supporters view a tighter cap as restoring spending discipline and improving competitiveness. Some business-aligned fiscal watchdogs (MTF) nonetheless oppose it as destabilizing.",
-      basis: "Proponent statements; MTF opposition",
+      basis:
+        "Opponent statements; proponents dispute the earmark is affected",
     },
   ] as Stakeholder[],
 
@@ -97,9 +107,12 @@ export const RC = {
   overviewVotes: {
     yes: {
       vote: "yes",
-      summary: "Recalculates the 62F cap so refunds trigger more often.",
+      summary:
+        "Recalculates the 62F cap and includes the 2022 surtax so refunds trigger more often.",
       organizerIds: ["taxpayers-affordable-ma"],
-      funding: "$1.71M",
+      funding: "$1.71m",
+      fundingCash: "$100k",
+      fundingInKind: "$1.61m",
       sideLabel: "Endorsing Orgs",
       official: {
         text: "This is placeholder language standing in for the endorsing parties' official statement as it will appear in the Information for Voters once the question is numbered. It will lay out, in the state's official wording, why supporters believe voters should vote YES to restore the taxpayer-refund guarantee of Chapter 62F.",
@@ -108,13 +121,14 @@ export const RC = {
     },
     no: {
       vote: "no",
-      summary: "Keeps the current 62F formula unchanged.",
+      summary:
+        "Makes no change in the law. Chapter 62F retains its current formula and excludes the 2022 surtax.",
       organizerIds: ["protect-ma-future"],
       funding: "$0",
       sideLabel: "Opposing Orgs",
       official: {
         text: "This is placeholder language standing in for the opposing parties' official statement as it will appear in the Information for Voters once the question is numbered. It will lay out, in the state's official wording, why opponents believe voters should vote NO to protect funding for schools, healthcare, and public services.",
-        who: "Rep for Protect Massachusetts Future",
+        who: "Rep for Protect Massachusetts' Future",
       },
     },
   } as { yes: VoteSide; no: VoteSide },
@@ -240,17 +254,18 @@ export const RC = {
     },
     {
       title: "Restores a Guarantee Voters Already Approved",
-      body: "Supporters argue voters passed 62F in 1986 precisely to force automatic refunds when the state over-collects — but exclusions, especially the surtax carve-out, have made it trigger only twice in 40 years. Recalculating from actual collections restores the protection as intended.",
+      body: "Supporters argue voters passed 62F in 1986 to force refunds when the state over-collects, but exclusions, especially the 2022 surtax carve-out, have made it trigger only twice in 40 years.",
     },
   ] as Arg[],
   noArgs: [
     {
       title: "The Benefits Flow to the Top",
-      body: "Because 62F refunds are proportional to tax paid, critics note the largest dollar refunds go to the highest earners, while the services cut to fund them are used most by everyone else.",
+      body:
+        "Because 62F refunds are proportional to tax paid, critics note the largest dollar refunds go to the highest earners, while the services cut to fund them are used most by everyone else.",
     },
     {
       title: "Cuts Hit Schools, Transit, and Health Care",
-      body: "The opposition campaign projects that diverting billions from the budget — and counting dedicated surtax revenue toward the cap — would force layoffs and cuts to classrooms, hospitals, and infrastructure that communities depend on.",
+      body: "The opposition campaign projects that diverting billions from the budget, and counting dedicated surtax revenue toward the cap, would force layoffs and cuts to classrooms, hospitals, and infrastructure that communities depend on.",
     },
     {
       title: "It Progressively Lowers the Budget Over Time",
@@ -434,16 +449,8 @@ export const RC = {
         "“The measures would strip billions from classrooms, hospitals, and research and eliminate hundreds of thousands of jobs.”",
       mark: "attributed",
       source: "testimony",
-      note: "Asserted by Protect Massachusetts Future about the two tax questions combined — a campaign projection, not an official fiscal estimate.",
+      note: "Asserted by Protect Massachusetts' Future about the two tax questions combined — a campaign projection, not an official fiscal estimate.",
       ids: ["protectMAFuture", "mapleTestimony"],
-    },
-    {
-      claim:
-        "“Millionaires will get $10,000 back from the income-tax cut; minimum-wage workers get $300.”",
-      mark: "attributed",
-      source: "testimony",
-      note: "Asserted by Senate President Spilka; the figures describe the companion income-tax question, not 62F directly, though the distributional point is applied to both.",
-      ids: ["masslive62F", "mapleTestimony"],
     },
   ] as ClaimRow[],
 
@@ -577,7 +584,7 @@ export const RC = {
       ],
     },
     {
-      name: "Protect Massachusetts Future",
+      name: "Protect Massachusetts' Future",
       stance: "no",
       total: "$0",
       cash: "$0",
@@ -1201,9 +1208,9 @@ export const BIBLIOGRAPHY: {
         url: SOURCES.taxpayersForAffordableMA.url,
       },
       {
-        author: "Protect Massachusetts Future",
+        author: "Protect Massachusetts' Future",
         date: "n.d.",
-        title: "Protect Massachusetts Future [Ballot question committee]",
+        title: "Protect Massachusetts' Future [Ballot question committee]",
         url: SOURCES.protectMAFuture.url,
       },
     ],

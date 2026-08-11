@@ -2,24 +2,62 @@
 // "Ask Maple a question" panel. Prototype stub: the input doesn't submit
 // anywhere yet, consistent with the page's other "Ask MAPLE" affordances.
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import mapleUrl from "../../../assets/maplesunniesheadtilt.png";
 
-export function MapleFab() {
-  const [open, setOpen] = useState(false);
-  // Bumped on every click to replay the one-shot "pop" animation (via key).
+// The wave is the transition, so the panel has none of its own and nothing
+// animates on top of the motion already running.
+const WAVE_MS = 500;
+// Exported so the page can time its own trigger the same way. Slightly ahead of
+// the wave's end, so the panel lands as the leaf settles rather than after it.
+export const ASK_DELAY_MS = 350;
+
+// Open state lives on the page so other affordances (e.g. the Ask Maple card
+// on Bibliography) can raise the panel too. Incrementing `nudge` waves the leaf
+// without opening anything, which lets a caller draw the eye down here first
+// and open the panel a beat later.
+export function MapleFab({
+  open,
+  onOpenChange,
+  nudge = 0,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  nudge?: number;
+}) {
+  // Bumped to replay the one-shot wave (via key on the wrapper).
   const [pop, setPop] = useState(0);
+  useEffect(() => {
+    if (nudge) setPop((c) => c + 1);
+  }, [nudge]);
+
+  const timer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (timer.current) window.clearTimeout(timer.current);
+    },
+    [],
+  );
+  const waveThenToggle = () => {
+    setPop((c) => c + 1);
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => onOpenChange(!open), ASK_DELAY_MS);
+  };
+
   return (
     <div className="fixed bottom-[24px] right-[24px] z-50 flex flex-col items-end gap-[12px]">
       <style>{`
         @keyframes maple-wave {
           0%   { transform: rotate(0deg); }
-          20%  { transform: rotate(-12deg); }
-          40%  { transform: rotate(9deg); }
-          60%  { transform: rotate(-6deg); }
-          80%  { transform: rotate(3deg); }
+          25%  { transform: rotate(-12deg); }
+          50%  { transform: rotate(8deg); }
+          75%  { transform: rotate(-4deg); }
           100% { transform: rotate(0deg); }
+        }
+        .maple-wave { animation: maple-wave ${WAVE_MS}ms ease-out; }
+        @media (prefers-reduced-motion: reduce) {
+          .maple-wave { animation: none; }
         }
       `}</style>
       {open && (
@@ -30,7 +68,7 @@ export function MapleFab() {
               Ask Maple a question
             </p>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               aria-label="Close"
               className="text-[#808080] hover:text-black cursor-pointer"
             >
@@ -51,10 +89,7 @@ export function MapleFab() {
         </div>
       )}
       <button
-        onClick={() => {
-          setOpen((o) => !o);
-          setPop((c) => c + 1);
-        }}
+        onClick={waveThenToggle}
         aria-label="Ask Maple a question"
         aria-expanded={open}
         title="Ask Maple a question"
@@ -65,7 +100,7 @@ export function MapleFab() {
             Remounting via key restarts the wave on each click. */}
         <span
           key={pop}
-          className={`inline-flex ${pop > 0 ? "animate-[maple-wave_0.6s_ease-out]" : ""}`}
+          className={`inline-flex ${pop > 0 ? "maple-wave" : ""}`}
         >
           <img
             src={mapleUrl}

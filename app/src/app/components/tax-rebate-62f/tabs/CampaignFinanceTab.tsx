@@ -18,7 +18,7 @@ export function CampaignFinanceTab({ onNext }: { onNext?: () => void }) {
           Technology Council and the Pioneer Institute. The same committee,
           Taxpayers for an Affordable Massachusetts, also supports the companion
           income-tax-cut question. The opposition committee, Protect
-          Massachusetts Future, had registered but reported no contributions or
+          Massachusetts' Future, had registered but reported no contributions or
           spending in this window. Dollar amounts are drawn from itemized OCPF
           filings; MAPLE does not estimate figures, and the next scheduled
           reports were due in September 2026.

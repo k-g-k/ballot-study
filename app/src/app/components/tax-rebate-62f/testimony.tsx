@@ -2,14 +2,30 @@
 // from the testimony record + its account), anticipating per-testimony URLs.
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { X, ChevronLeft, ChevronRight, ChevronDown, Users } from "lucide-react";
-import { Card, FilterChip } from "../ballot";
-import type { DescriptorMode } from "../ballot";
-import { UserAvatar, UserTypeIcon, StanceChip } from "./accounts";
 import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  Users,
+  Plus,
+  Share,
+} from "lucide-react";
+import { Card, FilterChip, Modal } from "../ballot";
+import type { DescriptorMode } from "../ballot";
+import {
+  UserAvatar,
+  UserTypeIcon,
+  StanceChip,
+  STANCE_CHIP,
+} from "./accounts";
+import { EndorseIcon, OpposeIcon, NeutralIcon } from "./stance-icons";
+import {
+  RC,
   POSITION_USERS,
   testimonyFor,
   type TestimonyItem,
+  type TestimonyStance,
   type PositionUserType,
 } from "../../data/tax-rebate-62f";
 
@@ -82,12 +98,21 @@ export function TestimonyEntry({
   showTypeIcon = true,
   showDescriptor = true,
   onOpen,
+  fullBody = false,
+  hideAvatar = false,
 }: {
   t: TestimonyItem;
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
   /** Click-through to the testimony's own page (routing wired later). */
   onOpen?: (id: string) => void;
+  /**
+   * Render the body whole, without the six-line clamp and its Show more.
+   * Used where the testimony is the point rather than one of a list.
+   */
+  fullBody?: boolean;
+  /** Omit the avatar, for views that already show it above the card. */
+  hideAvatar?: boolean;
 }) {
   const user = POSITION_USERS.find((u) => u.id === t.userId);
   if (!user) return null;
@@ -100,15 +125,19 @@ export function TestimonyEntry({
       className={`relative px-[20px] py-[16px] rounded-[8px] ${onOpen ? "cursor-pointer" : ""}`}
     >
       <div className="relative flex items-start gap-[12px]">
-        <UserAvatar user={user} />
+        {!hideAvatar && <UserAvatar user={user} />}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-[6px] flex-wrap">
-            <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.3]">
-              {user.name}
-            </p>
-            {showTypeIcon && <UserTypeIcon type={user.userType} />}
-            {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
-            <span className="ml-auto font-['Nunito'] text-[12px] text-[#808080] whitespace-nowrap">
+          {/* Name, type and stance wrap inside their own box; the date sits
+              outside it so it always holds the top-right corner. */}
+          <div className="flex items-start gap-[6px]">
+            <div className="flex-1 min-w-0 flex items-center gap-[6px] flex-wrap">
+              <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.3]">
+                {user.name}
+              </p>
+              {showTypeIcon && <UserTypeIcon type={user.userType} />}
+              {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
+            </div>
+            <span className="shrink-0 font-['Nunito'] text-[12px] text-[#808080] whitespace-nowrap">
               {t.date}
             </span>
           </div>
@@ -117,7 +146,13 @@ export function TestimonyEntry({
               {user.descriptor}
             </p>
           )}
-          <ClampedBody text={t.body} />
+          {fullBody ? (
+            <p className="font-['Nunito'] text-[14px] text-black leading-[1.55] mt-[8px] whitespace-pre-line">
+              {t.body}
+            </p>
+          ) : (
+            <ClampedBody text={t.body} />
+          )}
         </div>
       </div>
     </div>
@@ -244,6 +279,284 @@ function TypeFilterMenu({
   );
 }
 
+// The stance filter as a dropdown, for widths where the four-segment control
+// no longer fits. Same shape and behaviour as TypeFilterMenu so the two read as
+// a pair when both are collapsed.
+function StanceFilterMenu({
+  value,
+  onChange,
+}: {
+  value: StanceFilter;
+  onChange: (v: StanceFilter) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  const current =
+    STANCE_FILTERS.find((t) => t.id === value) ?? STANCE_FILTERS[0];
+  // Standing alone in a dropdown, "All" has nothing to be all of. In the
+  // segmented control the other three segments supply that context.
+  const label = (t: (typeof STANCE_FILTERS)[number]) =>
+    t.id === "all" ? "All Positions" : t.label;
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[100px] border cursor-pointer transition-colors bg-[rgba(232,239,255,0.68)] border-[#c9d8ff] text-[#1e3f8a]"
+      >
+        {label(current)}
+        <ChevronDown className="w-[12px] h-[12px]" />
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[160px] bg-white border border-[#dee2e6] rounded-[8px] shadow-[0_8px_24px_rgba(0,0,0,0.12)] py-[4px]"
+        >
+          {STANCE_FILTERS.map((t) => (
+            <button
+              key={t.id}
+              role="option"
+              aria-selected={t.id === value}
+              onClick={() => {
+                onChange(t.id);
+                setOpen(false);
+              }}
+              className={`flex items-center gap-[8px] w-full text-left font-['Nunito'] text-[13px] px-[12px] py-[6px] cursor-pointer hover:bg-[#f5f5f5] ${
+                t.id === value ? "font-bold text-[#12266f]" : "text-[#334156]"
+              }`}
+            >
+              {label(t)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The stance as a large mark for the modal header, borrowing the chip's own
+// colours so the two agree at a glance.
+// Outline in the chip's text colour, filled with the chip's border colour: a
+// lighter tone of the same hue, so the shape stays readable at badge size.
+// The stance as a mark for the modal header. The icon and the ring take the
+// same colour, so the mark reads as one thing rather than a badge on a circle.
+// Oppose is orange here rather than the chip's red: against the endorse green,
+// orange separates far better for the common red-green colour blindness. The
+// chips keep their own reds, since there the word carries the meaning.
+const STANCE_MARK: Record<
+  TestimonyStance,
+  { Icon: typeof EndorseIcon; hex: string }
+> = {
+  endorse: { Icon: EndorseIcon, hex: "#166534" },
+  oppose: { Icon: OpposeIcon, hex: "#c2410c" },
+  "no-position": { Icon: NeutralIcon, hex: "#606060" },
+};
+
+// Opens a testimony in place. The body is the same TestimonyEntry the feed
+// renders, so the card a reader clicked is literally the card they get. Later
+// this gets its own route; the modal is the step before that.
+function TestimonyModal({
+  t,
+  showTypeIcon,
+  showDescriptor,
+  onClose,
+}: {
+  t: TestimonyItem;
+  showTypeIcon?: boolean;
+  showDescriptor?: DescriptorMode;
+  onClose: () => void;
+}) {
+  const user = POSITION_USERS.find((u) => u.id === t.userId);
+  return (
+    <Modal
+      onClose={onClose}
+      title={
+        <div className="flex items-center gap-[12px]">
+          {/* The stance alone, ringed in its own colour. The account's logo is
+              in the card below, so this says what was said, not who said it. */}
+          {(() => {
+            const { Icon, hex } = STANCE_MARK[t.stance];
+            return (
+              <div
+                // Inline width: Tailwind reads a bare border-[…] as a colour,
+                // so an arbitrary pixel width compiles to nothing.
+                style={{ borderColor: hex, color: hex, borderWidth: 3 }}
+                className="w-[40px] h-[40px] shrink-0 rounded-full border-solid bg-white flex items-center justify-center"
+              >
+                <Icon className="h-[18px] w-auto" />
+              </div>
+            );
+          })()}
+          <p className="font-['Nunito'] font-normal text-[18px] text-black">
+            Ballot Question {RC.number} - {RC.title}
+          </p>
+        </div>
+      }
+      headerActions={
+        <button
+          aria-label="Share this testimony"
+          className="text-[#606060] hover:text-black cursor-pointer"
+        >
+          <Share className="w-[19px] h-[19px]" />
+        </button>
+      }
+      footer={
+        // Deliberately empty: the bar is here so its slots have somewhere to
+        // go, and so the scroll behaviour beneath it can be judged.
+        <div className="h-[36px]" />
+      }
+      maxWidth="880px"
+      minHeight="480px"
+      mainMinWidth="600px"
+      aside={
+        // Everything that acts on this testimony rather than being part of it.
+        <div className="bg-white rounded-[8px] p-[16px]">
+          <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[10px]">
+            Actions
+          </p>
+          <div className="flex flex-col gap-[8px]">
+            {["Follow This Account", "Add Your Perspective", "Report"].map(
+              (label) => (
+                <button
+                  key={label}
+                  className="w-full text-left font-['Nunito'] font-semibold text-[13px] text-[#12266f] hover:bg-[#f5f5f5] rounded-[4px] px-[8px] py-[6px] cursor-pointer"
+                >
+                  {label}
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+      }
+    >
+      <div className="bg-white rounded-[8px]">
+        <TestimonyEntry
+          t={t}
+          showTypeIcon={showTypeIcon}
+          showDescriptor={showDescriptor}
+          fullBody
+        />
+      </div>
+    </Modal>
+  );
+}
+
+// Composing a submission. A best guess at the shape: who you are, where you
+// stand, what you want to say, with the rules of the road beside it rather
+// than buried under it. Nothing submits; this is the form, not the plumbing.
+function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
+  const [stance, setStance] = useState<TestimonyStance>("endorse");
+  const choices: { id: TestimonyStance; label: string }[] = [
+    { id: "endorse", label: "I support it" },
+    { id: "oppose", label: "I oppose it" },
+    { id: "no-position", label: "No position" },
+  ];
+  return (
+    <Modal
+      onClose={onClose}
+      maxWidth="860px"
+      minHeight="520px"
+      mainMinWidth="520px"
+      asideFirst
+      footer={
+        <div className="flex items-center justify-end gap-[12px]">
+          <button
+            onClick={onClose}
+            className="font-['Nunito'] font-bold text-[13px] text-[#606060] hover:text-black cursor-pointer px-[8px] py-[8px]"
+          >
+            Cancel
+          </button>
+          <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[4px] cursor-pointer hover:bg-[#0d1c52]">
+            Review and Post
+          </button>
+        </div>
+      }
+      title={
+        <p className="font-['Nunito'] font-normal text-[18px] text-black">
+          Add your perspective on Ballot Question {RC.number}
+        </p>
+      }
+      aside={
+        <div className="flex flex-col gap-[16px]">
+          <div className="bg-white rounded-[8px] p-[20px]">
+            <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[8px]">
+              Before you post
+            </p>
+            <ul className="list-disc list-outside pl-[16px] space-y-[8px] font-['Nunito'] text-[12px] text-[#606060] leading-[1.5] marker:text-[#c9c9c9]">
+              <li>
+                Write in your own words. MAPLE does not edit or rank what you
+                say.
+              </li>
+              <li>Posting is public and stays attached to your account.</li>
+              <li>
+                You can revise it later; earlier versions stay on the record.
+              </li>
+            </ul>
+          </div>
+          {/* Both sit on the panel's grey rather than in cards: they point off
+              this form rather than being part of it. */}
+          <a
+            href="https://www.mapletestimony.org/learn/writing-effective-testimony"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-['Nunito'] text-[12px] text-[#606060] hover:text-[#12266f] px-[16px]"
+          >
+            Testimony writing tips
+          </a>
+          <button className="text-left font-['Nunito'] text-[12px] text-[#606060] hover:text-[#12266f] cursor-pointer px-[16px]">
+            View our code of conduct
+          </button>
+        </div>
+      }
+    >
+      <div className="bg-white rounded-[8px] p-[20px]">
+        <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[8px]">
+          Your position
+        </p>
+        <div className="flex gap-[8px] flex-wrap mb-[20px]">
+          {choices.map(({ id, label }) => {
+            const { Icon } = STANCE_MARK[id];
+            const c = STANCE_CHIP[id];
+            const on = stance === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setStance(id)}
+                aria-pressed={on}
+                // Selected, it wears the same colours the chip on a posted
+                // testimony will, so the choice previews its own result.
+                className={`inline-flex items-center gap-[8px] rounded-[4px] border px-[14px] py-[8px] font-['Nunito'] font-semibold text-[13px] cursor-pointer transition-colors ${
+                  on
+                    ? `${c.bg} border-[#d1d1d1] ${c.tx}`
+                    : "bg-white border-[#d1d1d1] text-[#606060] hover:bg-[#f5f5f5]"
+                }`}
+              >
+                <Icon className="h-[16px] w-auto" />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        <textarea
+          rows={10}
+          placeholder="What do you want lawmakers and other voters to know about this question?"
+          className="w-full resize-none border border-[#d1d1d1] rounded-[8px] p-[12px] font-['Nunito'] text-[14px] text-black leading-[1.55] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#12266f]"
+        />
+      </div>
+    </Modal>
+  );
+}
+
 export function TestimonyFeed({
   items,
   showTypeIcon = true,
@@ -278,6 +591,9 @@ export function TestimonyFeed({
   const [filter, setFilter] = useState<StanceFilter>(initialFilter);
   // Following is an overlay, not a stance: it combines with every stance chip.
   const [followingOnly, setFollowingOnly] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [composing, setComposing] = useState(false);
+  const openItem = items.find((t) => t.id === openId);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>(initialTypeFilter);
   // The feed itself is masked so entries fade out in opacity as they rise
   // toward the pinned bar. The fade line is fixed to the viewport while the
@@ -356,7 +672,7 @@ export function TestimonyFeed({
                   {title}
                 </h3>
               )}
-              <div className="ml-auto flex items-center gap-[6px] flex-wrap">
+              <div className="flex items-center gap-[6px]">
                 {includeTypeFilter && (
                   <>
                     <TypeFilterMenu
@@ -371,10 +687,13 @@ export function TestimonyFeed({
                     </span>
                   </>
                 )}
+                <div className="min-[1191px]:hidden">
+                  <StanceFilterMenu value={filter} onChange={setFilter} />
+                </div>
                 <div
                   role="group"
                   aria-label="Filter by stance"
-                  className="inline-flex items-center rounded-[100px] border border-[#d1d1d1] bg-white overflow-hidden"
+                  className="hidden min-[1191px]:inline-flex items-center rounded-[100px] border border-[#d1d1d1] bg-white overflow-hidden"
                 >
                   {STANCE_FILTERS.map(({ id, label }) => (
                     <button
@@ -416,6 +735,22 @@ export function TestimonyFeed({
                   </>
                 )}
               </div>
+              {/* An action, not a filter: pushed to the far right so the chips
+                  read as one group and this reads as separate from them. Same
+                  height as they are, square corners so it does not look like
+                  one more thing to toggle. */}
+              <button
+                onClick={() => setComposing(true)}
+                className="ml-auto inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[4px] border bg-white border-[#d1d1d1] text-[#606060] hover:bg-[#f5f5f5] cursor-pointer transition-colors"
+              >
+                <Plus className="w-[13px] h-[13px]" />
+                {/* Two labels, one shown at a time: at narrow widths the row
+                    needs the space more than the sentence. */}
+                <span className="max-[1010px]:hidden">
+                  Add Your Perspective
+                </span>
+                <span className="hidden max-[1010px]:inline">Add</span>
+              </button>
             </div>
           </div>
         </div>
@@ -438,11 +773,15 @@ export function TestimonyFeed({
             className="flex flex-col gap-[16px]"
           >
             {shown.map((t) => (
-              <div key={t.id} className="bg-white rounded-[8px]">
+              <div
+                key={t.id}
+                className="bg-white rounded-[8px] transition-shadow hover:shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
+              >
                 <TestimonyEntry
                   t={t}
                   showTypeIcon={showTypeIcon}
                   showDescriptor={showDescriptor}
+                  onOpen={setOpenId}
                 />
               </div>
             ))}
@@ -471,8 +810,11 @@ export function TestimonyFeed({
           </p>
           <div className="flex gap-[10px] justify-center mt-[14px] flex-wrap">
             {typeFilter === "individual" && (
-              <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[#0d1c52]">
-                Share your perspective
+              <button
+                onClick={() => setComposing(true)}
+                className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[#0d1c52]"
+              >
+                Add Your Perspective
               </button>
             )}
             <button
@@ -483,10 +825,19 @@ export function TestimonyFeed({
               }}
               className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]"
             >
-              Clear filters
+              Clear Filters
             </button>
           </div>
         </div>
+      )}
+      {composing && <AddPerspectiveModal onClose={() => setComposing(false)} />}
+      {openItem && (
+        <TestimonyModal
+          t={openItem}
+          showTypeIcon={showTypeIcon}
+          showDescriptor={showDescriptor}
+          onClose={() => setOpenId(null)}
+        />
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { Study } from "../types";
 
 // A titled, bulleted list of studies (citation — affiliation — finding — link).
@@ -34,7 +34,7 @@ export function ResearchGroup({
                 rel="noopener noreferrer"
                 className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] ml-[4px] align-baseline"
               >
-                Source <ExternalLink className="w-[11px] h-[11px]" />
+                Source <ArrowUpRight className="w-[13px] h-[13px]" />
               </a>
             )}
           </li>

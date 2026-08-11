@@ -13,12 +13,16 @@ const SECTIONS: { id: Section; label: string }[] = [
 
 export function PublicPerspectivesTab({
   orgFilter = "all",
+  initialSection = "testimony",
   onNext,
 }: {
   orgFilter?: StanceFilter;
+  /** Which sub-tab to land on, e.g. when arriving from the hero. */
+  initialSection?: Section;
   onNext?: () => void;
 }) {
-  const [section, setSection] = useState<Section>("testimony");
+  const [section, setSection] = useState<Section>(initialSection);
+  useEffect(() => setSection(initialSection), [initialSection]);
   // The sub-tab bar pins under the sticky hero and the filter bar pins under
   // that, so its height is mirrored into a CSS variable the same way the shell
   // mirrors the hero's.

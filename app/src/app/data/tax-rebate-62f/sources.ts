@@ -264,10 +264,10 @@ export const SOURCES: Sources = {
     note: "The committee registered to support the 62F reform (and the companion income-tax question); financed largely by the Massachusetts Opportunity Alliance.",
   },
   protectMAFuture: {
-    label: "Protect Massachusetts Future (No committee)",
+    label: "Protect Massachusetts' Future (No committee)",
     kind: "official",
     url: "https://www.protectmassachusettsfuture.com/",
-    title: "Protect Massachusetts Future",
+    title: "Protect Massachusetts' Future",
     meta: "Ballot question committee opposing the measure",
     note: "The labor- and community-backed committee leading opposition to the 62F and income-tax questions.",
   },

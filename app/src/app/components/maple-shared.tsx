@@ -308,7 +308,7 @@ export const PAGE_HEADING_SIZE = 28;
 export function PageHeading({ children }: { children: React.ReactNode }) {
   return (
     <h1
-      className="font-['Nunito'] font-normal"
+      className="font-['Nunito'] font-normal leading-[1.1]"
       style={{ fontSize: PAGE_HEADING_SIZE, color: "#1a1a1a" }}
     >
       {children}

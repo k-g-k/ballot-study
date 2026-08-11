@@ -15,7 +15,7 @@ import { NextStepCard } from "./NextStepCard";
 export function SummaryCard() {
   return (
     <SynthSummaryCard
-      title="Context Overview"
+      title="Arguments at a Glance"
       ids={["petition", "maoBrief", "massBudget", "mtfPosition", "masslive62F"]}
       prompt="Summarize what the 62F reform measure would do and how each side frames it. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
     >
@@ -71,11 +71,7 @@ export function DisagreementCard() {
 
 export function ArgumentsAtAGlanceCard() {
   return (
-    <Card
-      title="Arguments at a Glance"
-      stickyTop="var(--hero-h, 0px)"
-      subtitle="Synthesized from the ballot petition, both campaign committees, independent analyses, and testimony submitted to MAPLE."
-    >
+    <Card title="Key Arguments" stickyTop="var(--hero-h, 0px)">
       <div className="flex gap-[24px] max-lg:flex-col">
         <ArgColumn title="YES Arguments" args={RC.yesArgs} />
         <ArgColumn title="NO Arguments" args={RC.noArgs} />

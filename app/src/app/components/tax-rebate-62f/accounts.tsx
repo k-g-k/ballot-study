@@ -9,9 +9,12 @@ import type { PositionUser, TestimonyStance } from "../../data/tax-rebate-62f";
 export function UserAvatar({
   user,
   size = 40,
+  bordered = true,
 }: {
   user: PositionUser;
   size?: number;
+  /** Drop the hairline when something else already outlines the avatar. */
+  bordered?: boolean;
 }) {
   if (user.avatar) {
     return (
@@ -19,14 +22,18 @@ export function UserAvatar({
         src={user.avatar}
         alt={user.name}
         style={{ width: size, height: size }}
-        className="rounded-full object-cover bg-white border border-[#e5e7eb] shrink-0"
+        className={`rounded-full object-cover bg-white shrink-0 ${
+          bordered ? "border border-[#e5e7eb]" : ""
+        }`}
       />
     );
   }
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full bg-[rgba(232,239,255,0.68)] border border-[#c9d8ff] flex items-center justify-center shrink-0"
+      className={`rounded-full bg-[rgba(232,239,255,0.68)] flex items-center justify-center shrink-0 ${
+        bordered ? "border border-[#c9d8ff]" : ""
+      }`}
     >
       <span
         style={{ fontSize: size >= 40 ? 12 : 10 }}
@@ -41,13 +48,25 @@ export function UserAvatar({
 export function AvatarWithTooltip({
   user,
   size = 40,
+  ringColor,
 }: {
   user: PositionUser;
   size?: number;
+  /** Wraps the avatar in a coloured ring, e.g. the side it has taken. */
+  ringColor?: string;
 }) {
   return (
     <div className="relative group shrink-0">
-      <UserAvatar user={user} size={size} />
+      {ringColor ? (
+        <div
+          style={{ borderColor: ringColor }}
+          className="rounded-full border-2 leading-none"
+        >
+          <UserAvatar user={user} size={size} />
+        </div>
+      ) : (
+        <UserAvatar user={user} size={size} />
+      )}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-[6px] hidden group-hover:block bg-[#1a1a1a] text-white font-['Nunito'] text-[12px] px-[8px] py-[4px] rounded-[6px] whitespace-nowrap z-20 pointer-events-none">
         {user.name}
       </div>
@@ -120,7 +139,7 @@ export function PositionUserGroup({
   );
 }
 
-const STANCE_CHIP: Record<
+export const STANCE_CHIP: Record<
   TestimonyStance,
   { bg: string; bd: string; tx: string; label: string }
 > = {

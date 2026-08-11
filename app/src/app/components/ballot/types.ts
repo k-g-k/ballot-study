@@ -77,6 +77,13 @@ export interface VoteSide {
   organizerIds: string[];
   /** Total raised — links to this page's Campaign Finance tab, not externally. */
   funding: string;
+  /**
+   * How the total splits. Shown only on hover, since the headline figure is
+   * what a reader scans for and the breakdown is what they ask about second.
+   * Omit both when nothing was raised.
+   */
+  fundingCash?: string;
+  fundingInKind?: string;
   sideLabel: string;
   /** This side's AG-approved statement (filler language in this prototype). */
   official: { text: string; who: string };

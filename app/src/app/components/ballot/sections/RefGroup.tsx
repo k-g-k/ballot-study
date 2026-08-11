@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useSources } from "../sources-context";
 
 // A titled, bulleted bibliography group rendered from source ids in the
@@ -39,7 +39,7 @@ export function RefGroup({ title, ids }: { title?: string; ids: string[] }) {
                   rel="noopener noreferrer"
                   className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] ml-[4px] align-baseline"
                 >
-                  Source <ExternalLink className="w-[11px] h-[11px]" />
+                  Source <ArrowUpRight className="w-[13px] h-[13px]" />
                 </a>
               )}
             </li>

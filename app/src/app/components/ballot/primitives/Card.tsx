@@ -5,10 +5,13 @@ export function Card({
   title,
   subtitle,
   stickyTop,
+  headerRight,
   children,
 }: {
   title?: ReactNode;
   subtitle?: string;
+  /** Control sitting opposite the title, e.g. a view toggle or a jump link. */
+  headerRight?: ReactNode;
   /**
    * When set, the title pins at this offset while the card is in view and
    * releases at the card's own bottom edge. Only worth it on cards that can
@@ -31,9 +34,12 @@ export function Card({
             {title}
           </h3>
         ) : (
-          <h3 className="font-['Nunito'] font-normal text-[18px] text-black mb-[4px]">
-            {title}
-          </h3>
+          <div className="flex items-center justify-between gap-[16px] mb-[4px]">
+            <h3 className="font-['Nunito'] font-normal text-[18px] text-black">
+              {title}
+            </h3>
+            {headerRight}
+          </div>
         ))}
       {subtitle && (
         <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[14px]">

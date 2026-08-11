@@ -6,13 +6,15 @@
 //
 // Avatars are official images, or initials if no image is available.
 
+import avatarPMF from "../../assets/avatars/protect-ma-future.png";
+import avatarTAM from "../../assets/avatars/taxpayers-affordable-ma.png";
+import avatarSpilka from "../../assets/avatars/spilka.jpg";
 import avatarMassFiscal from "../../assets/avatars/mass-fiscal.png";
 import avatarSeiu509 from "../../assets/avatars/seiu-509.png";
 import avatarPioneer from "../../assets/avatars/pioneer-institute.png";
 import avatarMHTC from "../../assets/avatars/mass-high-tech-council.png";
 import avatarMassBudget from "../../assets/avatars/massbudget.png";
 import avatarMTA from "../../assets/avatars/mta.png";
-import avatarSpilka from "../../assets/avatars/spilka.jpg";
 import avatarMOA from "../../assets/avatars/mass-opportunity-alliance.png";
 import avatarMTF from "../../assets/avatars/mtf.png";
 
@@ -83,6 +85,7 @@ export const POSITION_USERS: PositionUser[] = [
     descriptor: "Ballot committee registered in support of the measure",
     stance: "supports",
     initials: "TAM",
+    avatar: avatarTAM,
   },
 
   // ── Opposing ─────────────────────────────────────────────────────────────────
@@ -93,6 +96,7 @@ export const POSITION_USERS: PositionUser[] = [
     descriptor: "Coalition opposing the tax ballot questions",
     stance: "opposes",
     initials: "PMF",
+    avatar: avatarPMF,
   },
   {
     id: "massbudget",

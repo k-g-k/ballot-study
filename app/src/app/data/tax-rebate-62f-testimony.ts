@@ -86,12 +86,4 @@ export const TESTIMONY: TestimonyItem[] = [
     body: "Educators across the Commonwealth have seen what happens when budgets are squeezed: larger classes, fewer counselors, and programs cut mid-year. Locking in a cap that falls a little further every lean year is a recipe for exactly that. And counting the revenue voters dedicated to schools and transportation in 2022 toward a refund cap works directly against the choice those same voters just made.",
   },
 
-  // ── No position ──────────────────────────────────────────────────────────────
-  {
-    id: "spilka-distribution",
-    userId: "spilka",
-    stance: "oppose",
-    date: "February 18, 2026",
-    body: "I do want to mention that lowering the income tax from 5% to 4% is sponsored by millionaires. Millionaires will get $10,000 back from that ballot initiative; folks making minimum wage will get $300. When you change the revenue cap the same way, the money the state gives back flows on the same terms — the more you paid, the more you get. Voters should understand who these questions are really written for.",
-  },
 ];

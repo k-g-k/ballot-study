@@ -1,4 +1,5 @@
 export { Card } from "./Card";
+export { Modal } from "./Modal";
 export { Cite, SourceNote, AISynthSources, SynthSourcesNote } from "./citations";
 export { CitationBlock } from "./CitationBlock";
 export { SynthSummaryCard, AnalysisSection, AISynth, ContentItem } from "./synthesis";

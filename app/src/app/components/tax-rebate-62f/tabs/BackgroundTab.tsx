@@ -207,7 +207,7 @@ export function WhoIsImpactedCard() {
     <Card
       title="Who is impacted"
       stickyTop="var(--hero-h, 0px)"
-      subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are projected or disputed."
+      subtitle="How different groups would be affected if the measure passes. Claims marked ⚠ are disputed."
     >
       <StakeholderGrid rows={RC.stakeholders} />
     </Card>
