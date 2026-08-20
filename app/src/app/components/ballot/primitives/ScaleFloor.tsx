@@ -4,11 +4,18 @@ import { useEffect, useState, type ReactNode } from "react";
 // instead, the way a phone shows a desktop site zoomed out. At or above it
 // nothing is applied and the layout is untouched.
 //
-// The text-size-adjust below is load-bearing, not defensive. iOS inflates text
-// inside a scaled box while leaving icons and fixed-width boxes at their scaled
-// size, so the page comes apart: oversized words in correctly-shrunk boxes.
-// Tailwind's preflight sets -webkit-text-size-adjust: 100% and iOS boosts
-// through it; none is the value that holds. globals.css sets it on html too.
+// This is the desktop half of the scaling; phones do not reach it. index.html
+// pins their layout viewport to this same width and scales it natively, so
+// clientWidth already reports the floor and no style is applied here. Native
+// scaling is used there because it is the browser's own zoom rather than a
+// property the page has to fight for.
+//
+// The text-size-adjust below is load-bearing either way. iOS inflates text in a
+// scaled or wide layout while leaving icons and fixed-width boxes at their
+// scaled size, so the page comes apart: oversized words in correctly-shrunk
+// boxes. Tailwind's preflight sets -webkit-text-size-adjust: 100% and iOS
+// boosts through it; none is the value that holds. globals.css sets it on html
+// for the native path, and this sets it again for anything landing here.
 //
 // Scales with CSS zoom rather than a transform. Zoom reflows, so the page keeps
 // its true height and sticky children go on pinning normally; a transform would
