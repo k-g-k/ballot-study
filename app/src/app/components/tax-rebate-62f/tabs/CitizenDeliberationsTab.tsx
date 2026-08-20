@@ -43,7 +43,7 @@ export function CitizenDeliberationsTab() {
               <p className="font-['Nunito'] font-bold text-[15px] text-black leading-[1.45]">
                 {th.title}
               </p>
-              <div className="flex gap-[24px] max-lg:flex-col max-lg:gap-[14px] mt-[12px]">
+              <div className="flex gap-[24px] mt-[12px]">
                 <DelibThemeCol label="Where groups agreed" text={th.agreed} />
                 <DelibThemeCol label="Where they split" text={th.split} />
                 <DelibThemeCol

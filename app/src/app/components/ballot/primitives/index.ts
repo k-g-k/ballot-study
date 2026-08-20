@@ -5,4 +5,6 @@ export { CitationBlock } from "./CitationBlock";
 export { SynthSummaryCard, AnalysisSection, AISynth, ContentItem } from "./synthesis";
 export { FilterChip } from "./FilterChip";
 export { Pagination } from "./Pagination";
+export { ScaleFloor } from "./ScaleFloor";
+export { TabBar } from "./TabBar";
 export { TwoColList } from "./TwoColList";

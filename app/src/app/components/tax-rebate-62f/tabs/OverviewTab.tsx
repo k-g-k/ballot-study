@@ -79,7 +79,7 @@ export function OverviewTab({
       </Card>
 
       {/* Yes / No comparison — organizers, funding, testifying orgs, official statements */}
-      <div ref={votesRef} className="flex gap-[16px] max-lg:flex-col">
+      <div ref={votesRef} className="flex gap-[16px]">
         <VoteCard
           d={RC.overviewVotes.yes}
           onOpenFinance={onOpenFinance}

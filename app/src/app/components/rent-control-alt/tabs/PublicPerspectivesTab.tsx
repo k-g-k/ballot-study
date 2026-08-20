@@ -43,7 +43,7 @@ export function PublicPerspectivesTab({
 
       <div
         ref={orgRef}
-        style={{ scrollMarginTop: "calc(var(--hero-h, 0px) + 16px)" }}
+        style={{ scrollMarginTop: "calc(var(--pinned-h, 0px) + 16px)" }}
       >
         <OrganizationTestimonyCard initialFilter={orgFilter} />
       </div>

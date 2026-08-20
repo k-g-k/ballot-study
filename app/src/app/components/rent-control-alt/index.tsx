@@ -43,7 +43,7 @@ export default function RentControlAlt() {
     const hero = heroRef.current;
     if (!column || !hero) return;
     const observer = new ResizeObserver(() => {
-      column.style.setProperty("--hero-h", `${hero.offsetHeight}px`);
+      column.style.setProperty("--pinned-h", `${hero.offsetHeight}px`);
     });
     observer.observe(hero);
     return () => observer.disconnect();
@@ -157,7 +157,7 @@ export default function RentControlAlt() {
           <div className="flex gap-[24px] items-start">
             <div
               className="w-[224px] shrink-0 flex flex-col gap-[16px] sticky"
-              style={{ top: "var(--hero-h, 0px)" }}
+              style={{ top: "var(--pinned-h, 0px)" }}
             >
               <div className="bg-white flex flex-col gap-[8px] p-[16px] rounded-[8px]">
                 {TABS.map((tab) => {

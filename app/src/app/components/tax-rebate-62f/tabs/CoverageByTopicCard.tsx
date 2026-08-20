@@ -13,7 +13,7 @@ export function CoverageByTopicCard() {
           releases it. Bled out to the card edges so content passes underneath
           rather than beside it. */}
       <h3
-        style={{ top: "var(--hero-h, 0px)" }}
+        style={{ top: "var(--pinned-h, 0px)" }}
         className="sticky z-[5] -mx-[24px] -mt-[24px] mb-[4px] rounded-t-[8px] bg-white px-[24px] pt-[24px] pb-[10px] font-['Nunito'] font-normal text-[18px] text-black"
       >
         Media Coverage

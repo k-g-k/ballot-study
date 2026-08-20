@@ -11,7 +11,7 @@ export function FinanceLedger({
 }) {
   return (
     <div>
-      <div className="flex gap-[16px] max-lg:flex-col">
+      <div className="flex gap-[16px]">
         {committees.map((c) => (
           <div
             key={c.name}

@@ -46,9 +46,9 @@ export function TwoColList({
   );
   return (
     <div>
-      <div className="flex gap-[16px] max-lg:flex-col">
+      <div className="flex gap-[16px]">
         <Col title={leftTitle} items={left} yes />
-        <div className="w-[1px] bg-[#e5e7eb] shrink-0 max-lg:hidden" />
+        <div className="w-[1px] bg-[#e5e7eb] shrink-0" />
         <Col title={rightTitle} items={right} yes={false} />
       </div>
       {ids && <SourceNote ids={ids} />}

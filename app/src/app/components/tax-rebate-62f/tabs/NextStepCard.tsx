@@ -21,7 +21,7 @@ export function NextStepCard({
     <button
       onClick={onClick}
       aria-label={action}
-      className="group w-full text-left rounded-[8px] border border-[#dee2e6] bg-[#f9fafc] px-[24px] py-[20px] flex items-center justify-between gap-[24px] max-lg:flex-col max-lg:items-start cursor-pointer transition-colors hover:bg-[#f1f4f9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#12266f]"
+      className="group w-full text-left rounded-[8px] border border-[#dee2e6] bg-[#f9fafc] px-[24px] py-[20px] flex items-center justify-between gap-[24px] cursor-pointer transition-colors hover:bg-[#f1f4f9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#12266f]"
     >
       <span className="min-w-0">
         <span className="block font-['Nunito'] font-bold text-[11px] tracking-[0.08em] uppercase text-[#64758b]">

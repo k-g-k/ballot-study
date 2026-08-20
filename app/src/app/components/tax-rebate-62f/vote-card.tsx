@@ -119,7 +119,7 @@ export function VoteCard({
               // The sticky hero covers the top of the viewport, so the usable
               // ceiling is its underside, not 0.
               const heroH =
-                parseFloat(getComputedStyle(el).getPropertyValue("--hero-h")) ||
+                parseFloat(getComputedStyle(el).getPropertyValue("--pinned-h")) ||
                 0;
               const above = r.top - heroH;
               const below = window.innerHeight - r.bottom;

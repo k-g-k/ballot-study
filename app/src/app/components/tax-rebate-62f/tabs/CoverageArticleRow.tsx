@@ -5,7 +5,7 @@ import type { CoverageArticle } from "../../../data/tax-rebate-62f";
 // source with a light hover background; renders as plain text when no URL.
 export function CoverageArticleRow({ a }: { a: CoverageArticle }) {
   const rowClass =
-    "flex gap-[16px] items-baseline max-lg:flex-wrap rounded-[6px] -mx-[8px] px-[8px] py-[6px] transition-colors";
+    "flex gap-[16px] items-baseline rounded-[6px] -mx-[8px] px-[8px] py-[6px] transition-colors";
   const inner = (
     <>
       <span className="font-['Nunito'] font-bold text-[12px] text-[#606060] w-[150px] shrink-0">

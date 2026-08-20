@@ -1,7 +1,7 @@
 // BQ3 — the Chapter 62F reform ballot-question deep-dive page.
 //
 // This file is only the SHELL: top nav, breadcrumb, sticky hero, the tab
-// sidebar + source-type legend, and the active-tab switch. Tab content lives in
+// control + source-type legend, and the active-tab switch. Tab content lives in
 // ./tabs/*.tsx, built from ../ballot sections and data from
 // ../../data/tax-rebate-62f — so moving a card = moving a JSX block in a tab
 // file, and changing words = editing the data module.
@@ -12,7 +12,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Bell, BellRing, BellPlus, BellOff, Share } from "lucide-react";
 import { MapleTopNav, PageHeading } from "../maple-shared";
-import { SourcesProvider, KIND_DOT, type SrcKind } from "../ballot";
+import { SourcesProvider, TabBar, KIND_DOT, type SrcKind } from "../ballot";
 import { RC, SOURCES } from "../../data/tax-rebate-62f";
 import { TABS, type TabId } from "./tabs";
 import type { StanceFilter } from "./testimony";
@@ -69,18 +69,43 @@ export function TaxRebate62FPage() {
   };
   const columnRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
 
-  // The hero's height changes with window width, so it is measured here and
-  // stored as a CSS variable the sidebar uses to position itself.
+  // Two measurements, because two things pin and they nest.
+  //
+  // --hero-h is the hero alone, which is where the tab control pins: directly
+  // under it at every width, beside the content when wide and above it when
+  // narrow.
+  //
+  // --pinned-h is the whole pinned stack, which is what everything inside a tab
+  // offsets against — card headers, the testimony filter bar, the Public
+  // Perspectives sub-tabs. Wide, the tabs sit beside the content, so the stack
+  // is just the hero. Narrow, they sit above it and count too, and content that
+  // pinned at --hero-h would slide under the strip.
+  //
+  // Both boxes change height with window width, hence an observer on each.
   useEffect(() => {
     const column = columnRef.current;
     const hero = heroRef.current;
-    if (!column || !hero) return;
-    const observer = new ResizeObserver(() => {
-      column.style.setProperty("--hero-h", `${hero.offsetHeight}px`);
-    });
+    const tabs = tabsRef.current;
+    if (!column || !hero || !tabs) return;
+    const wide = window.matchMedia("(min-width: 950px)");
+    const measure = () => {
+      const heroH = hero.offsetHeight;
+      column.style.setProperty("--hero-h", `${heroH}px`);
+      column.style.setProperty(
+        "--pinned-h",
+        `${wide.matches ? heroH : heroH + tabs.offsetHeight}px`,
+      );
+    };
+    const observer = new ResizeObserver(measure);
     observer.observe(hero);
-    return () => observer.disconnect();
+    observer.observe(tabs);
+    wide.addEventListener("change", measure);
+    return () => {
+      observer.disconnect();
+      wide.removeEventListener("change", measure);
+    };
   }, []);
 
   // Each tab's closing call to action opens the one after it in the sidebar, so
@@ -109,7 +134,7 @@ export function TaxRebate62FPage() {
 
   return (
     <SourcesProvider value={SOURCES}>
-      <div className="bg-[#ededed] min-h-screen min-w-[950px]">
+      <div className="bg-[#ededed] min-h-screen">
         <div className="relative">
           <MapleTopNav />
           {noticeOpen && (
@@ -245,37 +270,29 @@ export function TaxRebate62FPage() {
             </div>
           </div>
 
-          <div className="flex gap-[24px] items-start">
+          {/* Mobile-first: the tabs sit above the content as a pinned strip,
+              and the sidebar shape only returns at 950px, where there is room
+              for a column beside it. */}
+          <div className="flex flex-col gap-0 min-[950px]:flex-row min-[950px]:gap-[24px] min-[950px]:items-start">
+            {/* Pinned directly under the hero at both widths, so one offset
+                covers both. Narrow, the gap beneath it is bottom padding rather
+                than a row gap: padding travels with a sticky box, so the strip
+                keeps the same 16px of page colour under it that the hero leaves
+                above it, pinned or at rest, instead of white cards scrolling up
+                flush against the white strip. */}
             <div
-              className="w-[224px] shrink-0 flex flex-col gap-[16px] sticky"
-              style={{ top: "var(--hero-h, 0px)" }}
+              ref={tabsRef}
+              className="sticky top-[var(--hero-h,0px)] z-20 w-full bg-[#ededed] pb-[16px] flex flex-col gap-[16px] min-[950px]:w-[224px] min-[950px]:shrink-0 min-[950px]:bg-transparent min-[950px]:pb-0"
             >
-              <div className="bg-white flex flex-col gap-[8px] p-[16px] rounded-[8px]">
-                {TABS.map((tab) => {
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => handleTabChange(tab.id)}
-                      className={`cursor-pointer h-[36px] rounded-[8px] px-[10px] py-[6px] flex items-center justify-start transition-colors ${
-                        isActive
-                          ? "bg-[rgba(232,239,255,0.68)] border border-[#c9d8ff]"
-                          : ""
-                      }`}
-                    >
-                      <p
-                        className={`font-['Nunito'] font-semibold text-[14px] tracking-[0.14px] ${
-                          isActive ? "text-[#1e3f8a]" : "text-[#334156]"
-                        }`}
-                      >
-                        {tab.label}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-              {/* Source-type legend */}
-              <div className="space-y-[8px] pl-[40px]">
+              <TabBar
+                tabs={TABS}
+                active={activeTab}
+                onChange={handleTabChange}
+              />
+              {/* Source-type legend. The strip has no room for it below
+                  950px, and it explains colours that only appear further down
+                  the page, past where a pinned bar can help. */}
+              <div className="hidden min-[950px]:block space-y-[8px] pl-[40px]">
                 {(
                   [
                     ["official", "Official info"],

@@ -62,7 +62,7 @@ export function BibliographyTab({ onAskMaple }: { onAskMaple?: () => void }) {
       <div ref={cardRef} className="bg-white rounded-[8px] p-[24px]">
         <h3
           ref={titleRef}
-          style={{ top: "var(--hero-h, 0px)" }}
+          style={{ top: "var(--pinned-h, 0px)" }}
           className="sticky z-[6] -mx-[24px] -mt-[24px] rounded-t-[8px] bg-white px-[24px] pt-[24px] pb-[4px] font-['Nunito'] font-normal text-[18px] text-black"
         >
           Bibliography
@@ -76,7 +76,7 @@ export function BibliographyTab({ onAskMaple }: { onAskMaple?: () => void }) {
             <div key={sec.section}>
               <p
                 style={{
-                  top: "calc(var(--hero-h, 0px) + var(--bib-title-h, 0px))",
+                  top: "calc(var(--pinned-h, 0px) + var(--bib-title-h, 0px))",
                 }}
                 className="sticky z-[5] -mx-[24px] mb-[10px] bg-white px-[24px] py-[8px] font-['Nunito'] font-bold text-[15px] text-black"
               >

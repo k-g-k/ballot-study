@@ -130,7 +130,7 @@ export function PositionUserGroup({
       <p className="font-['Nunito'] font-semibold text-[13px] text-[#606060] uppercase tracking-[0.08em] mb-[10px]">
         {heading} ({users.length})
       </p>
-      <div className="grid grid-cols-2 gap-x-[24px] gap-y-[12px] max-lg:grid-cols-1">
+      <div className="grid grid-cols-2 gap-x-[24px] gap-y-[12px]">
         {users.map((u) => (
           <PositionUserRow key={u.id} user={u} />
         ))}

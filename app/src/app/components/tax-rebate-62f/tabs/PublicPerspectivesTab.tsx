@@ -50,7 +50,7 @@ export function PublicPerspectivesTab({
           filter bar's own top padding so it holds when both are stuck. */}
       <div
         ref={subTabsRef}
-        style={{ top: "var(--hero-h, 0px)" }}
+        style={{ top: "var(--pinned-h, 0px)" }}
         className="sticky z-[9] flex gap-[24px] bg-[#ededed] pt-[4px] -mb-[16px]"
       >
         {SECTIONS.map((s) => {
@@ -84,7 +84,7 @@ export function PublicPerspectivesTab({
             items={testimonyFor(() => true)}
             initialFilter={orgFilter}
             initialTypeFilter={orgFilter === "all" ? "all" : "organization"}
-            stickyTop="calc(var(--hero-h, 0px) + var(--subtabs-h, 0px))"
+            stickyTop="calc(var(--pinned-h, 0px) + var(--subtabs-h, 0px))"
             includeFollowingFilter
             includeTypeFilter
             asCards

@@ -71,8 +71,8 @@ export function DisagreementCard() {
 
 export function ArgumentsAtAGlanceCard() {
   return (
-    <Card title="Key Arguments" stickyTop="var(--hero-h, 0px)">
-      <div className="flex gap-[24px] max-lg:flex-col">
+    <Card title="Key Arguments" stickyTop="var(--pinned-h, 0px)">
+      <div className="flex gap-[24px]">
         <ArgColumn title="YES Arguments" args={RC.yesArgs} />
         <ArgColumn title="NO Arguments" args={RC.noArgs} />
       </div>
