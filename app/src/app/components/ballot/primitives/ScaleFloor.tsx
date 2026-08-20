@@ -4,6 +4,16 @@ import { useEffect, useState, type ReactNode } from "react";
 // instead, the way a phone shows a desktop site zoomed out. At or above it
 // nothing is applied and the layout is untouched.
 //
+// This is the desktop half of the scaling, and phones do not reach it:
+// index.html pins their layout viewport to this same width, so the browser
+// scales the page itself and clientWidth already reports the floor. That split
+// is deliberate rather than redundant. WebKit text autosizing boosts text
+// inside a CSS-zoomed box while leaving icons and fixed-width boxes at their
+// scaled size, which pulls the layout apart — Tailwind's preflight sets
+// -webkit-text-size-adjust: 100% and iOS boosts anyway. Native viewport scaling
+// has nothing to boost. text-size-adjust is pinned again below all the same,
+// for any mobile browser that ignores the meta tag and lands here.
+//
 // Scales with CSS zoom rather than a transform. Zoom reflows, so the page keeps
 // its true height and sticky children go on pinning normally; a transform would
 // leave the page reporting its full unscaled height and would turn every
@@ -40,7 +50,13 @@ export function ScaleFloor({
   // changes a style rather than the shape of the tree — otherwise React would
   // remount everything below and drop the active tab.
   return (
-    <div style={scale === 1 ? undefined : { zoom: scale, width }}>
+    <div
+      style={
+        scale === 1
+          ? undefined
+          : { zoom: scale, width, WebkitTextSizeAdjust: "none" }
+      }
+    >
       {children}
     </div>
   );
