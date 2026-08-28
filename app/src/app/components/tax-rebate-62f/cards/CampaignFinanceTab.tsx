@@ -1,12 +1,10 @@
 import { SynthSummaryCard, Card, FinanceLedger } from "../../ballot";
 import { RC } from "../../../data/tax-rebate-62f";
-import { NextStepCard } from "./NextStepCard";
 
-export function CampaignFinanceTab({ onNext }: { onNext?: () => void }) {
+export function FundingPatternCard() {
   return (
-    <div className="flex flex-col gap-[16px]">
-      <SynthSummaryCard
-        title="Funding Pattern"
+    <SynthSummaryCard
+        title="Funding pattern"
         ids={["ocpf", "ballotpedia"]}
         prompt="Summarize the OCPF campaign-finance filings for the committees supporting and opposing the 62F reform question: totals raised, cash versus in-kind contributions, notable donors, and the fact that the support committee also backs the companion income-tax question. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
       >
@@ -23,9 +21,13 @@ export function CampaignFinanceTab({ onNext }: { onNext?: () => void }) {
           filings; MAPLE does not estimate figures, and the next scheduled
           reports were due in September 2026.
         </p>
-      </SynthSummaryCard>
+    </SynthSummaryCard>
+  );
+}
 
-      <Card
+export function FundingLedgerCard() {
+  return (
+    <Card
         title="Who is funding each side"
         subtitle="From Massachusetts OCPF filings covering through January 20, 2026 — an early snapshot; the next scheduled reports were due September 2026."
       >
@@ -33,13 +35,6 @@ export function CampaignFinanceTab({ onNext }: { onNext?: () => void }) {
           committees={RC.committees}
           ids={["ocpf", "ballotpedia"]}
         />
-      </Card>
-      <NextStepCard
-        title="Check every source"
-        body="Every document, article, and filing this page draws on, grouped by type and listed newest first."
-        action="Bibliography"
-        onClick={onNext}
-      />
-    </div>
+    </Card>
   );
 }

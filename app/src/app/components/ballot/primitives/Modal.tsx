@@ -93,12 +93,12 @@ export function Modal({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{ maxWidth, minHeight }}
-        className="relative flex w-full max-h-full flex-col overflow-y-auto bg-[#ededed] rounded-[12px] shadow-[0_20px_60px_rgba(0,0,0,0.28)]"
+        className="relative flex w-full max-h-full flex-col overflow-y-auto bg-ground rounded-panel shadow-[0_20px_60px_rgba(0,0,0,0.28)]"
       >
         <div
           ref={headerRef}
           style={{ padding: `${PAD}px ${PAD}px 12px` }}
-          className="sticky top-0 z-20 flex items-center gap-[12px] bg-[#ededed] rounded-t-[12px]"
+          className="sticky top-0 z-20 flex items-center gap-[12px] bg-ground rounded-t-panel"
         >
           <div className="flex-1 min-w-0">{title}</div>
           <div className="shrink-0 flex items-center gap-[18px]">
@@ -106,7 +106,7 @@ export function Modal({
             <button
               onClick={onClose}
               aria-label="Close"
-              className="text-[#606060] hover:text-black cursor-pointer"
+              className="text-ink-muted hover:text-ink cursor-pointer"
             >
               <X className="w-[19px] h-[19px]" />
             </button>
@@ -138,7 +138,7 @@ export function Modal({
         {footer && (
           <div
             style={{ padding: `12px ${PAD}px ${PAD}px` }}
-            className="sticky bottom-0 z-20 mt-auto bg-[#ededed] rounded-b-[12px]"
+            className="sticky bottom-0 z-20 mt-auto bg-ground rounded-b-panel"
           >
             {footer}
           </div>

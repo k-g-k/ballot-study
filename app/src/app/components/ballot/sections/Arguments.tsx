@@ -7,12 +7,12 @@ export function ArgList({ args }: { args: Arg[] }) {
       {args.map((a) => (
         <div
           key={a.title}
-          className="bg-[#f5f3ff] border border-[#d8b4fe] rounded-[6px] p-[16px]"
+          className="bg-ai-soft border border-ai-edge rounded-control p-[16px]"
         >
-          <p className="font-['Nunito'] font-semibold text-[14px] text-[#6b21a8] mb-[4px]">
+          <p className="font-body font-semibold text-base text-ai-ink mb-[4px]">
             {a.title}
           </p>
-          <p className="font-['Nunito'] text-[14px] text-black leading-[1.5]">
+          <p className="font-body text-base text-ink leading-[1.5]">
             {a.body}
           </p>
         </div>
@@ -26,23 +26,23 @@ export function ArgList({ args }: { args: Arg[] }) {
 export function ArgColumn({ title, args }: { title: string; args: Arg[] }) {
   return (
     <div className="flex-1 space-y-[10px]">
-      <p className="font-['Nunito'] font-bold text-[12px] text-[#334156] uppercase tracking-[0.08em] mb-[4px]">
+      <p className="font-body font-semibold text-xs text-ink mb-[4px]">
         {title}
       </p>
       {args.length === 0 && (
-        <p className="font-['Nunito'] text-[13px] text-[#808080]">
+        <p className="font-body text-sm text-ink-muted">
           No arguments from this source type on file.
         </p>
       )}
       {args.map((a) => (
         <div
           key={a.title}
-          className="border-l-[3px] border-[#a855f7] pl-[12px] py-[2px]"
+          className="border-l-[3px] border-ai pl-[12px] py-[2px]"
         >
-          <p className="font-['Nunito'] font-semibold text-[13px] text-black">
+          <p className="font-body font-semibold text-sm text-ink">
             {a.title}
           </p>
-          <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.5]">
+          <p className="font-body text-sm text-ink-muted leading-[1.5]">
             {a.body}
           </p>
         </div>

@@ -25,9 +25,9 @@ export function PathToBallotCard({
   return (
     <div
       style={height ? { height } : undefined}
-      className="bg-white rounded-[8px] p-[24px] flex flex-col min-h-0"
+      className="bg-surface rounded-control p-[24px] flex flex-col min-h-0"
     >
-      <h3 className="font-['Nunito'] font-normal text-[18px] text-black mb-[4px]">
+      <h3 className="font-body font-normal text-xl text-ink mb-[4px]">
         Path to the Ballot
       </h3>
       <div className="mb-[12px]" />
@@ -45,7 +45,7 @@ export function PathToBallotCard({
         <button
           onClick={() => setPathExpanded((e) => !e)}
           aria-expanded={pathExpanded}
-          className="inline-flex items-center gap-[5px] bg-white border border-[#d1d1d1] text-[#606060] hover:border-[#a0a0a0] font-['Nunito'] font-semibold text-[12px] px-[14px] py-[5px] rounded-[100px] cursor-pointer"
+          className="inline-flex items-center gap-[5px] bg-surface border border-line-strong text-ink-muted hover:border-ink-faint font-body font-semibold text-xs px-[14px] py-[5px] rounded-pill cursor-pointer"
         >
           {pathExpanded ? "Collapse" : "Expand"}
           {pathExpanded ? (
@@ -64,7 +64,7 @@ export function PathToBallotCard({
 export function ContextHistoryCard() {
   return (
     <SynthSummaryCard
-      title="Context and History"
+      title="Context and history"
       ids={[
         "petition",
         "h5006",
@@ -137,16 +137,16 @@ export function FiscalCard() {
           kind="official"
           title="Official statement of fiscal consequences"
         >
-          <p className="font-['Nunito'] italic text-[12px] text-[#808080] mt-[2px]">
+          <p className="font-body italic text-xs text-ink-faint mt-[2px]">
             Sample — replaced by the official statement when the Information for
             Voters is published.
           </p>
-          <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[6px] leading-[1.5]">
+          <p className="font-body text-sm text-ink mt-[6px] leading-[1.5]">
             “The proposed law would change the calculation of the state tax
             revenue limit and may have fiscal consequences for state government
             finances; the amount cannot be determined with certainty.”
           </p>
-          <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[6px] leading-[1.5]">
+          <p className="font-body text-xs text-ink-faint mt-[6px] leading-[1.5]">
             As required by law, statements of fiscal consequences are written by
             the Executive Office for Administration and Finance and published in
             the Information for Voters. The 2024 statements were one sentence
@@ -156,7 +156,7 @@ export function FiscalCard() {
 
         {/* Attributed campaign claims — outside info, green citation blocks. */}
         <div>
-          <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+          <p className="font-body font-semibold text-base text-ink mb-[8px]">
             Fiscal claims that go beyond the official statement
           </p>
           <div className="space-y-[12px]">
@@ -164,7 +164,7 @@ export function FiscalCard() {
               kind="outside"
               title="“A revised cap would have returned ~$19 billion to taxpayers over four decades”"
             >
-              <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+              <p className="font-body text-sm text-ink mt-[2px] leading-[1.5]">
                 Made by the Massachusetts Opportunity Alliance in its policy
                 brief — a projection from the campaign's own recalculation, not
                 an independent estimate; disputed by the opposing campaign.
@@ -173,7 +173,7 @@ export function FiscalCard() {
                 <SynthSourcesNote
                   ids={["maoBrief"]}
                   variant="plain"
-                  linkClass="text-[#166534] hover:text-[#0f4a26]"
+                  linkClass="text-outside-ink hover:text-outside-deep"
                 />
               </div>
             </CitationBlock>
@@ -181,7 +181,7 @@ export function FiscalCard() {
               kind="outside"
               title="“The measures would strip billions from schools, hospitals, and services”"
             >
-              <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+              <p className="font-body text-sm text-ink mt-[2px] leading-[1.5]">
                 Made by the opposing campaign about the two tax questions
                 combined — a projected impact the official statement does not
                 make; the size depends on future revenue and is contested.
@@ -190,7 +190,7 @@ export function FiscalCard() {
                 <SynthSourcesNote
                   ids={["protectMAFuture", "massBudget"]}
                   variant="plain"
-                  linkClass="text-[#166534] hover:text-[#0f4a26]"
+                  linkClass="text-outside-ink hover:text-outside-deep"
                 />
               </div>
             </CitationBlock>
@@ -240,7 +240,7 @@ export function BackgroundTab() {
 
       {/* Legal & structural questions raised — citation blocks colored by source kind. */}
       <Card
-        title="Legal & structural questions raised"
+        title="Legal and structural questions raised"
         subtitle="Arguments about how the change would operate and hold up, each shown with who raises it. MAPLE does not predict rulings or offer legal advice."
       >
         <div className="space-y-[12px]">
@@ -248,7 +248,7 @@ export function BackgroundTab() {
             kind="outside"
             title="Conflict with the surtax earmark"
           >
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+            <p className="font-body text-sm text-ink mt-[2px] leading-[1.5]">
               Raised by opponents: whether counting surtax revenue toward a
               refund cap can be squared with the constitutional dedication of
               that revenue to education and transportation. Untested for this
@@ -258,12 +258,12 @@ export function BackgroundTab() {
               <SynthSourcesNote
                 ids={["massBudget", "fairShare"]}
                 variant="plain"
-                linkClass="text-[#166534] hover:text-[#0f4a26]"
+                linkClass="text-outside-ink hover:text-outside-deep"
               />
             </div>
           </CitationBlock>
           <CitationBlock kind="outside" title="The downward-drift mechanism">
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+            <p className="font-body text-sm text-ink mt-[2px] leading-[1.5]">
               Identified in fiscal analysis as a structural feature: basing each
               year's cap on the prior year's actual collections means the
               ceiling falls after weak years and refunds, with no floor or
@@ -273,12 +273,12 @@ export function BackgroundTab() {
               <SynthSourcesNote
                 ids={["massBudget"]}
                 variant="plain"
-                linkClass="text-[#166534] hover:text-[#0f4a26]"
+                linkClass="text-outside-ink hover:text-outside-deep"
               />
             </div>
           </CitationBlock>
-          <CitationBlock kind="official" title="Amendment by the Legislature">
-            <p className="font-['Nunito'] text-[13px] text-[#334156] mt-[2px] leading-[1.5]">
+          <CitationBlock kind="official" title="Amendment by the legislature">
+            <p className="font-body text-sm text-ink mt-[2px] leading-[1.5]">
               Under the state constitution, voter-approved statutes such as this
               one can be amended or repealed by the Legislature after passage.
             </p>
@@ -289,11 +289,11 @@ export function BackgroundTab() {
         </div>
       </Card>
 
-      <Card title="Related Context">
+      <Card title="Related context">
         <Facts items={RC.relatedContext} />
       </Card>
 
-      <Card title="Signature & Process Facts">
+      <Card title="Signature and process facts">
         <Facts items={RC.processFacts} />
       </Card>
     </div>

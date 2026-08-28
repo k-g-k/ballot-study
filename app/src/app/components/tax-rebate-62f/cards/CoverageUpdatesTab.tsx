@@ -1,15 +1,10 @@
 import { SynthSummaryCard } from "../../ballot";
-import { BallotTimelineCard } from "./BallotTimelineCard";
-import { CoverageByTopicCard } from "./CoverageByTopicCard";
-import { NextStepCard } from "./NextStepCard";
 
-// Coverage — a synthesis of how the measure reached the ballot, the full
-// timeline unclipped, and the same coverage regrouped by topic.
-export function CoverageUpdatesTab({ onNext }: { onNext?: () => void }) {
+// How the measure reached the ballot.
+export function BallotHistoryCard() {
   return (
-    <div className="flex flex-col gap-[16px]">
-      <SynthSummaryCard
-        title="Ballot History"
+    <SynthSummaryCard
+        title="Ballot history"
         ids={[
           "petition",
           "ballotpedia",
@@ -38,16 +33,6 @@ export function CoverageUpdatesTab({ onNext }: { onNext?: () => void }) {
           threshold of 12,429 signatures, the ballot initiative was certified
           and numbered Question 5 on July 21.
         </p>
-      </SynthSummaryCard>
-
-      <BallotTimelineCard />
-      <CoverageByTopicCard />
-      <NextStepCard
-        title="Dig into campaign finance"
-        body="The filings behind it show what each committee has raised and spent, and who is funding them."
-        action="Campaign Finance"
-        onClick={onNext}
-      />
-    </div>
+    </SynthSummaryCard>
   );
 }

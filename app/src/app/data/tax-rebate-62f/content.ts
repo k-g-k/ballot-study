@@ -22,6 +22,30 @@ import type {
 } from "../../components/ballot/types";
 import { SOURCES } from "./sources";
 
+/**
+ * The hero's own wording. It covers the same ground as CURRENT_LIMIT and
+ * PROPOSED_CHANGE below, but weaves the calculation into the sentence that
+ * introduces the law and leads with the change of base rather than the surtax.
+ * Worded separately for that reason: the two are not substitutable, so a change
+ * to how the measure is described has to be made in both places. Only the
+ * emphasised clause is shared, since both set the same words in bold.
+ */
+const HERO_LEAD = "The proposed law would modify ";
+const HERO_REST =
+  ", a voter-approved law that requires Massachusetts to refund taxpayers when it surpasses its ";
+
+const CURRENT_LIMIT =
+  "Massachusetts' revenue limit is calculated by taking last year's limit and adding the average wage growth in Massachusetts over the last three years. It also excludes the 2022 surtax on yearly income over $1 million.";
+const CURRENT_LIMIT_SENTENCE =
+  "Massachusetts' revenue limit is calculated by taking last year's limit and adding the average wage growth in Massachusetts over the last three years.";
+const PROPOSED_CHANGE_LEAD =
+  "Question 5 would include the surtax in the calculation and ";
+const PROPOSED_CHANGE_EMPHASIS =
+  "would change the base from last year's limit to last year's actual tax collections";
+const PROPOSED_CHANGE_TAIL = ", triggering refunds more frequently.";
+const PROPOSED_CHANGE =
+  PROPOSED_CHANGE_LEAD + PROPOSED_CHANGE_EMPHASIS + PROPOSED_CHANGE_TAIL;
+
 export const RC = {
   /** Assigned ballot number for the Nov. 2026 state election. */
   number: 5,
@@ -36,8 +60,130 @@ export const RC = {
   officialSummary:
     "This proposed law would change the limit on how much revenue the state can collect in a given year. The proposal would limit state revenue in a given year to the net amount of state revenue from the year before, increased by a rate equal to the average growth of wages and salaries in Massachusetts over the most recent three years. If revenue collected by the state in a given year exceeds the limit, the excess amount would be refunded to taxpayers the following year. The proposed law would include all revenue from the surtax on incomes over $1 million when calculating the revenue limit and when determining whether state revenue exceeds the limit. The provisions of the proposed law would all be effective as of July 1, 2027. The proposed law states that, if any of its parts were declared invalid, the other parts would stay in effect.",
 
-  overviewSummary:
-    "Question 5 would modify Chapter 62F, a voter-approved law that requires Massachusetts to send money back to taxpayers when it collects more than a certain limit in a year. Today that limit is based on the prior year's limit plus the average wage growth in Massachusetts over the last three years, and excludes the 2022 surtax on yearly income over $1 million, which funds education and transportation. Question 5 would include the surtax in the calculation and would change the base from last year's limit to last year's actual tax collections, triggering refunds more frequently.",
+  /**
+   * The one-breath version, for the top of a page: what the law already does,
+   * then what this question would change about it. The first sentence is what
+   * makes the second legible, since "how that limit gets calculated" assumes a
+   * limit the reader has not met yet. It also names the revenue limit in the
+   * same words as the question's own title.
+   *
+   * Kept separate from `plain` because `plain` is a subtitle and this is a
+   * briefing; they are different lengths doing different jobs.
+   *
+   * Segments rather than one string because the two things the question
+   * actually changes are set in emphasis, the conjunction between them is not,
+   * and the statute is a link. Bolding "and" would make the pair read as one
+   * long phrase instead of two. All of that is a content decision, so it is
+   * stated here rather than being marked up at the call site.
+   */
+  soundbite: [
+    [
+      // Parked: the footnote markers and their hover notes. `heroFootnotes`
+      // below still holds the copy, and Segments still renders both, so this
+      // is one line per marker to bring back.
+      // { text: `${HERO_LEAD}Chapter 62F${HERO_REST}` },
+      // { text: "revenue limit", footnote: 1 },
+      // { text: ", changing " },
+      // { text: "how that limit gets calculated", emphasis: true, footnote: 2 },
+      // { text: " and " },
+      // { text: "what would count towards it", emphasis: true, footnote: 3 },
+      // { text: "." },
+      { text: `${HERO_LEAD}Chapter 62F${HERO_REST}revenue limit, ` },
+      {
+        text: "changing how that limit gets calculated and what would count towards it, making refunds more likely.",
+        emphasis: true,
+      },
+    ],
+  ] as {
+    text: string;
+    emphasis?: boolean;
+    italic?: boolean;
+    href?: string;
+    block?: boolean;
+    footnote?: number;
+  }[][],
+  /**
+   * The two mechanical changes, listed rather than written into the sentence
+   * above. The summary says what the measure does; this says what it edits.
+   */
+  keyChanges: {
+    label: "Key Changes:",
+    items: [
+      "Updates the base formula from last year's tax limit to last year's actual tax collections",
+      "Includes the 2022 surtax on $1M+ incomes that funds education and transportation",
+      "Because the limit is expected to sit lower, refunds will be more likely",
+    ],
+  },
+
+  /**
+   * The detail the summary sentence leaves out, kept out of it. Numbered to
+   * the three terms it marks, so the sentence stays one breath long and the
+   * mechanics are there for whoever wants them.
+   */
+  heroFootnotes: [
+    [
+      {
+        text: "Massachusetts Yearly Revenue Limit",
+        emphasis: true,
+        block: true,
+      },
+      {
+        text: "Last year's limit + avg wage growth over 3yrs",
+        block: true,
+      },
+    ],
+    [
+      { text: "Changes the base from last year's limit to " },
+      { text: "last year's actual tax collections", emphasis: true },
+      { text: "." },
+    ],
+    [
+      {
+        text: "Includes the 2022 surtax on $1M+ incomes.",
+        emphasis: true,
+        block: true,
+      },
+      {
+        text: "How this would impact the surtax's dedicated education and transportation purpose is an open legal question.",
+        italic: true,
+        block: true,
+      },
+    ],
+  ] as {
+    text: string;
+    emphasis?: boolean;
+    italic?: boolean;
+    href?: string;
+    block?: boolean;
+    footnote?: number;
+  }[][],
+  /**
+   * Kept as two constants above rather than one string: the sentence about
+   * current law and the sentence about the change are edited independently,
+   * and composing them here means neither can drift from the whole.
+   */
+  overviewSummary: `${CURRENT_LIMIT} ${PROPOSED_CHANGE}`,
+  /**
+   * The same paragraph in segments, for the page that sets part of it in
+   * emphasis. Which words carry the emphasis is a content decision, so it is
+   * stated here rather than marked up at the call site, and both forms are
+   * built from the same constants so they cannot disagree.
+   */
+  /**
+   * The answer to "what would it change?", written as consequence first and
+   * mechanism second: why refunds get more likely, then what about the formula
+   * makes that so. `overviewSummary` above states the same change the other way
+   * round, mechanism first, for the tabbed page.
+   */
+  changeSummary: [
+    `${CURRENT_LIMIT_SENTENCE} Question 5 would change the base from last year's limit to last year's actual tax collections, and would include the 2022 surtax on $1M incomes that funds education and transportation.`,
+    "Because the base would track real collections rather than the higher allowable maximum and would include the surtax, the limit would generally sit lower and be exceeded more often, triggering refunds in more years. How the change would impact the surtax's dedicated education and transportation purpose is an open legal question.",
+  ],
+  overviewSegments: [
+    { text: `${CURRENT_LIMIT} ${PROPOSED_CHANGE_LEAD}` },
+    { text: PROPOSED_CHANGE_EMPHASIS, emphasis: true },
+    { text: PROPOSED_CHANGE_TAIL },
+  ] as { text: string; emphasis?: boolean }[],
 
   yes: "The 62F cap is recalculated. Each year's limit is set from actual prior-year collections plus three-year wage growth, and surtax revenue counts toward the total — making the state more likely to exceed the cap and issue automatic refunds to taxpayers.",
   no: "No change in the law. Chapter 62F keeps its current formula, which bases the cap on the prior year's allowable limit and excludes 2022 surtax revenue; refunds continue to trigger only in the rare years collections run far ahead of the cap.",
@@ -78,11 +224,12 @@ export const RC = {
         "Petition text; not disputed by either campaign",
     },
     {
-      group: "Public-sector workers",
+      group: "Education & transportation (surtax-funded)",
       impact: "cost",
-      body: "The opposition committee projects layoffs if billions are diverted from the budget; the size of any impact depends on future revenue and is not yet known.",
+      disputed: true,
+      body: "Opponents argue counting surtax revenue toward the cap could pull dollars voters dedicated to schools and transit into refunds; proponents dispute that the earmark is affected.",
       basis:
-        "Opponent statements; the impact depends on future revenue",
+        "Opponent statements; proponents dispute the earmark is affected",
     },
     {
       group: "Business & fiscal-conservative groups",
@@ -92,12 +239,11 @@ export const RC = {
         "Proponent statements; MTF dissents",
     },
     {
-      group: "Education & transportation (surtax-funded)",
+      group: "Public-sector workers",
       impact: "cost",
-      disputed: true,
-      body: "Opponents argue counting surtax revenue toward the cap could pull dollars voters dedicated to schools and transit into refunds; proponents dispute that the earmark is affected.",
+      body: "The opposition committee projects layoffs if billions are diverted from the budget; the size of any impact depends on future revenue and is not yet known.",
       basis:
-        "Opponent statements; proponents dispute the earmark is affected",
+        "Opponent statements; the impact depends on future revenue",
     },
   ] as Stakeholder[],
 
@@ -108,7 +254,7 @@ export const RC = {
     yes: {
       vote: "yes",
       summary:
-        "Recalculates the 62F cap and includes the 2022 surtax so refunds trigger more often.",
+        "Recalculates the revenue limit and includes the 2022 surtax on $1M+ incomes.",
       organizerIds: ["taxpayers-affordable-ma"],
       funding: "$1.71m",
       fundingCash: "$100k",

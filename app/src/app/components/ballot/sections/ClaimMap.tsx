@@ -4,8 +4,8 @@ import type { ClaimRow, ClaimSource } from "../types";
 
 // Link color matches the claim's source (green = outside, orange = testimony).
 const CLAIM_LINK: Record<ClaimSource, string> = {
-  outside: "text-[#166534] hover:text-[#0f4a26]",
-  testimony: "text-[#9a3412] hover:text-[#7c2d12]",
+  outside: "text-outside-ink hover:text-outside-deep",
+  testimony: "text-user-ink hover:text-user-deep",
 };
 
 // Verified/attributed claim rows: a ✓/⚠ marker + bold label lead the note; the
@@ -18,19 +18,19 @@ export function ClaimMap({ rows }: { rows: ClaimRow[] }) {
         return (
           <div
             key={r.claim}
-            className="border-t border-dotted border-[#d1d1d1] pt-[16px] first:border-0 first:pt-0"
+            className="border-t border-dotted border-line-strong pt-[16px] first:border-0 first:pt-0"
           >
-            <p className="font-['Nunito'] font-semibold text-[15px] text-black leading-[1.45]">
+            <p className="font-body font-semibold text-lg text-ink leading-[1.45]">
               {r.claim}
             </p>
-            <div className="font-['Nunito'] text-[13px] text-[#606060] mt-[4px] leading-[1.55]">
+            <div className="font-body text-sm text-ink-muted mt-[4px] leading-[1.55]">
               {verified ? (
-                <ShieldCheck className="w-[14px] h-[14px] text-[#166534] inline-block align-[-2px] mr-[4px]" />
+                <ShieldCheck className="w-[14px] h-[14px] text-outside-ink inline-block align-[-2px] mr-[4px]" />
               ) : (
-                <AlertTriangle className="w-[14px] h-[14px] text-[#8a6d1d] inline-block align-[-2px] mr-[4px]" />
+                <AlertTriangle className="w-[14px] h-[14px] text-caution-ink inline-block align-[-2px] mr-[4px]" />
               )}
               <span
-                className={`font-bold ${verified ? "text-[#166534]" : "text-[#8a6d1d]"}`}
+                className={`font-semibold ${verified ? "text-outside-ink" : "text-caution-ink"}`}
               >
                 {verified ? "Verified. " : "Attributed. "}
               </span>

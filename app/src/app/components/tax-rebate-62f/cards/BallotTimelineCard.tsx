@@ -16,34 +16,34 @@ export function BallotTimelineCard() {
   const remaining = BALLOT_TIMELINE.length - shown.length;
   const peek = expanded ? undefined : BALLOT_TIMELINE[shown.length];
   return (
-    <div className="bg-white rounded-[8px] p-[24px] flex flex-col">
+    <div className="bg-surface rounded-control p-[24px] flex flex-col">
       {/* Pins below the hero while the card is in view, then scrolls away with
           it — sticky is bounded by its parent, so the card's own bottom edge
           releases it. Bled out to the card edges so content passes underneath
           rather than beside it. */}
       <h3
         style={{ top: "var(--pinned-h, 0px)" }}
-        className="sticky z-[5] -mx-[24px] -mt-[24px] mb-[4px] rounded-t-[8px] bg-white px-[24px] pt-[24px] pb-[10px] font-['Nunito'] font-normal text-[18px] text-black"
+        className="sticky z-[5] -mx-[24px] -mt-[24px] mb-[4px] rounded-t-control bg-surface px-[24px] pt-[24px] pb-[10px] font-body font-normal text-xl text-ink"
       >
         Timeline
       </h3>
-      <div className="ml-[6px] pl-[28px] border-l-[2px] border-[#e5e7eb] space-y-[28px]">
+      <div className="ml-[6px] pl-[28px] border-l-[2px] border-line space-y-[28px]">
         {shown.map((m) => (
           <div key={m.when + m.label} className="relative">
-            <span className="absolute left-[-35px] top-[4px] w-[13px] h-[13px] rounded-full bg-[#12266f]" />
-            <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.08em] uppercase text-[#12266f]">
+            <span className="absolute left-[-35px] top-[4px] w-[13px] h-[13px] rounded-full bg-brand" />
+            <p className="font-body font-semibold text-2xs text-brand">
               {m.when}
             </p>
-            <p className="font-['Nunito'] font-bold text-[15px] text-black mt-[4px]">
+            <p className="font-body font-semibold text-lg text-ink mt-[4px]">
               {m.label}
             </p>
             {m.body && (
-              <p className="font-['Nunito'] text-[14px] text-[#808080] leading-[1.55] mt-[4px]">
+              <p className="font-body text-base text-ink-muted leading-[1.55] mt-[4px]">
                 {m.body}
               </p>
             )}
             {m.articles.length > 0 && (
-              <div className="mt-[12px] bg-[#fafafa] rounded-[10px] p-[16px] space-y-[4px]">
+              <div className="mt-[12px] bg-sunken rounded-panel p-[16px] space-y-[4px]">
                 {m.articles.map((a, i) => (
                   <CoverageArticleRow key={a.title + i} a={a} />
                 ))}
@@ -58,12 +58,12 @@ export function BallotTimelineCard() {
           <div className="relative" aria-hidden="true">
             {/* The dot hangs outside the left edge, so the clip has to sit on an
                 inner box or it takes the dot with it. */}
-            <span className="absolute left-[-35px] top-[4px] w-[13px] h-[13px] rounded-full bg-[#12266f]" />
+            <span className="absolute left-[-35px] top-[4px] w-[13px] h-[13px] rounded-full bg-brand" />
             <div className="relative h-[32px] overflow-hidden">
-              <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.08em] uppercase text-[#12266f]">
+              <p className="font-body font-semibold text-2xs text-brand">
                 {peek.when}
               </p>
-              <p className="font-['Nunito'] font-bold text-[15px] text-black mt-[4px]">
+              <p className="font-body font-semibold text-lg text-ink mt-[4px]">
                 {peek.label}
               </p>
               <div className="absolute inset-x-0 bottom-0 h-[24px] bg-gradient-to-t from-white to-transparent pointer-events-none" />
@@ -83,7 +83,7 @@ export function BallotTimelineCard() {
         <button
           onClick={() => setExpanded((e) => !e)}
           aria-expanded={expanded}
-          className="inline-flex items-center gap-[5px] bg-white border border-[#d1d1d1] text-[#606060] hover:border-[#a0a0a0] font-['Nunito'] font-semibold text-[12px] px-[14px] py-[5px] rounded-[100px] cursor-pointer"
+          className="inline-flex items-center gap-[5px] bg-surface border border-line-strong text-ink-muted hover:border-ink-faint font-body font-semibold text-xs px-[14px] py-[5px] rounded-pill cursor-pointer"
         >
           {expanded ? "Collapse" : `Expand (+${remaining})`}
           {expanded ? (

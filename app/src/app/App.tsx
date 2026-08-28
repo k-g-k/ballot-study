@@ -17,6 +17,8 @@ import ConceptH from "./components/concept-h";
 import BallotQuestions from "./components/ballot-questions";
 import RentControlAlt from "./components/rent-control-alt";
 import TaxRebate62FGrace from "./components/tax-rebate-62f/grace";
+import TaxRebate62FAlt from "./components/tax-rebate-62f-alt";
+import TestimonyExperiment from "./components/testimony-experiment";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
 function DisclaimerBar({ children }: { children: ReactNode }) {
@@ -80,6 +82,20 @@ const PROTOTYPES: Prototype[] = [
     label: "62F Tax Rebate",
     group: "ballot-questions",
     element: <TaxRebate62FGrace />,
+  },
+  {
+    id: "BQ4",
+    path: "ballotQuestions/tax-rebate-62f-alt",
+    label: "62F — clean slate",
+    group: "ballot-questions",
+    element: <TaxRebate62FAlt />,
+  },
+  {
+    id: "TX",
+    path: "testimony-experiment",
+    label: "Testimony experiment",
+    group: "ballot-questions",
+    element: <TestimonyExperiment />,
   },
 ];
 
@@ -182,7 +198,7 @@ function Layout() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-ground">
       <Outlet />
       {import.meta.env.DEV && devNav && <DevNav />}
     </div>

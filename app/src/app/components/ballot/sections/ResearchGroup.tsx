@@ -12,18 +12,18 @@ export function ResearchGroup({
   if (!studies.length) return null;
   return (
     <div>
-      <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+      <p className="font-body font-semibold text-base text-ink mb-[8px]">
         {title}
       </p>
       <ul className="list-disc list-outside pl-[18px] space-y-[8px]">
         {studies.map((s) => (
           <li
             key={s.citation}
-            className="font-['Nunito'] text-[13px] text-[#334156] leading-[1.5]"
+            className="font-body text-sm text-ink leading-[1.5]"
           >
-            <span className="font-semibold text-black">{s.citation}</span>
+            <span className="font-semibold text-ink">{s.citation}</span>
             {s.affiliation && s.affiliation !== "peer-reviewed" && (
-              <span className="italic text-[#606060]"> — {s.affiliation}</span>
+              <span className="italic text-ink-muted"> — {s.affiliation}</span>
             )}
             {" — "}
             {s.finding}
@@ -32,7 +32,7 @@ export function ResearchGroup({
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] ml-[4px] align-baseline"
+                className="font-body text-xs font-semibold text-brand hover:text-alert inline-flex items-center gap-[3px] ml-[4px] align-baseline"
               >
                 Source <ArrowUpRight className="w-[13px] h-[13px]" />
               </a>

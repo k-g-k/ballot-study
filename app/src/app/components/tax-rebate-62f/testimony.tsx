@@ -7,6 +7,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  MoreVertical,
+  UserPlus,
+  Flag,
   Users,
   Plus,
   Share,
@@ -72,9 +75,9 @@ function ClampedBody({ text }: { text: string }) {
       <p
         ref={measureRef}
         aria-hidden="true"
-        className="font-['Nunito'] text-[14px] leading-[1.55] absolute invisible pointer-events-none"
+        className="font-body text-base leading-[1.55] absolute invisible pointer-events-none"
       />
-      <p className="font-['Nunito'] text-[14px] text-black leading-[1.55]">
+      <p className="font-body text-base text-ink leading-[1.55]">
         {collapsed ? `${text.slice(0, cutoff).trimEnd()}… ` : `${text} `}
         {cutoff !== null && (
           <button
@@ -83,7 +86,7 @@ function ClampedBody({ text }: { text: string }) {
               e.stopPropagation();
               setExpanded((x) => !x);
             }}
-            className="font-['Nunito'] font-bold text-[13px] text-[#12266f] hover:text-[#c71e32] cursor-pointer"
+            className="font-body font-semibold text-sm text-brand hover:text-alert cursor-pointer"
           >
             {expanded ? "Show less" : "Show more"}
           </button>
@@ -120,10 +123,7 @@ export function TestimonyEntry({
     showDescriptor === true ||
     (showDescriptor === "officials" && user.userType !== "organization");
   return (
-    <div
-      onClick={onOpen ? () => onOpen(t.id) : undefined}
-      className={`relative px-[20px] py-[16px] rounded-[8px] ${onOpen ? "cursor-pointer" : ""}`}
-    >
+    <div className="relative px-[20px] py-[16px] rounded-control">
       <div className="relative flex items-start gap-[12px]">
         {!hideAvatar && <UserAvatar user={user} />}
         <div className="flex-1 min-w-0">
@@ -131,23 +131,35 @@ export function TestimonyEntry({
               outside it so it always holds the top-right corner. */}
           <div className="flex items-start gap-[6px]">
             <div className="flex-1 min-w-0 flex items-center gap-[6px] flex-wrap">
-              <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.3]">
-                {user.name}
-              </p>
+              {onOpen ? (
+                <button
+                  onClick={() => onOpen(t.id)}
+                  className="text-left font-body font-semibold text-base text-ink leading-[1.3] hover:text-brand cursor-pointer"
+                >
+                  {user.name}
+                </button>
+              ) : (
+                <p className="font-body font-semibold text-base text-ink leading-[1.3]">
+                  {user.name}
+                </p>
+              )}
               {showTypeIcon && <UserTypeIcon type={user.userType} />}
               {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
             </div>
-            <span className="shrink-0 font-['Nunito'] text-[12px] text-[#808080] whitespace-nowrap">
-              {t.date}
-            </span>
+            <div className="shrink-0 flex items-center gap-[2px] -mt-[3px] -mr-[6px]">
+              <span className="font-body text-xs text-ink-muted whitespace-nowrap mr-[2px]">
+                {t.date}
+              </span>
+              <EntryActions name={user.name} />
+            </div>
           </div>
           {showDesc && (
-            <p className="font-['Nunito'] text-[12px] text-[#808080] leading-[1.4] mt-[1px]">
+            <p className="font-body text-xs text-ink-faint leading-[1.4] mt-[1px]">
               {user.descriptor}
             </p>
           )}
           {fullBody ? (
-            <p className="font-['Nunito'] text-[14px] text-black leading-[1.55] mt-[8px] whitespace-pre-line">
+            <p className="font-body text-base text-ink leading-[1.55] mt-[8px] whitespace-pre-line">
               {t.body}
             </p>
           ) : (
@@ -155,6 +167,65 @@ export function TestimonyEntry({
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Per-entry actions. A kebab rather than more visible buttons: following an
+ * account and reporting a statement are both rare next to reading one, and a
+ * row of controls beside every date would compete with the testimony itself.
+ */
+function EntryActions({ name }: { name: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`More actions for ${name}`}
+        className="flex items-center justify-center w-[30px] h-[30px] rounded-control text-ink-muted hover:text-ink hover:bg-wash cursor-pointer transition-colors"
+      >
+        <MoreVertical className="w-[19px] h-[19px]" />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-[calc(100%+4px)] z-20 min-w-[180px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
+        >
+          {[
+            { label: "Share", Icon: Share },
+            { label: "Follow user", Icon: UserPlus },
+            { label: "Report testimony", Icon: Flag },
+          ].map(({ label, Icon }) => (
+            <button
+              key={label}
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-[9px] w-full text-left font-body text-sm text-ink px-[12px] py-[7px] cursor-pointer hover:bg-wash"
+            >
+              <Icon className="w-[15px] h-[15px] shrink-0 text-ink-muted" />
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -173,7 +244,7 @@ export function TestimonyList({
       {items.map((t, i) => (
         <div key={t.id} className="mb-[14px] last:mb-0">
           {i > 0 && (
-            <div className="border-t border-dotted border-[#d1d1d1] mb-[14px]" />
+            <div className="border-t border-dotted border-line-strong mb-[14px]" />
           )}
           <TestimonyEntry
             t={t}
@@ -191,21 +262,64 @@ const FEED_CONTROLS_MIN = 4;
 export type StanceFilter = "all" | "endorsing" | "opposing" | "no-position";
 // Rendered as a segmented control, so "All" is a real segment: stance is
 // one-of, and an empty segmented control reads as broken where a pill does not.
-const STANCE_FILTERS: { id: StanceFilter; label: string }[] = [
+type Stance = Exclude<StanceFilter, "all">;
+const STANCE_FILTERS: {
+  id: StanceFilter;
+  label: string;
+  /** Shown in place of the label in the parked segmented control. */
+  glyph?: string;
+}[] = [
   { id: "all", label: "All" },
-  { id: "endorsing", label: "Endorsing" },
-  { id: "opposing", label: "Opposing" },
+  { id: "endorsing", label: "Endorsing", glyph: "\u{1F44D}" },
+  { id: "opposing", label: "Opposing", glyph: "\u{1F44E}" },
   { id: "no-position", label: "Neutral" },
+];
+
+// EXPERIMENT: the same three positions as bare glyphs rather than a control.
+// No border, no fill; the selected one is at full strength and the rest sit
+// back, so the row reads as three marks instead of three buttons.
+const STANCE_GLYPHS: {
+  id: Stance;
+  label: string;
+  /** What the glyph means, spelled out. The label is for prose ("Endorsing
+      Testimony"); this is for the tooltip and the accessible name. */
+  tip: string;
+  /** Optical offset. A transform rather than padding, so it moves what you see
+      without moving anything around it. One value per glyph, used in every
+      state, so selecting one never makes it jump. Empty where the artwork
+      already sits right. */
+  chipOffset?: string;
+  glyph: string;
+}[] = [
+  {
+    id: "endorsing",
+    label: "Endorsing",
+    tip: "Endorses",
+    glyph: "\u{1F44D}",
+  },
+  {
+    id: "opposing",
+    label: "Opposing",
+    tip: "Opposes",
+    chipOffset: "translate-y-[2px]",
+    glyph: "\u{1F44E}",
+  },
+  {
+    id: "no-position",
+    label: "Neutral",
+    tip: "Neutral",
+    glyph: "\u{1F4AC}",
+  },
 ];
 
 export type TypeFilter = "all" | PositionUserType;
 
-const TYPE_FILTERS: { id: TypeFilter; label: string }[] = [
+const TYPE_FILTERS: { id: TypeFilter; label: string; word?: string }[] = [
   { id: "all", label: "All Accounts" },
-  { id: "individual", label: "Individuals" },
-  { id: "organization", label: "Organizations" },
-  { id: "government", label: "Government Officials" },
-  { id: "legislator", label: "Legislators" },
+  { id: "individual", label: "Individuals", word: "Individual" },
+  { id: "organization", label: "Organizations", word: "Organization" },
+  { id: "government", label: "Government Officials", word: "Government" },
+  { id: "legislator", label: "Legislators", word: "Legislator" },
 ];
 
 // Single-select account-type chooser. A dropdown rather than more pills so the
@@ -235,7 +349,7 @@ function TypeFilterMenu({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[100px] border cursor-pointer transition-colors bg-[rgba(232,239,255,0.68)] border-[#c9d8ff] text-[#1e3f8a]"
+        className="inline-flex items-center gap-[5px] font-body font-semibold text-xs px-[10px] py-[4px] rounded-pill border cursor-pointer transition-colors bg-brand-soft border-brand-edge text-brand-ink"
       >
         {current.id === "all" ? (
           <Users className="w-[13px] h-[13px]" />
@@ -248,7 +362,7 @@ function TypeFilterMenu({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[190px] bg-white border border-[#dee2e6] rounded-[8px] shadow-[0_8px_24px_rgba(0,0,0,0.12)] py-[4px]"
+          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[190px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
         >
           {TYPE_FILTERS.map((t) => (
             <button
@@ -259,8 +373,8 @@ function TypeFilterMenu({
                 onChange(t.id);
                 setOpen(false);
               }}
-              className={`flex items-center gap-[8px] w-full text-left font-['Nunito'] text-[13px] px-[12px] py-[6px] cursor-pointer hover:bg-[#f5f5f5] ${
-                t.id === value ? "font-bold text-[#12266f]" : "text-[#334156]"
+              className={`flex items-center gap-[8px] w-full text-left font-body text-sm px-[12px] py-[6px] cursor-pointer hover:bg-wash ${
+                t.id === value ? "font-semibold text-brand" : "text-ink"
               }`}
             >
               <span className="w-[15px] shrink-0 flex items-center justify-center">
@@ -311,7 +425,7 @@ function StanceFilterMenu({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[100px] border cursor-pointer transition-colors bg-[rgba(232,239,255,0.68)] border-[#c9d8ff] text-[#1e3f8a]"
+        className="inline-flex items-center gap-[5px] font-body font-semibold text-xs px-[10px] py-[4px] rounded-pill border cursor-pointer transition-colors bg-brand-soft border-brand-edge text-brand-ink"
       >
         {label(current)}
         <ChevronDown className="w-[12px] h-[12px]" />
@@ -319,7 +433,7 @@ function StanceFilterMenu({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[160px] bg-white border border-[#dee2e6] rounded-[8px] shadow-[0_8px_24px_rgba(0,0,0,0.12)] py-[4px]"
+          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[160px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
         >
           {STANCE_FILTERS.map((t) => (
             <button
@@ -330,8 +444,8 @@ function StanceFilterMenu({
                 onChange(t.id);
                 setOpen(false);
               }}
-              className={`flex items-center gap-[8px] w-full text-left font-['Nunito'] text-[13px] px-[12px] py-[6px] cursor-pointer hover:bg-[#f5f5f5] ${
-                t.id === value ? "font-bold text-[#12266f]" : "text-[#334156]"
+              className={`flex items-center gap-[8px] w-full text-left font-body text-sm px-[12px] py-[6px] cursor-pointer hover:bg-wash ${
+                t.id === value ? "font-semibold text-brand" : "text-ink"
               }`}
             >
               {label(t)}
@@ -356,9 +470,9 @@ const STANCE_MARK: Record<
   TestimonyStance,
   { Icon: typeof EndorseIcon; hex: string }
 > = {
-  endorse: { Icon: EndorseIcon, hex: "#166534" },
-  oppose: { Icon: OpposeIcon, hex: "#c2410c" },
-  "no-position": { Icon: NeutralIcon, hex: "#606060" },
+  endorse: { Icon: EndorseIcon, hex: "var(--color-positive-ink)" },
+  oppose: { Icon: OpposeIcon, hex: "var(--color-caution-ink)" },
+  "no-position": { Icon: NeutralIcon, hex: "var(--color-ink-muted)" },
 };
 
 // Opens a testimony in place. The body is the same TestimonyEntry the feed
@@ -390,13 +504,13 @@ function TestimonyModal({
                 // Inline width: Tailwind reads a bare border-[…] as a colour,
                 // so an arbitrary pixel width compiles to nothing.
                 style={{ borderColor: hex, color: hex, borderWidth: 3 }}
-                className="w-[40px] h-[40px] shrink-0 rounded-full border-solid bg-white flex items-center justify-center"
+                className="w-[40px] h-[40px] shrink-0 rounded-full border-solid bg-surface flex items-center justify-center"
               >
                 <Icon className="h-[18px] w-auto" />
               </div>
             );
           })()}
-          <p className="font-['Nunito'] font-normal text-[18px] text-black">
+          <p className="font-body font-normal text-xl text-ink">
             Ballot Question {RC.number} - {RC.title}
           </p>
         </div>
@@ -404,7 +518,7 @@ function TestimonyModal({
       headerActions={
         <button
           aria-label="Share this testimony"
-          className="text-[#606060] hover:text-black cursor-pointer"
+          className="text-ink-muted hover:text-ink cursor-pointer"
         >
           <Share className="w-[19px] h-[19px]" />
         </button>
@@ -419,8 +533,8 @@ function TestimonyModal({
       mainMinWidth="600px"
       aside={
         // Everything that acts on this testimony rather than being part of it.
-        <div className="bg-white rounded-[8px] p-[16px]">
-          <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[10px]">
+        <div className="bg-surface rounded-control p-[16px]">
+          <p className="font-body font-semibold text-2xs text-ink-muted mb-[10px]">
             Actions
           </p>
           <div className="flex flex-col gap-[8px]">
@@ -428,7 +542,7 @@ function TestimonyModal({
               (label) => (
                 <button
                   key={label}
-                  className="w-full text-left font-['Nunito'] font-semibold text-[13px] text-[#12266f] hover:bg-[#f5f5f5] rounded-[4px] px-[8px] py-[6px] cursor-pointer"
+                  className="w-full text-left font-body font-semibold text-sm text-brand hover:bg-wash rounded-control px-[8px] py-[6px] cursor-pointer"
                 >
                   {label}
                 </button>
@@ -438,7 +552,7 @@ function TestimonyModal({
         </div>
       }
     >
-      <div className="bg-white rounded-[8px]">
+      <div className="bg-surface rounded-control">
         <TestimonyEntry
           t={t}
           showTypeIcon={showTypeIcon}
@@ -471,27 +585,27 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-center justify-end gap-[12px]">
           <button
             onClick={onClose}
-            className="font-['Nunito'] font-bold text-[13px] text-[#606060] hover:text-black cursor-pointer px-[8px] py-[8px]"
+            className="font-body font-semibold text-sm text-ink-muted hover:text-ink cursor-pointer px-[8px] py-[8px]"
           >
             Cancel
           </button>
-          <button className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[4px] cursor-pointer hover:bg-[#0d1c52]">
+          <button className="bg-brand text-ink-inverse font-body font-semibold text-sm px-[18px] py-[8px] rounded-control cursor-pointer hover:bg-brand-hover">
             Review and Post
           </button>
         </div>
       }
       title={
-        <p className="font-['Nunito'] font-normal text-[18px] text-black">
+        <p className="font-body font-normal text-xl text-ink">
           Add your perspective on Ballot Question {RC.number}
         </p>
       }
       aside={
         <div className="flex flex-col gap-[16px]">
-          <div className="bg-white rounded-[8px] p-[20px]">
-            <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[8px]">
+          <div className="bg-surface rounded-control p-[20px]">
+            <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
               Before you post
             </p>
-            <ul className="list-disc list-outside pl-[16px] space-y-[8px] font-['Nunito'] text-[12px] text-[#606060] leading-[1.5] marker:text-[#c9c9c9]">
+            <ul className="list-disc list-outside pl-[16px] space-y-[8px] font-body text-xs text-ink-muted leading-[1.5] marker:text-ink-faint">
               <li>
                 Write in your own words. MAPLE does not edit or rank what you
                 say.
@@ -508,18 +622,18 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
             href="https://www.mapletestimony.org/learn/writing-effective-testimony"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-['Nunito'] text-[12px] text-[#606060] hover:text-[#12266f] px-[16px]"
+            className="font-body text-xs text-ink-muted hover:text-brand px-[16px]"
           >
             Testimony writing tips
           </a>
-          <button className="text-left font-['Nunito'] text-[12px] text-[#606060] hover:text-[#12266f] cursor-pointer px-[16px]">
+          <button className="text-left font-body text-xs text-ink-muted hover:text-brand cursor-pointer px-[16px]">
             View our code of conduct
           </button>
         </div>
       }
     >
-      <div className="bg-white rounded-[8px] p-[20px]">
-        <p className="font-['Nunito'] font-bold text-[11px] tracking-[0.06em] uppercase text-[#606060] mb-[8px]">
+      <div className="bg-surface rounded-control p-[20px]">
+        <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
           Your position
         </p>
         <div className="flex gap-[8px] flex-wrap mb-[20px]">
@@ -534,10 +648,10 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
                 aria-pressed={on}
                 // Selected, it wears the same colours the chip on a posted
                 // testimony will, so the choice previews its own result.
-                className={`inline-flex items-center gap-[8px] rounded-[4px] border px-[14px] py-[8px] font-['Nunito'] font-semibold text-[13px] cursor-pointer transition-colors ${
+                className={`inline-flex items-center gap-[8px] rounded-control border px-[14px] py-[8px] font-body font-semibold text-sm cursor-pointer transition-colors ${
                   on
-                    ? `${c.bg} border-[#d1d1d1] ${c.tx}`
-                    : "bg-white border-[#d1d1d1] text-[#606060] hover:bg-[#f5f5f5]"
+                    ? `${c.bg} border-line-strong ${c.tx}`
+                    : "bg-surface border-line-strong text-ink-muted hover:bg-wash"
                 }`}
               >
                 <Icon className="h-[16px] w-auto" />
@@ -550,10 +664,244 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
         <textarea
           rows={10}
           placeholder="What do you want lawmakers and other voters to know about this question?"
-          className="w-full resize-none border border-[#d1d1d1] rounded-[8px] p-[12px] font-['Nunito'] text-[14px] text-black leading-[1.55] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#12266f]"
+          className="w-full resize-none border border-line-strong rounded-control p-[12px] font-body text-base text-ink leading-[1.55] placeholder:text-ink-muted focus:outline-none focus:border-brand"
         />
       </div>
     </Modal>
+  );
+}
+
+/**
+ * The account-type picker, sitting beside the heading rather than inside it.
+ * It names its own selection and changes nothing else: the heading is a
+ * heading, and this is the control next to it.
+ */
+/**
+ * The three positions as bare glyphs. Exported so a page can put it beside its
+ * own heading rather than inside the feed's controls.
+ */
+export function PositionPicker({
+  value,
+  onChange,
+}: {
+  value: StanceFilter;
+  onChange: (v: StanceFilter) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const current = STANCE_GLYPHS.find((g) => g.id === value);
+
+  // Nothing chosen: three labelled options, each one a direct pick.
+  if (!current) {
+    return (
+      // Held at the selected chip's height, so picking one does not change the
+      // row's height and step everything beside it down. No gap between the
+      // options either: the buttons' own padding does the spacing, and they
+      // stay edge to edge so the wash shows exactly where each one begins.
+      <div
+        role="group"
+        aria-label="Filter by position"
+        className="flex h-[34px] items-center"
+      >
+        {STANCE_GLYPHS.map(({ id, tip, glyph, chipOffset }) => (
+          <button
+            key={id}
+            onClick={() => onChange(id)}
+            aria-label={tip}
+            className="flex h-full items-center gap-0 min-[730px]:gap-[8px] px-[9px] rounded-pill hover:bg-wash cursor-pointer transition-colors duration-150"
+          >
+            <span
+              aria-hidden
+              className={`flex h-full items-center text-[20px] leading-none drop-shadow-[0_1px_1px_rgba(20,20,19,0.12)] ${
+                chipOffset ?? ""
+              }`}
+            >
+              {glyph}
+            </span>
+            {/* Three labelled options are the widest thing on this row, so
+                below 730 the words go and the gap goes with them. The glyph
+                carries the meaning once you have seen it labelled, and the
+                button's aria-label keeps the name for a screen reader. The
+                selected chip keeps its word at every width: that one is
+                stating the filter you are looking at. */}
+            <span
+              aria-hidden
+              className="hidden min-[730px]:flex h-full items-center font-body font-semibold text-sm leading-none text-ink whitespace-nowrap"
+            >
+              {tip}
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // Chosen: the chip states the filter and carries two different actions. Its
+  // body opens the other positions, because swapping is the likelier next move
+  // than clearing; the X on the end clears, with its own round hover so the
+  // two targets are legible before you commit to one.
+  return (
+    <div ref={ref} className="relative">
+      {/* The wash lives on the chip, so anywhere on it lights the whole shape.
+          The X then stacks its own round wash on top of that, which is how it
+          reads as a second target inside the first rather than as a hole in
+          it. */}
+      <div className="relative flex items-center h-[34px] pr-[4px] rounded-pill border border-line hover:bg-wash transition-colors">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          aria-label={`Position: ${current.tip}. Change`}
+          className="flex h-full items-center gap-[8px] pl-[8px] pr-[7px] rounded-l-pill cursor-pointer"
+        >
+          {/* Each centred on the chip rather than sharing a baseline, so the
+              word lines up with the X on the other end instead of following
+              wherever the glyph's baseline falls. The glyph then carries its
+              own optical offset, because that is a property of the artwork and
+              nothing structural can derive it. */}
+          <span
+            aria-hidden
+            className={`flex h-full items-center text-[20px] leading-none drop-shadow-[0_1px_1px_rgba(20,20,19,0.12)] ${
+              current.chipOffset ?? ""
+            }`}
+          >
+            {current.glyph}
+          </span>
+          <span className="flex h-full items-center font-body font-semibold text-sm leading-none text-ink whitespace-nowrap">
+            {current.tip}
+          </span>
+        </button>
+        <button
+          onClick={() => onChange("all")}
+          aria-label={`Clear the ${current.label} filter`}
+          className="relative z-10 flex items-center justify-center w-[26px] h-[26px] rounded-full text-ink-muted hover:text-ink hover:bg-wash-strong cursor-pointer transition-colors"
+        >
+          <X aria-hidden className="w-[13px] h-[13px]" />
+        </button>
+      </div>
+      {open && (
+        <div
+          role="listbox"
+          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[190px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
+        >
+          {/* Only the alternatives. The chip already names what is selected, so
+              listing it again offers a choice that changes nothing. */}
+          {STANCE_GLYPHS.filter((g) => g.id !== value).map(
+            ({ id, tip, glyph, chipOffset }) => (
+              <button
+                key={id}
+                role="option"
+                aria-selected={false}
+                onClick={() => {
+                  onChange(id);
+                  setOpen(false);
+                }}
+                className="flex items-center gap-[10px] w-full text-left font-body text-sm text-ink px-[12px] py-[6px] cursor-pointer hover:bg-wash"
+              >
+                <span
+                  aria-hidden
+                  className={`flex h-[22px] items-center text-[20px] leading-none ${
+                    chipOffset ?? ""
+                  }`}
+                >
+                  {glyph}
+                </span>
+                {tip}
+              </button>
+            ),
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function AccountTypePicker({
+  value,
+  onChange,
+}: {
+  value: TypeFilter;
+  onChange: (v: TypeFilter) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const current = TYPE_FILTERS.find((t) => t.id === value) ?? TYPE_FILTERS[0];
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-label="Filter by account type"
+        aria-expanded={open}
+        className="inline-flex h-[28px] items-center gap-[7px] font-display font-medium text-base sm:text-lg uppercase tracking-[0.08em] text-ink hover:text-brand cursor-pointer transition-colors"
+      >
+        {current.id === "all" ? (
+          <Users className="w-[17px] h-[17px]" />
+        ) : (
+          <UserTypeIcon type={current.id} size={17} />
+        )}
+        {current.id === "all" ? "All users" : current.label}
+        <ChevronDown className="w-[15px] h-[15px]" />
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[200px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
+        >
+          {TYPE_FILTERS.map((t) => (
+            <button
+              key={t.id}
+              role="option"
+              aria-selected={t.id === value}
+              onClick={() => {
+                onChange(t.id);
+                setOpen(false);
+              }}
+              className={`flex items-center gap-[8px] w-full text-left font-body text-sm px-[12px] py-[6px] cursor-pointer hover:bg-wash ${
+                t.id === value ? "font-semibold text-brand" : "text-ink"
+              }`}
+            >
+              <span className="w-[15px] shrink-0 flex items-center justify-center">
+                {t.id === "all" ? (
+                  <Users className="w-[15px] h-[15px]" />
+                ) : (
+                  <UserTypeIcon type={t.id} />
+                )}
+              </span>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -568,6 +916,12 @@ export function TestimonyFeed({
   includeTypeFilter = false,
   title,
   stickyTop,
+  hideAddButton = false,
+  composeSignal = 0,
+  typeFilter: controlledType,
+  onTypeFilterChange,
+  filter: controlledFilter,
+  onFilterChange,
 }: {
   items: TestimonyItem[];
   showTypeIcon?: boolean;
@@ -580,6 +934,12 @@ export function TestimonyFeed({
   title?: string;
   /** When set, the filter bar pins at this offset while the feed scrolls. */
   stickyTop?: string;
+  /** Drop the bar's own add button, for pages that put one somewhere better. */
+  hideAddButton?: boolean;
+  /** Bump to open the compose modal from outside the feed. Same pattern as the
+      Maple leaf's nudge: a counter rather than a boolean, so repeat requests
+      still register. */
+  composeSignal?: number;
   /** Add a "Following" toggle that narrows any stance filter to accounts the
       viewer follows. */
   includeFollowingFilter?: boolean;
@@ -587,14 +947,37 @@ export function TestimonyFeed({
   initialFilter?: StanceFilter;
   /** Account-type filter to open with, alongside `initialFilter`. */
   initialTypeFilter?: TypeFilter;
+  /** Drive the account-type filter from outside, for pages that render
+      AccountTypePicker somewhere the feed cannot reach. Uncontrolled when
+      omitted. */
+  typeFilter?: TypeFilter;
+  onTypeFilterChange?: (v: TypeFilter) => void;
+  /** Same, for the position filter. */
+  filter?: StanceFilter;
+  onFilterChange?: (v: StanceFilter) => void;
 }) {
-  const [filter, setFilter] = useState<StanceFilter>(initialFilter);
+  const [ownFilter, setOwnFilter] = useState<StanceFilter>(initialFilter);
+  const filter = controlledFilter ?? ownFilter;
+  const setFilter = onFilterChange ?? setOwnFilter;
   // Following is an overlay, not a stance: it combines with every stance chip.
   const [followingOnly, setFollowingOnly] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [composing, setComposing] = useState(false);
+  // Remember the value, not whether this is the first run. A boolean flag flips
+  // on mount and then stays flipped, so anything that re-runs effects without
+  // remounting (a hot reload, a StrictMode double-invoke) sees an already-used
+  // flag and opens the composer for no reason. Comparing values only ever fires
+  // when the number actually moved.
+  const lastSignal = useRef(composeSignal);
+  useEffect(() => {
+    if (lastSignal.current === composeSignal) return;
+    lastSignal.current = composeSignal;
+    setComposing(true);
+  }, [composeSignal]);
   const openItem = items.find((t) => t.id === openId);
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>(initialTypeFilter);
+  const [ownType, setOwnType] = useState<TypeFilter>(initialTypeFilter);
+  const typeFilter = controlledType ?? ownType;
+  const setTypeFilter = onTypeFilterChange ?? setOwnType;
   // The feed itself is masked so entries fade out in opacity as they rise
   // toward the pinned bar. The fade line is fixed to the viewport while the
   // feed scrolls, so its offset within the feed is recomputed on scroll and
@@ -657,91 +1040,50 @@ export function TestimonyFeed({
           style={stickyTop ? { top: stickyTop } : undefined}
           className={
             stickyTop
-              ? "sticky z-[8] bg-[#ededed] pt-[16px] pb-[16px]"
+              ? "sticky z-[8] bg-ground pt-[16px] pb-[16px]"
               : "mb-[16px]"
           }
         >
           <div
             className={
-              asCards ? "bg-white rounded-[8px] px-[20px] py-[14px]" : ""
+              asCards ? "" : ""
             }
           >
-            <div className="flex min-h-[30px] items-center gap-[6px] flex-wrap">
-              {title && (
-                <h3 className="font-['Nunito'] font-normal text-[18px] text-black mr-[6px]">
-                  {title}
-                </h3>
-              )}
-              <div className="flex items-center gap-[6px]">
-                {includeTypeFilter && (
-                  <>
-                    <TypeFilterMenu
-                      value={typeFilter}
-                      onChange={setTypeFilter}
-                    />
-                    <span
-                      aria-hidden="true"
-                      className="text-[#d1d1d1] select-none mx-[2px]"
-                    >
-                      |
-                    </span>
-                  </>
-                )}
-                <div className="min-[1191px]:hidden">
-                  <StanceFilterMenu value={filter} onChange={setFilter} />
-                </div>
-                <div
-                  role="group"
-                  aria-label="Filter by stance"
-                  className="hidden min-[1191px]:inline-flex items-center rounded-[100px] border border-[#d1d1d1] bg-white overflow-hidden"
+            {/* One row above the cards: the two pickers on the left, Following
+                pinned right. Following is an overlay on whatever they set
+                rather than a third way to narrow, so it sits apart. */}
+            <div className="flex items-center gap-[12px] mb-[12px]">
+              <AccountTypePicker value={typeFilter} onChange={setTypeFilter} />
+              <PositionPicker value={filter} onChange={setFilter} />
+              {includeFollowingFilter && (
+                // Pinned right, and the divider goes with it: Following is an
+                // overlay on whatever else is set rather than another way to
+                // narrow by position or account, so it reads better as its
+                // own thing at the end of the row than as the last item in
+                // the same list.
+                <FilterChip
+                  active={followingOnly}
+                  ariaPressed={followingOnly}
+                  onClick={() => setFollowingOnly((f) => !f)}
+                  title={
+                    followingOnly
+                      ? "Clear the Following filter"
+                      : "Only accounts you follow"
+                  }
+                  className="ml-auto inline-flex items-center gap-[5px]"
                 >
-                  {STANCE_FILTERS.map(({ id, label }) => (
-                    <button
-                      key={id}
-                      onClick={() => setFilter(id)}
-                      aria-pressed={filter === id}
-                      className={`font-['Nunito'] font-semibold text-[12px] px-[12px] py-[4px] cursor-pointer transition-colors border-l border-[#e5e7eb] first:border-l-0 ${
-                        filter === id
-                          ? "bg-[rgba(232,239,255,0.68)] text-[#1e3f8a]"
-                          : "text-[#606060] hover:bg-[#f5f5f5]"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                {includeFollowingFilter && (
-                  <>
-                    <span
-                      aria-hidden="true"
-                      className="text-[#d1d1d1] select-none mx-[2px]"
-                    >
-                      |
-                    </span>
-                    <FilterChip
-                      active={followingOnly}
-                      ariaPressed={followingOnly}
-                      onClick={() => setFollowingOnly((f) => !f)}
-                      title={
-                        followingOnly
-                          ? "Clear the Following filter"
-                          : "Only accounts you follow"
-                      }
-                      className="inline-flex items-center gap-[5px]"
-                    >
-                      Following
-                      {followingOnly && <X className="w-[12px] h-[12px]" />}
-                    </FilterChip>
-                  </>
-                )}
-              </div>
+                  Following
+                  {followingOnly && <X className="w-[12px] h-[12px]" />}
+                </FilterChip>
+              )}
               {/* An action, not a filter: pushed to the far right so the chips
                   read as one group and this reads as separate from them. Same
                   height as they are, square corners so it does not look like
                   one more thing to toggle. */}
+              {!hideAddButton && (
               <button
                 onClick={() => setComposing(true)}
-                className="ml-auto inline-flex items-center gap-[5px] font-['Nunito'] font-semibold text-[12px] px-[10px] py-[4px] rounded-[4px] border bg-white border-[#d1d1d1] text-[#606060] hover:bg-[#f5f5f5] cursor-pointer transition-colors"
+                className="ml-auto shrink-0 inline-flex items-center gap-[5px] font-body font-semibold text-xs px-[10px] py-[4px] rounded-control border border-brand text-brand hover:bg-brand-soft cursor-pointer transition-colors"
               >
                 <Plus className="w-[13px] h-[13px]" />
                 {/* Two labels, one shown at a time: at narrow widths the row
@@ -751,7 +1093,67 @@ export function TestimonyFeed({
                 </span>
                 <span className="hidden max-[1010px]:inline">Add</span>
               </button>
+              )}
             </div>
+            {/* Parked: the narrowing row that sat closest to the cards.
+                Account type moved up to the picker and Following with it,
+                so this held only the superseded stance controls. */}
+            {false && (
+              <div className="flex min-h-[30px] items-center gap-[6px] flex-wrap">
+                <div className="flex items-center gap-[6px]">
+                  {includeTypeFilter && (
+                    <>
+                      <TypeFilterMenu
+                        value={typeFilter}
+                        onChange={setTypeFilter}
+                      />
+                      <span
+                        aria-hidden="true"
+                        className="text-line-strong select-none mx-[2px]"
+                      >
+                        |
+                      </span>
+                    </>
+                  )}
+                  {/* Parked: the original position picker, a segmented
+                      control at width and a dropdown below 1191px. The glyph
+                      row above replaces it.
+
+                  <div className="min-[1191px]:hidden">
+                    <StanceFilterMenu value={filter} onChange={setFilter} />
+                  </div>
+                  <div
+                    role="group"
+                    aria-label="Filter by stance"
+                    className="hidden min-[1191px]:inline-flex items-center rounded-pill border border-line-strong overflow-hidden"
+                  >
+                    {STANCE_FILTERS.map(({ id, label, glyph }) => (
+                      <button
+                        key={id}
+                        onClick={() => setFilter(id)}
+                        aria-pressed={filter === id}
+                        aria-label={glyph ? label : undefined}
+                        title={glyph ? label : undefined}
+                        className={`font-body font-semibold text-xs px-[12px] py-[4px] cursor-pointer transition-colors border-l border-line first:border-l-0 ${
+                          filter === id
+                            ? "bg-brand-soft text-brand-ink"
+                            : "text-ink-muted hover:bg-wash"
+                        }`}
+                      >
+                        {glyph ? (
+                          <span aria-hidden className="text-base leading-none">
+                            {glyph}
+                          </span>
+                        ) : (
+                          label
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  */}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -775,7 +1177,7 @@ export function TestimonyFeed({
             {shown.map((t) => (
               <div
                 key={t.id}
-                className="bg-white rounded-[8px] transition-shadow hover:shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
+                className="bg-surface rounded-control border border-line"
               >
                 <TestimonyEntry
                   t={t}
@@ -797,13 +1199,13 @@ export function TestimonyFeed({
         // Individuals is the one empty result a visitor can act on themselves,
         // so it keeps the invitation; every other empty result only offers a
         // way back out of the filters.
-        <div className="border-[1.5px] border-dashed border-[#d1d1d1] rounded-[12px] p-[22px] text-center bg-white">
-          <p className="font-['Nunito'] font-bold text-[15px] text-black mb-[4px]">
+        <div className="border-[1.5px] border-dashed border-line-strong rounded-panel p-[22px] text-center bg-surface">
+          <p className="font-body font-semibold text-lg text-ink mb-[4px]">
             {typeFilter === "individual"
               ? "No individual testimony yet"
               : "No testimony matches these filters"}
           </p>
-          <p className="font-['Nunito'] text-[13px] text-[#606060] leading-[1.5] max-w-[560px] mx-auto">
+          <p className="font-body text-sm text-ink-muted leading-[1.5] max-w-[560px] mx-auto">
             {typeFilter === "individual"
               ? "No residents have submitted testimony on this question yet. Be among the first to add your perspective."
               : "Try widening your selection to see submissions on this question."}
@@ -812,7 +1214,7 @@ export function TestimonyFeed({
             {typeFilter === "individual" && (
               <button
                 onClick={() => setComposing(true)}
-                className="bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[#0d1c52]"
+                className="bg-brand text-ink-inverse font-body font-semibold text-sm px-[18px] py-[8px] rounded-pill cursor-pointer hover:bg-brand-hover"
               >
                 Add Your Perspective
               </button>
@@ -823,7 +1225,7 @@ export function TestimonyFeed({
                 setTypeFilter("all");
                 setFollowingOnly(false);
               }}
-              className="bg-white border border-[#12266f] text-[#12266f] font-['Nunito'] font-bold text-[13px] px-[18px] py-[8px] rounded-[100px] cursor-pointer hover:bg-[rgba(232,239,255,0.4)]"
+              className="bg-surface border border-brand text-brand font-body font-semibold text-sm px-[18px] py-[8px] rounded-pill cursor-pointer hover:bg-brand-soft/60"
             >
               Clear Filters
             </button>
@@ -870,7 +1272,7 @@ export function FollowedTestimonyCard() {
         <button
           onClick={() => step(-1)}
           aria-label="Previous testimony"
-          className="text-[#334156] hover:text-[#c71e32] hover:bg-[#f5f5f5] cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-[8px]"
+          className="text-ink hover:text-alert hover:bg-wash cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-control"
         >
           <ChevronLeft className="w-[18px] h-[18px]" />
         </button>
@@ -895,7 +1297,7 @@ export function FollowedTestimonyCard() {
         <button
           onClick={() => step(1)}
           aria-label="Next testimony"
-          className="text-[#334156] hover:text-[#c71e32] hover:bg-[#f5f5f5] cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-[8px]"
+          className="text-ink hover:text-alert hover:bg-wash cursor-pointer shrink-0 self-stretch flex items-center px-[14px] rounded-control"
         >
           <ChevronRight className="w-[18px] h-[18px]" />
         </button>

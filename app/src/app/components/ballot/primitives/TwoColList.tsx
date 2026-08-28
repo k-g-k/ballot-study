@@ -25,18 +25,18 @@ export function TwoColList({
     yes: boolean;
   }) => (
     <div className="flex-1">
-      <p className="font-['Nunito'] font-semibold text-[13px] text-[#606060] uppercase tracking-[0.08em] mb-[8px]">
+      <p className="font-body font-semibold text-sm text-ink-muted mb-[8px]">
         {title}
       </p>
       <div className="space-y-[6px]">
         {items.map((item) => (
           <div key={item} className="flex items-start gap-[8px]">
             {yes ? (
-              <Check className="w-[14px] h-[14px] text-[#3b82f6] shrink-0 mt-[2px]" />
+              <Check className="w-[14px] h-[14px] text-official shrink-0 mt-[2px]" />
             ) : (
-              <X className="w-[14px] h-[14px] text-[#808080] shrink-0 mt-[2px]" />
+              <X className="w-[14px] h-[14px] text-ink-faint shrink-0 mt-[2px]" />
             )}
-            <p className="font-['Nunito'] text-[13px] text-black leading-[1.5]">
+            <p className="font-body text-sm text-ink leading-[1.5]">
               {item}
             </p>
           </div>
@@ -48,7 +48,7 @@ export function TwoColList({
     <div>
       <div className="flex gap-[16px]">
         <Col title={leftTitle} items={left} yes />
-        <div className="w-[1px] bg-[#e5e7eb] shrink-0" />
+        <div className="w-[1px] bg-line shrink-0" />
         <Col title={rightTitle} items={right} yes={false} />
       </div>
       {ids && <SourceNote ids={ids} />}

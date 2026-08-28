@@ -61,29 +61,29 @@ export function MapleFab({
         }
       `}</style>
       {open && (
-        <div className="w-[320px] bg-white border border-[#dee2e6] rounded-[14px] shadow-[0_12px_32px_rgba(0,0,0,0.18)] p-[16px]">
+        <div className="w-[320px] bg-surface border border-line rounded-card shadow-[0_12px_32px_rgba(0,0,0,0.18)] p-[16px]">
           <div className="flex items-center gap-[8px] mb-[6px]">
             <img src={mapleUrl} alt="" className="w-[24px] h-[24px]" />
-            <p className="font-['Nunito'] font-bold text-[15px] text-black flex-1">
+            <p className="font-body font-semibold text-lg text-ink flex-1">
               Ask Maple a question
             </p>
             <button
               onClick={() => onOpenChange(false)}
               aria-label="Close"
-              className="text-[#808080] hover:text-black cursor-pointer"
+              className="text-ink-faint hover:text-ink cursor-pointer"
             >
               <X className="w-[16px] h-[16px]" />
             </button>
           </div>
-          <p className="font-['Nunito'] text-[12px] text-[#606060] leading-[1.5] mb-[10px]">
+          <p className="font-body text-xs text-ink-muted leading-[1.5] mb-[10px]">
             Answers draw only from the sources on this page and cite them.
           </p>
           <textarea
             rows={3}
             placeholder="e.g. If the state runs a surplus next year, would I actually get a refund under this?"
-            className="w-full resize-none border border-[#d1d1d1] rounded-[8px] p-[10px] font-['Nunito'] text-[13px] text-black placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#12266f]"
+            className="w-full resize-none border border-line-strong rounded-control p-[10px] font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand"
           />
-          <button className="mt-[10px] w-full bg-[#12266f] text-white font-['Nunito'] font-bold text-[13px] px-[12px] py-[8px] rounded-[8px] cursor-pointer">
+          <button className="mt-[10px] w-full bg-brand text-ink-inverse font-body font-semibold text-sm px-[12px] py-[8px] rounded-control cursor-pointer">
             Ask Maple
           </button>
         </div>
@@ -93,7 +93,7 @@ export function MapleFab({
         aria-label="Ask Maple a question"
         aria-expanded={open}
         title="Ask Maple a question"
-        className="group w-[56px] h-[56px] rounded-full bg-white border border-[#dee2e6] shadow-[0_8px_24px_rgba(0,0,0,0.18)] flex items-center justify-center cursor-pointer hover:shadow-[0_10px_28px_rgba(0,0,0,0.24)] transition-shadow duration-200"
+        className="group w-[56px] h-[56px] rounded-full bg-surface border border-line shadow-[0_8px_24px_rgba(0,0,0,0.18)] flex items-center justify-center cursor-pointer hover:shadow-[0_10px_28px_rgba(0,0,0,0.24)] transition-shadow duration-200"
       >
         {/* Wrapper carries the one-shot click "wave" (rotation); the img inside
             carries the hover grow/tilt, so the two compose without fighting.

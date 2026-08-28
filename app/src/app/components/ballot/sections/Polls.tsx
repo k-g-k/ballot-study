@@ -8,33 +8,33 @@ export function Polls({ rows }: { rows: PollRow[] }) {
       {rows.map((p) => (
         <div
           key={p.pollster + p.dates}
-          className="border-t border-dotted border-[#d1d1d1] pt-[12px] first:border-0 first:pt-0"
+          className="border-t border-dotted border-line-strong pt-[12px] first:border-0 first:pt-0"
         >
-          <p className="font-['Nunito'] font-bold text-[14px] text-black">
+          <p className="font-body font-semibold text-base text-ink">
             {p.pollster}
             <Cite ids={p.ids} />
           </p>
-          <div className="flex h-[26px] rounded-[6px] overflow-hidden my-[8px] font-['Nunito'] font-bold text-[11px] text-white">
+          <div className="flex h-[26px] rounded-control overflow-hidden my-[8px] font-body font-semibold text-2xs text-ink-inverse">
             <div
-              className="bg-[#12266f] flex items-center pl-[9px]"
+              className="bg-brand flex items-center pl-[9px]"
               style={{ width: `${p.support}%` }}
             >
               {p.support}%
             </div>
             <div
-              className="bg-[#7c8196] flex items-center pl-[9px]"
+              className="bg-ink-muted flex items-center pl-[9px]"
               style={{ width: `${p.oppose}%` }}
             >
               {p.oppose}%
             </div>
             <div
-              className="bg-[#d8d5ca] text-[#1f2330] flex items-center pl-[9px]"
+              className="bg-ink-faint text-ink flex items-center pl-[9px]"
               style={{ width: `${p.undecided}%` }}
             >
               {p.undecided}%
             </div>
           </div>
-          <p className="font-['Nunito'] text-[12px] text-[#606060]">
+          <p className="font-body text-xs text-ink-muted">
             Support {p.support}% · Oppose {p.oppose}% · Undecided {p.undecided}%
             · {p.dates} · {p.sample} · MoE {p.moe}
           </p>

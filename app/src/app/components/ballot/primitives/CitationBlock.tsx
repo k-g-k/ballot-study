@@ -21,7 +21,7 @@ export function CitationBlock({
       style={{ borderColor: KIND_DOT[kind] }}
     >
       {title && (
-        <p className="font-['Nunito'] font-semibold text-[14px] text-black leading-[1.5]">
+        <p className="font-body font-semibold text-base text-ink leading-[1.5]">
           {title}
         </p>
       )}

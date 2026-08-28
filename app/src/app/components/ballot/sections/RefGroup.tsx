@@ -8,7 +8,7 @@ export function RefGroup({ title, ids }: { title?: string; ids: string[] }) {
   return (
     <div>
       {title && (
-        <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[8px]">
+        <p className="font-body font-semibold text-base text-ink mb-[8px]">
           {title}
         </p>
       )}
@@ -23,13 +23,13 @@ export function RefGroup({ title, ids }: { title?: string; ids: string[] }) {
           return (
             <li
               key={id}
-              className="font-['Nunito'] text-[13px] text-[#334156] leading-[1.5]"
+              className="font-body text-sm text-ink leading-[1.5]"
             >
-              <span className="font-semibold text-black">
+              <span className="font-semibold text-ink">
                 {s.title ?? s.label}
               </span>
               {metaLine && (
-                <span className="italic text-[#606060]"> — {metaLine}</span>
+                <span className="italic text-ink-muted"> — {metaLine}</span>
               )}
               {s.note && <> — {s.note}</>}
               {s.url && (
@@ -37,7 +37,7 @@ export function RefGroup({ title, ids }: { title?: string; ids: string[] }) {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-['Nunito'] text-[12px] font-bold text-[#12266f] hover:text-[#c71e32] inline-flex items-center gap-[3px] ml-[4px] align-baseline"
+                  className="font-body text-xs font-semibold text-brand hover:text-alert inline-flex items-center gap-[3px] ml-[4px] align-baseline"
                 >
                   Source <ArrowUpRight className="w-[13px] h-[13px]" />
                 </a>

@@ -18,6 +18,15 @@
           var LAYOUT = 875;
           var meta = document.querySelector('meta[name="viewport"]');
           function fit() {
+            // Pages that do their own responsive work opt out and get the real
+            // device width; the fixed-layout pages keep the scale-to-fit.
+            if (document.documentElement.dataset.viewport === "device") {
+              meta.setAttribute(
+                "content",
+                "width=device-width, initial-scale=1"
+              );
+              return;
+            }
             var w = (window.screen && window.screen.width) || LAYOUT;
             // Wider than the layout: nothing to scale, hand the screen back its
             // own width so the page renders natively.
@@ -29,6 +38,8 @@
             );
           }
           fit();
+          // Exposed so a page can re-run it after opting in or out.
+          window.__mapleFitViewport = fit;
           // screen.width swaps on rotation, so the scale has to be recomputed.
           window.addEventListener("orientationchange", function () {
             setTimeout(fit, 100);

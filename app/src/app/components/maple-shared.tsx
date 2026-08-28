@@ -373,7 +373,7 @@ export function InitialsAvatar({ name, size }: { name: string; size: number }) {
   return (
     <div
       aria-hidden="true"
-      className="rounded-full shrink-0 ring-2 ring-border flex items-center justify-center"
+      className="rounded-full shrink-0 ring-2 ring-line flex items-center justify-center"
       style={{
         width: size,
         height: size,
@@ -392,7 +392,7 @@ export function InitialsAvatar({ name, size }: { name: string; size: number }) {
 // ─── Profile Banner (shared compact version) ──────────────────────────────────
 export function ProfileBanner() {
   return (
-    <div className="bg-white border-b border-border px-8 py-6 flex items-center gap-6">
+    <div className="bg-white border-b border-line px-8 py-6 flex items-center gap-6">
       <InitialsAvatar name={L.name} size={64} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
@@ -424,7 +424,7 @@ export function ProfileBanner() {
           >
             {L.title}
           </span>
-          <span className="text-border">·</span>
+          <span className="text-line">·</span>
           <span
             className="flex items-center gap-1"
             style={{ fontFamily: "Nunito", fontSize: 14, color: "#606060" }}
@@ -432,7 +432,7 @@ export function ProfileBanner() {
             <MapPin size={13} />
             {L.district} District
           </span>
-          <span className="text-border">·</span>
+          <span className="text-line">·</span>
           <span
             style={{ fontFamily: "Nunito", fontSize: 14, color: "#606060" }}
           >

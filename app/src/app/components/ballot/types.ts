@@ -13,11 +13,14 @@
 export type SrcKind = "official" | "outside" | "ai" | "user";
 
 // Left-bar / dot color per source kind. Used by CitationBlock, Cite, RefGroup…
+// Read from inline styles (CitationBlock paints its left bar with
+// style.borderColor), so these point at the theme variables rather than
+// repeating their values. theme.css uses `@theme static` to keep them emitted.
 export const KIND_DOT: Record<SrcKind, string> = {
-  official: "#3b82f6",
-  user: "#f97316",
-  outside: "#22c55e",
-  ai: "#a855f7",
+  official: "var(--color-official)",
+  user: "var(--color-user)",
+  outside: "var(--color-outside)",
+  ai: "var(--color-ai)",
 };
 
 // Outlined provenance chips used in the sources popover.
@@ -26,21 +29,21 @@ export const SRC_CHIP: Record<
   { bd: string; tx: string; label: string }
 > = {
   official: {
-    bd: "border-[#93c5fd]",
-    tx: "text-[#1e40af]",
-    label: "Official Info",
+    bd: "border-official-edge",
+    tx: "text-official-ink",
+    label: "Official info",
   },
   outside: {
-    bd: "border-[#86efac]",
-    tx: "text-[#166534]",
-    label: "Outside Content",
+    bd: "border-outside-edge",
+    tx: "text-outside-ink",
+    label: "Outside content",
   },
   user: {
-    bd: "border-[#fdba74]",
-    tx: "text-[#9a3412]",
-    label: "User-Submitted",
+    bd: "border-user-edge",
+    tx: "text-user-ink",
+    label: "User-submitted",
   },
-  ai: { bd: "border-[#d8b4fe]", tx: "text-[#6b21a8]", label: "AI Synthesis" },
+  ai: { bd: "border-ai-edge", tx: "text-ai-ink", label: "AI synthesis" },
 };
 
 // A single cited source. Referenced by its key in the per-question registry.

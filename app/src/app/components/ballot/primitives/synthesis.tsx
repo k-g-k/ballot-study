@@ -27,8 +27,8 @@ export function SynthSummaryCard({
 }) {
   return (
     <Card title={title} subtitle={subtitle}>
-      <div className="border-l-[3px] border-[#a855f7] pl-[14px]">
-        <div className="space-y-[12px] font-['Nunito'] text-[14px] text-black leading-[1.6]">
+      <div className="border-l-[3px] border-ai pl-[14px]">
+        <div className="space-y-[12px] font-body text-base text-ink leading-[1.6]">
           {children}
         </div>
         <SynthSourcesNote ids={ids} prompt={prompt} extra={extra} />
@@ -51,8 +51,8 @@ export function AnalysisSection({
   children: ReactNode;
 }) {
   return (
-    <div className="border-l-[3px] border-[#a855f7] pl-[14px]">
-      <p className="font-['Nunito'] font-semibold text-[14px] text-black mb-[6px]">
+    <div className="border-l-[3px] border-ai pl-[14px]">
+      <p className="font-body font-semibold text-base text-ink mb-[6px]">
         {title}
       </p>
       {children}
@@ -72,17 +72,17 @@ export function AISynth({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-[#f5f3ff] border border-[#d8b4fe] rounded-[6px] p-[16px]">
+    <div className="bg-ai-soft border border-ai-edge rounded-control p-[16px]">
       <div className="flex items-center gap-[8px] mb-[8px] flex-wrap">
-        <span className="bg-[#ede9fe] text-[#6b21a8] font-['Nunito'] font-bold text-[9px] tracking-[0.08em] uppercase px-[7px] py-[2px] rounded-[4px]">
+        <span className="bg-ai-soft text-ai-ink font-body font-semibold text-2xs px-[7px] py-[2px] rounded-control">
           AI synthesis
         </span>
-        <p className="font-['Nunito'] font-semibold text-[14px] text-[#6b21a8]">
+        <p className="font-body font-semibold text-base text-ai-ink">
           {title}
           {ids && <Cite ids={ids} />}
         </p>
       </div>
-      <div className="font-['Nunito'] text-[14px] text-black leading-[1.55]">
+      <div className="font-body text-base text-ink leading-[1.55]">
         {children}
       </div>
     </div>
@@ -99,21 +99,21 @@ export function ContentItem({
 }) {
   const c = {
     official: {
-      bg: "bg-[#dbeafe]",
-      bd: "border-[#93c5fd]",
-      tx: "text-[#1e40af]",
+      bg: "bg-official-soft",
+      bd: "border-official-edge",
+      tx: "text-official-ink",
     },
-    user: { bg: "bg-[#fed7aa]", bd: "border-[#fdba74]", tx: "text-[#9a3412]" },
+    user: { bg: "bg-user-soft", bd: "border-user-edge", tx: "text-user-ink" },
     outside: {
-      bg: "bg-[#bbf7d0]",
-      bd: "border-[#86efac]",
-      tx: "text-[#166534]",
+      bg: "bg-outside-soft",
+      bd: "border-outside-edge",
+      tx: "text-outside-ink",
     },
-    ai: { bg: "bg-[#e9d5ff]", bd: "border-[#d8b4fe]", tx: "text-[#6b21a8]" },
+    ai: { bg: "bg-ai-soft", bd: "border-ai-edge", tx: "text-ai-ink" },
   }[type];
   return (
-    <div className={`${c.bg} border ${c.bd} rounded-[6px] px-[12px] py-[8px]`}>
-      <div className={`font-['Nunito'] text-[14px] ${c.tx} tracking-[0.14px]`}>
+    <div className={`${c.bg} border ${c.bd} rounded-control px-[12px] py-[8px]`}>
+      <div className={`font-body text-base ${c.tx} tracking-[0.14px]`}>
         {children}
       </div>
     </div>

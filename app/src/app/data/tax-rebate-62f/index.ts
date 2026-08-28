@@ -3,6 +3,7 @@
 
 export { SOURCES } from "./sources";
 export * from "./content";
+export { PROSE } from "./prose";
 export { orgTestifiers, testimonyFor } from "./selectors";
 export {
   POSITION_USERS,

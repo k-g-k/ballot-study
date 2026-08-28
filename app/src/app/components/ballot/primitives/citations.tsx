@@ -24,7 +24,7 @@ export function Cite({ ids }: { ids: string[] }) {
             target="_blank"
             rel="noopener noreferrer"
             title={s.label}
-            className="font-['Nunito'] font-bold text-[10px] text-[#6b21a8] no-underline hover:text-[#12266f]"
+            className="font-body font-semibold text-2xs text-ai-ink no-underline hover:text-brand"
           >
             [{i > 0 ? "" : "src"}
             {i > 0 ? i + 1 : ""}↗]
@@ -39,7 +39,7 @@ export function Cite({ ids }: { ids: string[] }) {
 export function SourceNote({ ids, text }: { ids?: string[]; text?: string }) {
   const sources = useSources();
   return (
-    <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[8px] leading-[1.5]">
+    <p className="font-body text-xs text-ink-faint mt-[8px] leading-[1.5]">
       {text ? `${text} ` : "Source: "}
       {ids?.map((id, i) => {
         const s = sources[id];
@@ -51,7 +51,7 @@ export function SourceNote({ ids, text }: { ids?: string[]; text?: string }) {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#12266f] hover:text-[#c71e32]"
+              className="text-brand hover:text-alert"
             >
               {s.label}
               {s.date ? ` (${s.date})` : ""}
@@ -68,8 +68,8 @@ export function SourceNote({ ids, text }: { ids?: string[]; text?: string }) {
 export function AISynthSources({ ids }: { ids: string[] }) {
   const sources = useSources();
   return (
-    <p className="font-['Nunito'] text-[12px] text-[#808080] mt-[8px] leading-[1.5]">
-      <Sparkles className="w-[12px] h-[12px] text-[#6b21a8] inline-block align-[-1.5px] mr-[4px]" />
+    <p className="font-body text-xs text-ink-faint mt-[8px] leading-[1.5]">
+      <Sparkles className="w-[12px] h-[12px] text-ai-ink inline-block align-[-1.5px] mr-[4px]" />
       AI Synthesis of{" "}
       {ids.map((id, i) => {
         const s = sources[id];
@@ -81,7 +81,7 @@ export function AISynthSources({ ids }: { ids: string[] }) {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#12266f] hover:text-[#c71e32] whitespace-nowrap"
+              className="text-brand hover:text-alert whitespace-nowrap"
             >
               {shortSourceName(s)}
               <ArrowUpRight className="w-[11px] h-[11px] inline-block align-[-1px]" />
@@ -94,11 +94,12 @@ export function AISynthSources({ ids }: { ids: string[] }) {
 }
 
 // Sources popover trigger.
-//  - "ai" (default): muted AI Synthesis chip + "View Prompt & Sources".
+//  - "ai" (default): muted AI Synthesis chip + "Check our work".
 //  - "plain": no chip, "View Sources" — for non-AI provenance (e.g. claims).
 // Opens a bibliography popover (optional prompt, then each source with
 // provenance chip, title, issuer · date, note, outbound link). Closes on
 // outside click or Escape.
+
 export function SynthSourcesNote({
   ids,
   prompt,
@@ -153,14 +154,14 @@ export function SynthSourcesNote({
 
   const triggerLabel =
     variant === "ai"
-      ? "View Prompt & Sources"
+      ? "Check our work"
       : ids.length === 1
         ? "View Source"
         : "View Sources";
-  const triggerClass = `font-['Nunito'] font-semibold text-[13px] underline decoration-dotted underline-offset-[4px] cursor-pointer ${
+  const triggerClass = `font-body font-semibold text-sm underline decoration-dotted underline-offset-[4px] cursor-pointer ${
     variant === "ai"
-      ? "text-[#6b21a8] hover:text-[#4c1d95]"
-      : (linkClass ?? "text-[#12266f] hover:text-[#c71e32]")
+      ? "text-ai-ink hover:text-ai-deep"
+      : (linkClass ?? "text-brand hover:text-alert")
   }`;
   const trigger = (
     <button
@@ -177,14 +178,14 @@ export function SynthSourcesNote({
       aria-label="Sources"
       className={`absolute left-0 ${
         placement === "up" ? "bottom-full mb-[8px]" : "top-full mt-[8px]"
-      } w-[440px] max-w-[80vw] max-h-[420px] overflow-y-auto bg-white border border-[#d1d1d1] rounded-[8px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] p-[18px] z-30 text-left`}
+      } w-[440px] max-w-[80vw] max-h-[420px] overflow-y-auto bg-surface border border-line-strong rounded-control shadow-[0_10px_28px_rgba(0,0,0,0.14)] p-[18px] z-30 text-left`}
     >
       {prompt && (
-        <div className="border-b border-dotted border-[#d1d1d1] mb-[14px] pb-[14px]">
-          <span className="inline-block bg-white border border-[#d8b4fe] text-[#6b21a8] font-['Nunito'] font-bold text-[10px] tracking-[0.08em] uppercase px-[8px] py-[2px] rounded-[6px]">
+        <div className="border-b border-dotted border-line-strong mb-[14px] pb-[14px]">
+          <span className="inline-block bg-surface border border-ai-edge text-ai-ink font-body font-semibold text-2xs px-[8px] py-[2px] rounded-control">
             Prompt
           </span>
-          <p className="font-['Nunito'] text-[13px] text-black leading-[1.5] mt-[8px]">
+          <p className="font-body text-sm text-ink leading-[1.5] mt-[8px]">
             {prompt}
           </p>
         </div>
@@ -202,25 +203,25 @@ export function SynthSourcesNote({
             key={id}
             className={
               i > 0
-                ? "border-t border-dotted border-[#d1d1d1] mt-[14px] pt-[14px]"
+                ? "border-t border-dotted border-line-strong mt-[14px] pt-[14px]"
                 : ""
             }
           >
             <span
-              className={`inline-block bg-white border ${chip.bd} ${chip.tx} font-['Nunito'] font-bold text-[10px] tracking-[0.08em] uppercase px-[8px] py-[2px] rounded-[6px]`}
+              className={`inline-block bg-surface border ${chip.bd} ${chip.tx} font-body font-semibold text-2xs px-[8px] py-[2px] rounded-control`}
             >
               {chip.label}
             </span>
-            <p className="font-['Nunito'] font-bold text-[14px] text-black leading-[1.4] mt-[8px]">
+            <p className="font-body font-semibold text-base text-ink leading-[1.4] mt-[8px]">
               {s.title ?? s.label}
             </p>
             {metaLine && (
-              <p className="font-['Nunito'] text-[13px] text-[#808080] mt-[2px]">
+              <p className="font-body text-sm text-ink-muted mt-[2px]">
                 {metaLine}
               </p>
             )}
             {s.note && (
-              <p className="font-['Nunito'] text-[13px] text-black leading-[1.5] mt-[4px]">
+              <p className="font-body text-sm text-ink leading-[1.5] mt-[4px]">
                 {s.note}
               </p>
             )}
@@ -229,12 +230,12 @@ export function SynthSourcesNote({
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-[3px] font-['Nunito'] font-bold text-[13px] text-[#12266f] underline underline-offset-2 hover:text-[#c71e32] mt-[6px]"
+                className="inline-flex items-center gap-[3px] font-body font-semibold text-sm text-brand underline underline-offset-2 hover:text-alert mt-[6px]"
               >
                 Open source <ArrowUpRight className="w-[13px] h-[13px]" />
               </a>
             ) : (
-              <p className="font-['Nunito'] text-[13px] text-[#808080] mt-[6px]">
+              <p className="font-body text-sm text-ink-muted mt-[6px]">
                 Link not yet on file
               </p>
             )}
@@ -254,14 +255,26 @@ export function SynthSourcesNote({
   }
   return (
     <span ref={wrapRef} className="relative block mt-[10px]">
-      <span className="flex items-center gap-[10px] flex-wrap">
+      {/* The chip is the affordance; "Check our work" only appears once
+          you are already on it, so the resting state stays quiet on a page that
+          carries synthesis in most sections. Opacity rather than display, so
+          nothing shifts on hover and the control stays reachable by keyboard. */}
+      <span className="group flex items-center gap-[10px] flex-wrap">
         {variant === "ai" && (
-          <span className="inline-flex items-center gap-[4px] bg-white border border-[#e2d6f5] text-[#8b6fb3] font-['Nunito'] font-bold text-[10px] tracking-[0.08em] uppercase px-[7px] py-[2px] rounded-[4px]">
+          <span className="inline-flex items-center gap-[4px] border border-ai-edge text-ai-ink grayscale-[50%] group-hover:filter-none group-focus-within:filter-none font-body font-semibold text-2xs uppercase tracking-[0.08em] px-[7px] py-[2px] rounded-control">
             <Sparkles className="w-[10px] h-[10px]" />
             AI Synthesis
           </span>
         )}
-        {trigger}
+        <span
+          className={
+            variant === "ai"
+              ? "opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+              : ""
+          }
+        >
+          {trigger}
+        </span>
         {extra}
       </span>
       {popover}

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
-// The base white card every section sits in. Optional title/subtitle header.
+// The base card every section sits in. A hairline outline and no shadow: in this
+// system borders carry the separation that elevation usually would.
+// Titles are Lexend at medium; body and everything else is Nunito.
 export function Card({
   title,
   subtitle,
@@ -22,27 +24,27 @@ export function Card({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-[8px] p-[24px]">
+    <div className="bg-surface rounded-card border border-line p-[24px]">
       {title &&
         (stickyTop ? (
           // Bled to the card edges so content passes under the header rather
           // than beside it, and the card's top padding travels with it.
           <h3
             style={{ top: stickyTop }}
-            className="sticky z-[5] -mx-[24px] -mt-[24px] mb-[4px] rounded-t-[8px] bg-white px-[24px] pt-[24px] pb-[4px] font-['Nunito'] font-normal text-[18px] text-black"
+            className="sticky z-[5] -mx-[24px] -mt-[24px] mb-[4px] rounded-t-card bg-surface px-[24px] pt-[24px] pb-[4px] font-display font-medium text-xl text-ink"
           >
             {title}
           </h3>
         ) : (
           <div className="flex items-center justify-between gap-[16px] mb-[4px]">
-            <h3 className="font-['Nunito'] font-normal text-[18px] text-black">
+            <h3 className="font-display font-medium text-xl text-ink">
               {title}
             </h3>
             {headerRight}
           </div>
         ))}
       {subtitle && (
-        <p className="font-['Nunito'] text-[13px] text-[#808080] mb-[14px]">
+        <p className="font-body text-sm text-ink-muted mb-[14px]">
           {subtitle}
         </p>
       )}

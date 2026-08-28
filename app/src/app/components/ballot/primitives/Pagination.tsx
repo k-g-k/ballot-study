@@ -18,7 +18,7 @@ export function Pagination({
         onClick={() => onPage(page - 1)}
         disabled={page === 0}
         aria-label="Previous page"
-        className="text-[#334156] hover:text-[#c71e32] cursor-pointer disabled:text-[#c9c9c9] disabled:cursor-default"
+        className="text-ink hover:text-alert cursor-pointer disabled:text-ink-faint disabled:cursor-default"
       >
         <ChevronLeft className="w-[16px] h-[16px]" />
       </button>
@@ -26,7 +26,7 @@ export function Pagination({
         item === "…" ? (
           <span
             key={`gap-${i}`}
-            className="font-['Nunito'] text-[13px] text-[#808080]"
+            className="font-body text-sm text-ink-muted"
           >
             …
           </span>
@@ -35,10 +35,10 @@ export function Pagination({
             key={item}
             onClick={() => onPage(item)}
             aria-current={item === page ? "page" : undefined}
-            className={`font-['Nunito'] text-[13px] cursor-pointer ${
+            className={`font-body text-sm cursor-pointer ${
               item === page
-                ? "font-bold text-black cursor-default"
-                : "text-[#12266f] hover:text-[#c71e32]"
+                ? "font-semibold text-ink cursor-default"
+                : "text-brand hover:text-alert"
             }`}
           >
             {item + 1}
@@ -49,7 +49,7 @@ export function Pagination({
         onClick={() => onPage(page + 1)}
         disabled={page >= pageCount - 1}
         aria-label="Next page"
-        className="text-[#334156] hover:text-[#c71e32] cursor-pointer disabled:text-[#c9c9c9] disabled:cursor-default"
+        className="text-ink hover:text-alert cursor-pointer disabled:text-ink-faint disabled:cursor-default"
       >
         <ChevronRight className="w-[16px] h-[16px]" />
       </button>

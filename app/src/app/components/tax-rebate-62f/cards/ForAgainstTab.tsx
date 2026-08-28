@@ -10,12 +10,11 @@ import {
   FiscalCard,
   WhatHappensCard,
 } from "./BackgroundTab";
-import { NextStepCard } from "./NextStepCard";
 
 export function SummaryCard() {
   return (
     <SynthSummaryCard
-      title="Arguments at a Glance"
+      title="Arguments at a glance"
       ids={["petition", "maoBrief", "massBudget", "mtfPosition", "masslive62F"]}
       prompt="Summarize what the 62F reform measure would do and how each side frames it. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
     >
@@ -35,7 +34,7 @@ export function SummaryCard() {
 // Shared bullet list for the analysis cards below.
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="list-disc list-outside pl-[18px] space-y-[4px] font-['Nunito'] text-[14px] text-black leading-[1.55]">
+    <ul className="list-disc list-outside pl-[18px] space-y-[4px] font-body text-base text-ink leading-[1.55]">
       {items.map((c) => (
         <li key={c}>{c}</li>
       ))}
@@ -48,7 +47,7 @@ function Bullets({ items }: { items: string[] }) {
 export function ConsensusCard() {
   return (
     <SynthSummaryCard
-      title="Areas of Consensus"
+      title="Areas of consensus"
       ids={["petition", "ballotpedia", "mapleTestimony"]}
       prompt="Identify the points supporters and opponents of the 62F reform question agree on, across testimony, fiscal analysis, and the official text. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
     >
@@ -60,7 +59,7 @@ export function ConsensusCard() {
 export function DisagreementCard() {
   return (
     <SynthSummaryCard
-      title="Areas of Disagreement"
+      title="Areas of disagreement"
       ids={["maoBrief", "massBudget", "mapleTestimony"]}
       prompt="Identify the points supporters and opponents of the 62F reform question most disagree on, across testimony and fiscal analysis. Use only the sources listed below and cite nothing else. (Filler prompt for prototype purposes.)"
     >
@@ -71,10 +70,10 @@ export function DisagreementCard() {
 
 export function ArgumentsAtAGlanceCard() {
   return (
-    <Card title="Key Arguments" stickyTop="var(--pinned-h, 0px)">
+    <Card title="Key arguments" stickyTop="var(--pinned-h, 0px)">
       <div className="flex gap-[24px]">
-        <ArgColumn title="YES Arguments" args={RC.yesArgs} />
-        <ArgColumn title="NO Arguments" args={RC.noArgs} />
+        <ArgColumn title="Yes arguments" args={RC.yesArgs} />
+        <ArgColumn title="No arguments" args={RC.noArgs} />
       </div>
       <div className="mt-[16px]">
         <SynthSourcesNote
@@ -83,25 +82,5 @@ export function ArgumentsAtAGlanceCard() {
         />
       </div>
     </Card>
-  );
-}
-
-export function ForAgainstTab({ onNext }: { onNext?: () => void }) {
-  return (
-    <div className="flex flex-col gap-[16px]">
-      <SummaryCard />
-      <ArgumentsAtAGlanceCard />
-      <ConsensusCard />
-      <DisagreementCard />
-      <WhoIsImpactedCard />
-      <FiscalCard />
-      <WhatHappensCard />
-      <NextStepCard
-        title="See what people are saying"
-        body="Testimony submitted to MAPLE by organizations, officials, and residents, plus notes from live citizen discussions."
-        action="Public Perspectives"
-        onClick={onNext}
-      />
-    </div>
   );
 }

@@ -47,7 +47,7 @@ export function TabBar<Id extends string>({
     <div
       ref={listRef}
       role="tablist"
-      className={`bg-white flex rounded-[8px] flex-row gap-0 px-[8px] pt-[8px] pb-0 overflow-x-auto scrollbar-hide min-[950px]:flex-col min-[950px]:gap-[8px] min-[950px]:p-[16px] min-[950px]:overflow-visible ${className}`}
+      className={`bg-surface flex rounded-card flex-row gap-0 px-[8px] pt-[8px] pb-0 overflow-x-auto scrollbar-hide min-[950px]:flex-col min-[950px]:gap-[8px] min-[950px]:p-[16px] min-[950px]:overflow-visible ${className}`}
     >
       {tabs.map((tab) => {
         const isActive = active === tab.id;
@@ -73,15 +73,15 @@ export function TabBar<Id extends string>({
             // The inactive border is transparent rather than absent so pills
             // keep their width, and labels their baseline, as the selection
             // moves along the strip.
-            className={`cursor-pointer shrink-0 grow h-auto rounded-none border-b-[3px] px-[10px] pt-[6px] pb-[12px] flex items-center justify-center transition-colors min-[950px]:grow-0 min-[950px]:justify-start min-[950px]:h-[36px] min-[950px]:py-[6px] min-[950px]:rounded-[8px] min-[950px]:border-[1px] ${
+            className={`cursor-pointer shrink-0 grow h-auto rounded-none border-b-[3px] px-[10px] pt-[6px] pb-[12px] flex items-center justify-center transition-colors min-[950px]:grow-0 min-[950px]:justify-start min-[950px]:h-[36px] min-[950px]:py-[6px] min-[950px]:rounded-card min-[950px]:border-[1px] ${
               isActive
-                ? "border-b-[#1e3f8a] min-[950px]:border-[#c9d8ff] min-[950px]:bg-[rgba(232,239,255,0.68)]"
+                ? "border-b-brand-ink min-[950px]:border-brand-edge min-[950px]:bg-brand-soft"
                 : "border-b-transparent min-[950px]:border-transparent"
             }`}
           >
             <p
-              className={`font-['Nunito'] font-semibold text-[14px] tracking-[0.14px] whitespace-nowrap ${
-                isActive ? "text-[#1e3f8a]" : "text-[#334156]"
+              className={`font-body font-semibold text-base tracking-[0.14px] whitespace-nowrap ${
+                isActive ? "text-brand-ink" : "text-ink"
               }`}
             >
               {tab.label}
