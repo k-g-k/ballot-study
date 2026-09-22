@@ -18,15 +18,15 @@ My role: volunteer product and design lead, as part of Code for Boston
 **1. Making the content visible**
 Prototype: [grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)
 
-**Problem:** the page's content comes from very different places: official records,
+**Problem:** 
+1. the page's content comes from very different places: official records,
 testimony people submit themselves, outside media and research, both partisan and
 non-partisan. It also uses AI-generated synthesis to make dense material readable
 for the average user. 
-
-**Underlying Problem:** The team was focused on what content to display and where,
+2. The team was focused on what content to display and where,
 but we didn't really have a shared picture of the content blocks themselves.
 
-
+**Approach:** 
 There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create content schemata based on team conversations and
 competitive analysis of Ballotpedia, producing around sixty items across four
 source types. 
