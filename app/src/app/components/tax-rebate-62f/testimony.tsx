@@ -13,15 +13,11 @@ import {
   Users,
   Plus,
   Share,
+  ArrowUpRight,
 } from "lucide-react";
-import { Card, FilterChip, Modal } from "../ballot";
+import { Card, FilterChip, Modal, Pagination } from "../ballot";
 import type { DescriptorMode } from "../ballot";
-import {
-  UserAvatar,
-  UserTypeIcon,
-  StanceChip,
-  STANCE_CHIP,
-} from "./accounts";
+import { UserAvatar, UserTypeIcon, StanceChip, STANCE_CHIP } from "./accounts";
 import { EndorseIcon, OpposeIcon, NeutralIcon } from "./stance-icons";
 import {
   RC,
@@ -71,7 +67,7 @@ function ClampedBody({ text }: { text: string }) {
 
   const collapsed = !expanded && cutoff !== null;
   return (
-    <div ref={wrapRef} className="mt-[8px]">
+    <div ref={wrapRef}>
       <p
         ref={measureRef}
         aria-hidden="true"
@@ -123,43 +119,56 @@ export function TestimonyEntry({
     showDescriptor === true ||
     (showDescriptor === "officials" && user.userType !== "organization");
   return (
-    <div className="relative px-[20px] py-[16px] rounded-control">
-      <div className="relative flex items-start gap-[12px]">
+    <div className="relative p-[20px] rounded-control">
+      <div className="relative flex items-center gap-[18px]">
         {!hideAvatar && <UserAvatar user={user} />}
         <div className="flex-1 min-w-0">
           {/* Name, type and stance wrap inside their own box; the date sits
               outside it so it always holds the top-right corner. */}
-          <div className="flex items-start gap-[6px]">
-            <div className="flex-1 min-w-0 flex items-center gap-[6px] flex-wrap">
-              {onOpen ? (
-                <button
-                  onClick={() => onOpen(t.id)}
-                  className="text-left font-body font-semibold text-base text-ink leading-[1.3] hover:text-brand cursor-pointer"
-                >
-                  {user.name}
-                </button>
-              ) : (
+          <div className="flex items-center gap-[6px]">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-[6px] flex-wrap">
+                {/* Plain text for now. The name should be a link to the
+                  testimony's own page, and it will be an anchor when that page
+                  exists; a button that opens a modal is not that, and dressing
+                  it as a link before there is a URL behind it teaches the wrong
+                  thing about what clicking a name does. `onOpen` is kept so the
+                  wiring is here when the route is. */}
                 <p className="font-body font-semibold text-base text-ink leading-[1.3]">
                   {user.name}
                 </p>
+                {showTypeIcon && <UserTypeIcon type={user.userType} />}
+                {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
+              </div>
+              {/* Inside the name's own cell, not below the whole row: it
+                  describes the account, so it belongs to the name, and the date
+                  should centre against the pair rather than against the name
+                  alone. */}
+              {showDesc && (
+                <p className="font-body text-xs text-ink-faint leading-[1.4] mt-[1px]">
+                  {user.descriptor}
+                </p>
               )}
-              {showTypeIcon && <UserTypeIcon type={user.userType} />}
-              {t.stance !== "no-position" && <StanceChip stance={t.stance} />}
             </div>
-            <div className="shrink-0 flex items-center gap-[2px] -mt-[3px] -mr-[6px]">
+            <div className="shrink-0 self-start flex items-center gap-[2px] -mt-[5px] -mr-[6px]">
               <span className="font-body text-xs text-ink-muted whitespace-nowrap mr-[2px]">
                 {t.date}
               </span>
               <EntryActions name={user.name} />
             </div>
           </div>
-          {showDesc && (
-            <p className="font-body text-xs text-ink-faint leading-[1.4] mt-[1px]">
-              {user.descriptor}
-            </p>
-          )}
+        </div>
+      </div>
+      {/* The body sits in the same two-column frame the header does, with an
+          empty cell where the avatar is, so its first character lands under the
+          name rather than under the avatar. A spacer rather than a left
+          padding, because it is the avatar's own width and should change when
+          that does. */}
+      <div className="flex gap-[18px]">
+        {!hideAvatar && <div aria-hidden className="w-[40px] shrink-0" />}
+        <div className="flex-1 min-w-0 pt-[8px] pr-[12px] pb-[8px]">
           {fullBody ? (
-            <p className="font-body text-base text-ink leading-[1.55] mt-[8px] whitespace-pre-line">
+            <p className="font-body text-base text-ink leading-[1.55] whitespace-pre-line">
               {t.body}
             </p>
           ) : (
@@ -270,7 +279,7 @@ const STANCE_FILTERS: {
   glyph?: string;
 }[] = [
   { id: "all", label: "All" },
-  { id: "endorsing", label: "Endorsing", glyph: "\u{1F44D}" },
+  { id: "endorsing", label: "Supporting", glyph: "\u{1F44D}" },
   { id: "opposing", label: "Opposing", glyph: "\u{1F44E}" },
   { id: "no-position", label: "Neutral" },
 ];
@@ -293,8 +302,8 @@ const STANCE_GLYPHS: {
 }[] = [
   {
     id: "endorsing",
-    label: "Endorsing",
-    tip: "Endorses",
+    label: "Supporting",
+    tip: "Supports",
     glyph: "\u{1F44D}",
   },
   {
@@ -318,7 +327,7 @@ const TYPE_FILTERS: { id: TypeFilter; label: string; word?: string }[] = [
   { id: "all", label: "All Accounts" },
   { id: "individual", label: "Individuals", word: "Individual" },
   { id: "organization", label: "Organizations", word: "Organization" },
-  { id: "government", label: "Government Officials", word: "Government" },
+  { id: "government", label: "Gov Officials", word: "Gov" },
   { id: "legislator", label: "Legislators", word: "Legislator" },
 ];
 
@@ -564,16 +573,208 @@ function TestimonyModal({
   );
 }
 
-// Composing a submission. A best guess at the shape: who you are, where you
-// stand, what you want to say, with the rules of the road beside it rather
-// than buried under it. Nothing submits; this is the form, not the plumbing.
+// ── Composing ─────────────────────────────────────────────────────────────
+//
+// One form, three places: a modal over the page, the testimony rail in place of
+// the feed, and a page of its own for anyone who wants the room. The fields are
+// written once and the shell is what differs, so the three cannot drift into
+// three slightly different forms.
+//
+// Nothing submits. This is the form, not the plumbing.
+
+const COMPOSE_CHOICES: { id: TestimonyStance; label: string }[] = [
+  { id: "endorse", label: "I support it" },
+  { id: "oppose", label: "I oppose it" },
+  { id: "no-position", label: "No position" },
+];
+
+const COMPOSE_PROMPT =
+  "What do you want lawmakers and other voters to know about this question?";
+
+export const COMPOSE_TITLE = `Add your perspective on Ballot Question ${RC.number}`;
+
+/** The rules of the road. Beside the form where there is room, above it where there is not. */
+export function ComposeGuidance({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className="flex flex-col gap-[16px]">
+      <div className={compact ? "" : "bg-surface rounded-control p-[20px]"}>
+        <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
+          Before you post
+        </p>
+        <ul className="list-disc list-outside pl-[16px] space-y-[8px] font-body text-xs text-ink-muted leading-[1.5] marker:text-ink-faint">
+          <li>
+            Write in your own words. MAPLE does not edit or rank what you say.
+          </li>
+          <li>Posting is public and stays attached to your account.</li>
+          <li>You can revise it later; earlier versions stay on the record.</li>
+        </ul>
+      </div>
+      {/* Both sit on the panel's grey rather than in cards: they point off this
+          form rather than being part of it. */}
+      <a
+        href="https://www.mapletestimony.org/learn/writing-effective-testimony"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`font-body text-xs text-ink-muted hover:text-brand ${compact ? "" : "px-[16px]"}`}
+      >
+        Testimony writing tips
+      </a>
+      <button
+        className={`text-left font-body text-xs text-ink-muted hover:text-brand cursor-pointer ${compact ? "" : "px-[16px]"}`}
+      >
+        View our code of conduct
+      </button>
+    </div>
+  );
+}
+
+/**
+ * The fields themselves: where you stand, and what you want to say.
+ *
+ * `rows` is the one thing the callers set, because the amount of room differs
+ * and the textarea should use what there is rather than a fixed guess.
+ */
+export function ComposeFields({
+  stance,
+  onStanceChange,
+  rows = 10,
+  grow = false,
+  bare = false,
+}: {
+  stance: TestimonyStance;
+  onStanceChange: (s: TestimonyStance) => void;
+  rows?: number;
+  /** Let the textarea take the height it is given instead of counting rows. */
+  grow?: boolean;
+  /**
+   * Drop the card around the fields, for a surface that is already white. A
+   * white card on a white panel is a container around a container.
+   */
+  bare?: boolean;
+}) {
+  return (
+    <div
+      className={`${bare ? "" : "bg-surface rounded-control p-[20px]"} ${
+        grow ? "flex flex-col flex-1 min-h-0" : ""
+      }`}
+    >
+      <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
+        Your position
+      </p>
+      <div className="flex gap-[8px] flex-wrap mb-[20px]">
+        {COMPOSE_CHOICES.map(({ id, label }) => {
+          const { Icon } = STANCE_MARK[id];
+          const c = STANCE_CHIP[id];
+          const on = stance === id;
+          return (
+            <button
+              key={id}
+              onClick={() => onStanceChange(id)}
+              aria-pressed={on}
+              // Selected, it wears the same colours the chip on a posted
+              // testimony will, so the choice previews its own result.
+              className={`inline-flex items-center gap-[8px] rounded-control border px-[14px] py-[8px] font-body font-semibold text-sm cursor-pointer transition-colors ${
+                on
+                  ? `${c.bg} border-line-strong ${c.tx}`
+                  : "bg-surface border-line-strong text-ink-muted hover:bg-wash"
+              }`}
+            >
+              <Icon className="h-[16px] w-auto" />
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
+      <textarea
+        rows={grow ? undefined : rows}
+        placeholder={COMPOSE_PROMPT}
+        className={`w-full resize-none border border-line-strong rounded-control p-[12px] font-body text-base text-ink leading-[1.55] placeholder:text-ink-muted focus:outline-none focus:border-brand ${
+          grow ? "flex-1 min-h-0" : ""
+        }`}
+      />
+    </div>
+  );
+}
+
+/** Cancel and post, for whichever shell is holding the form. */
+export function ComposeActions({
+  onCancel,
+  cancelLabel = "Cancel",
+}: {
+  onCancel: () => void;
+  cancelLabel?: string;
+}) {
+  return (
+    <div className="flex items-center justify-end gap-[12px]">
+      <button
+        onClick={onCancel}
+        className="font-body font-semibold text-sm text-ink-muted hover:text-ink cursor-pointer px-[8px] py-[8px]"
+      >
+        {cancelLabel}
+      </button>
+      <button className="bg-brand text-ink-inverse font-body font-semibold text-sm px-[18px] py-[8px] rounded-control cursor-pointer hover:bg-brand-hover">
+        Review and Post
+      </button>
+    </div>
+  );
+}
+
+/**
+ * The form in a narrow column, for a feed that lives in a panel.
+ *
+ * The guidance moves above the fields rather than beside them, because there is
+ * no beside. It is set quiet and left open: it is three short lines, and a
+ * collapsed version of something that short is a control standing in for less
+ * text than the control itself.
+ */
+function ComposeInline({
+  onClose,
+  composeHref,
+}: {
+  onClose: () => void;
+  composeHref?: string;
+}) {
+  const [stance, setStance] = useState<TestimonyStance>("endorse");
+  return (
+    // Exactly the panel's height, so the panel does not scroll. A form taller
+    // than its container put three scrolls on top of each other: the page
+    // behind, the panel around, and the textarea within. The textarea takes
+    // whatever height is left, so the only thing that scrolls is the thing you
+    // are writing.
+    <div className="h-full flex flex-col gap-[16px] min-h-0">
+      <div className="shrink-0 flex items-baseline justify-between gap-[12px]">
+        <p className="font-body font-normal text-lg text-ink">
+          Add your perspective
+        </p>
+        {composeHref && (
+          // A narrow column is fine for a paragraph and tight for an argument.
+          // The page is the same form with room, so the offer is a link rather
+          // than a different feature.
+          <a
+            href={composeHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-[4px] font-body font-semibold text-xs text-brand-ink hover:text-brand"
+          >
+            More room
+            <ArrowUpRight className="w-[12px] h-[12px]" />
+          </a>
+        )}
+      </div>
+      <div className="shrink-0">
+        <ComposeGuidance compact />
+      </div>
+      <ComposeFields stance={stance} onStanceChange={setStance} grow />
+      <div className="shrink-0">
+        <ComposeActions onCancel={onClose} cancelLabel="Back" />
+      </div>
+    </div>
+  );
+}
+
 function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
   const [stance, setStance] = useState<TestimonyStance>("endorse");
-  const choices: { id: TestimonyStance; label: string }[] = [
-    { id: "endorse", label: "I support it" },
-    { id: "oppose", label: "I oppose it" },
-    { id: "no-position", label: "No position" },
-  ];
   return (
     <Modal
       onClose={onClose}
@@ -581,92 +782,15 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
       minHeight="520px"
       mainMinWidth="520px"
       asideFirst
-      footer={
-        <div className="flex items-center justify-end gap-[12px]">
-          <button
-            onClick={onClose}
-            className="font-body font-semibold text-sm text-ink-muted hover:text-ink cursor-pointer px-[8px] py-[8px]"
-          >
-            Cancel
-          </button>
-          <button className="bg-brand text-ink-inverse font-body font-semibold text-sm px-[18px] py-[8px] rounded-control cursor-pointer hover:bg-brand-hover">
-            Review and Post
-          </button>
-        </div>
-      }
+      footer={<ComposeActions onCancel={onClose} />}
       title={
         <p className="font-body font-normal text-xl text-ink">
-          Add your perspective on Ballot Question {RC.number}
+          {COMPOSE_TITLE}
         </p>
       }
-      aside={
-        <div className="flex flex-col gap-[16px]">
-          <div className="bg-surface rounded-control p-[20px]">
-            <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
-              Before you post
-            </p>
-            <ul className="list-disc list-outside pl-[16px] space-y-[8px] font-body text-xs text-ink-muted leading-[1.5] marker:text-ink-faint">
-              <li>
-                Write in your own words. MAPLE does not edit or rank what you
-                say.
-              </li>
-              <li>Posting is public and stays attached to your account.</li>
-              <li>
-                You can revise it later; earlier versions stay on the record.
-              </li>
-            </ul>
-          </div>
-          {/* Both sit on the panel's grey rather than in cards: they point off
-              this form rather than being part of it. */}
-          <a
-            href="https://www.mapletestimony.org/learn/writing-effective-testimony"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-body text-xs text-ink-muted hover:text-brand px-[16px]"
-          >
-            Testimony writing tips
-          </a>
-          <button className="text-left font-body text-xs text-ink-muted hover:text-brand cursor-pointer px-[16px]">
-            View our code of conduct
-          </button>
-        </div>
-      }
+      aside={<ComposeGuidance />}
     >
-      <div className="bg-surface rounded-control p-[20px]">
-        <p className="font-body font-semibold text-2xs text-ink-muted mb-[8px]">
-          Your position
-        </p>
-        <div className="flex gap-[8px] flex-wrap mb-[20px]">
-          {choices.map(({ id, label }) => {
-            const { Icon } = STANCE_MARK[id];
-            const c = STANCE_CHIP[id];
-            const on = stance === id;
-            return (
-              <button
-                key={id}
-                onClick={() => setStance(id)}
-                aria-pressed={on}
-                // Selected, it wears the same colours the chip on a posted
-                // testimony will, so the choice previews its own result.
-                className={`inline-flex items-center gap-[8px] rounded-control border px-[14px] py-[8px] font-body font-semibold text-sm cursor-pointer transition-colors ${
-                  on
-                    ? `${c.bg} border-line-strong ${c.tx}`
-                    : "bg-surface border-line-strong text-ink-muted hover:bg-wash"
-                }`}
-              >
-                <Icon className="h-[16px] w-auto" />
-                {label}
-              </button>
-            );
-          })}
-        </div>
-
-        <textarea
-          rows={10}
-          placeholder="What do you want lawmakers and other voters to know about this question?"
-          className="w-full resize-none border border-line-strong rounded-control p-[12px] font-body text-base text-ink leading-[1.55] placeholder:text-ink-muted focus:outline-none focus:border-brand"
-        />
-      </div>
+      <ComposeFields stance={stance} onStanceChange={setStance} />
     </Modal>
   );
 }
@@ -683,9 +807,12 @@ function AddPerspectiveModal({ onClose }: { onClose: () => void }) {
 export function PositionPicker({
   value,
   onChange,
+  locked = false,
 }: {
   value: StanceFilter;
   onChange: (v: StanceFilter) => void;
+  /** State the position without offering to change or clear it. */
+  locked?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -705,6 +832,27 @@ export function PositionPicker({
 
   const current = STANCE_GLYPHS.find((g) => g.id === value);
 
+  // Locked and set: the glyph and the word, and nothing else. No chip, no
+  // clear, no menu, because the view was opened at this position deliberately.
+  if (locked) {
+    if (!current) return null;
+    return (
+      <p className="flex h-[34px] items-center gap-[8px]">
+        <span
+          aria-hidden
+          className={`flex h-full items-center text-[20px] leading-none drop-shadow-[0_1px_1px_rgba(20,20,19,0.12)] ${
+            current.chipOffset ?? ""
+          }`}
+        >
+          {current.glyph}
+        </span>
+        <span className="flex h-full items-center font-body font-semibold text-sm leading-none text-ink whitespace-nowrap">
+          {current.tip}
+        </span>
+      </p>
+    );
+  }
+
   // Nothing chosen: three labelled options, each one a direct pick.
   if (!current) {
     return (
@@ -722,7 +870,7 @@ export function PositionPicker({
             key={id}
             onClick={() => onChange(id)}
             aria-label={tip}
-            className="flex h-full items-center gap-0 min-[730px]:gap-[8px] px-[9px] rounded-pill hover:bg-wash cursor-pointer transition-colors duration-150"
+            className="flex h-full items-center gap-0 @[666px]:gap-[8px] px-[9px] rounded-pill hover:bg-wash cursor-pointer transition-colors duration-150"
           >
             <span
               aria-hidden
@@ -733,14 +881,16 @@ export function PositionPicker({
               {glyph}
             </span>
             {/* Three labelled options are the widest thing on this row, so
-                below 730 the words go and the gap goes with them. The glyph
+                in a narrow column the words go and the gap goes with them.
+                Measured against the row itself rather than the window, since
+                the row is narrow in the rail while the window is not. The glyph
                 carries the meaning once you have seen it labelled, and the
                 button's aria-label keeps the name for a screen reader. The
                 selected chip keeps its word at every width: that one is
                 stating the filter you are looking at. */}
             <span
               aria-hidden
-              className="hidden min-[730px]:flex h-full items-center font-body font-semibold text-sm leading-none text-ink whitespace-nowrap"
+              className="hidden @[666px]:flex h-full items-center font-body font-semibold text-sm leading-none text-ink whitespace-nowrap"
             >
               {tip}
             </span>
@@ -833,9 +983,12 @@ export function PositionPicker({
 export function AccountTypePicker({
   value,
   onChange,
+  locked = false,
 }: {
   value: TypeFilter;
   onChange: (v: TypeFilter) => void;
+  /** State the filter without offering to change it. */
+  locked?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -854,6 +1007,23 @@ export function AccountTypePicker({
   }, [open]);
 
   const current = TYPE_FILTERS.find((t) => t.id === value) ?? TYPE_FILTERS[0];
+  const label = current.id === "all" ? "All users" : current.label;
+  const icon =
+    current.id === "all" ? (
+      <Users className="w-[17px] h-[17px]" />
+    ) : (
+      <UserTypeIcon type={current.id} size={17} />
+    );
+  // Locked, it is a statement rather than a control: no chevron, no hover, and
+  // not focusable, so nothing about it suggests it can be changed.
+  if (locked) {
+    return (
+      <p className="shrink-0 inline-flex h-[28px] items-center gap-[7px] font-display font-medium text-base @[576px]:text-lg uppercase tracking-[0.08em] text-ink">
+        {icon}
+        {label}
+      </p>
+    );
+  }
   return (
     <div ref={ref} className="relative shrink-0">
       <button
@@ -861,14 +1031,10 @@ export function AccountTypePicker({
         aria-haspopup="listbox"
         aria-label="Filter by account type"
         aria-expanded={open}
-        className="inline-flex h-[28px] items-center gap-[7px] font-display font-medium text-base sm:text-lg uppercase tracking-[0.08em] text-ink hover:text-brand cursor-pointer transition-colors"
+        className="inline-flex h-[28px] items-center gap-[7px] font-display font-medium text-base @[576px]:text-lg uppercase tracking-[0.08em] text-ink hover:text-brand cursor-pointer transition-colors"
       >
-        {current.id === "all" ? (
-          <Users className="w-[17px] h-[17px]" />
-        ) : (
-          <UserTypeIcon type={current.id} size={17} />
-        )}
-        {current.id === "all" ? "All users" : current.label}
+        {icon}
+        {label}
         <ChevronDown className="w-[15px] h-[15px]" />
       </button>
       {open && (
@@ -917,11 +1083,18 @@ export function TestimonyFeed({
   title,
   stickyTop,
   hideAddButton = false,
+  lockTypeFilter = false,
+  pageSize,
   composeSignal = 0,
   typeFilter: controlledType,
   onTypeFilterChange,
   filter: controlledFilter,
   onFilterChange,
+  onCountChange,
+  onFilteredChange,
+  resetSignal = 0,
+  composeMode = "modal",
+  composeHref,
 }: {
   items: TestimonyItem[];
   showTypeIcon?: boolean;
@@ -936,6 +1109,13 @@ export function TestimonyFeed({
   stickyTop?: string;
   /** Drop the bar's own add button, for pages that put one somewhere better. */
   hideAddButton?: boolean;
+  /** State the account type without offering to change it, for a view opened
+      on one kind of account. The position filter stays live, so a reader can
+      still move between endorsing and opposing inside it. */
+  lockTypeFilter?: boolean;
+  /** Show this many at a time and page through the rest, for a view with a
+      fixed height. Unpaged when omitted. */
+  pageSize?: number;
   /** Bump to open the compose modal from outside the feed. Same pattern as the
       Maple leaf's nudge: a counter rather than a boolean, so repeat requests
       still register. */
@@ -955,12 +1135,39 @@ export function TestimonyFeed({
   /** Same, for the position filter. */
   filter?: StanceFilter;
   onFilterChange?: (v: StanceFilter) => void;
+  /** How many entries the current filters leave on screen, for chrome outside
+      the feed that wants to say so. */
+  onCountChange?: (n: number) => void;
+  /**
+   * Whether anything is currently narrowing the list.
+   *
+   * Reported rather than inferred, because Following lives inside the feed and
+   * a page holding only the stance and type filters would think the list was
+   * unfiltered while it was not.
+   */
+  onFilteredChange?: (filtered: boolean) => void;
+  /** Bump to clear the filters the feed owns itself. Same counter pattern as
+      `composeSignal`: the page can reset a view it does not hold all the state
+      for. */
+  resetSignal?: number;
+  /**
+   * Where composing happens.
+   *
+   * "modal" (default) opens the form over the page. "inline" puts it where the
+   * feed is, for a feed that already lives in a panel of its own: a modal over
+   * a testimony rail dims the perspectives the reader opened it to answer,
+   * which is the wrong way round.
+   */
+  composeMode?: "modal" | "inline";
+  /** Where the form's own page lives, for the "open in a new tab" link. */
+  composeHref?: string;
 }) {
   const [ownFilter, setOwnFilter] = useState<StanceFilter>(initialFilter);
   const filter = controlledFilter ?? ownFilter;
   const setFilter = onFilterChange ?? setOwnFilter;
   // Following is an overlay, not a stance: it combines with every stance chip.
   const [followingOnly, setFollowingOnly] = useState(false);
+  const [page, setPage] = useState(0);
   const [openId, setOpenId] = useState<string | null>(null);
   const [composing, setComposing] = useState(false);
   // Remember the value, not whether this is the first run. A boolean flag flips
@@ -974,6 +1181,13 @@ export function TestimonyFeed({
     lastSignal.current = composeSignal;
     setComposing(true);
   }, [composeSignal]);
+  const lastReset = useRef(resetSignal);
+  useEffect(() => {
+    if (lastReset.current === resetSignal) return;
+    lastReset.current = resetSignal;
+    setFollowingOnly(false);
+    setPage(0);
+  }, [resetSignal]);
   const openItem = items.find((t) => t.id === openId);
   const [ownType, setOwnType] = useState<TypeFilter>(initialTypeFilter);
   const typeFilter = controlledType ?? ownType;
@@ -988,6 +1202,16 @@ export function TestimonyFeed({
     const bar = barRef.current;
     const feed = feedRef.current;
     if (!stickyTop || !bar || !feed) return;
+    // The feed does not always scroll with the window. In the testimony rail it
+    // sits in a panel with its own scroller, and there the sticky offset is
+    // measured from that panel's top edge rather than from the viewport's.
+    const scroller = (() => {
+      for (let el = bar.parentElement; el; el = el.parentElement) {
+        const oy = getComputedStyle(el).overflowY;
+        if (oy === "auto" || oy === "scroll") return el;
+      }
+      return null;
+    })();
     const onScroll = () => {
       const rect = bar.getBoundingClientRect();
       const feedTop = feed.getBoundingClientRect().top;
@@ -995,17 +1219,80 @@ export function TestimonyFeed({
         "--fade-end",
         `${Math.max(0, rect.bottom - feedTop)}px`,
       );
+      // Pinned, the bar is chrome over the list and wants to sit tight to it;
+      // at rest it is a row in the page and wants the page's spacing. CSS has
+      // no selector for "currently stuck", so the state is measured: the bar is
+      // stuck once its top has reached the offset it sticks at, counted from
+      // whatever it is actually sticking inside.
+      const base = scroller ? scroller.getBoundingClientRect().top : 0;
+      const stuckAt = base + (parseFloat(getComputedStyle(bar).top) || 0);
+      const wasStuck = bar.dataset.stuck === "true";
+      // Two thresholds, not one: it takes 2px of scroll to leave the stuck
+      // state and none to enter it, so the boundary cannot flutter.
+      bar.dataset.stuck = String(
+        wasStuck ? rect.top <= stuckAt + 3 : rect.top <= stuckAt + 1,
+      );
     };
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Capture, because a scroll event on an inner scroller does not bubble and
+    // a window listener would never hear the rail move.
+    document.addEventListener("scroll", onScroll, {
+      passive: true,
+      capture: true,
+    });
     window.addEventListener("resize", onScroll);
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("resize", onScroll);
     };
   }, [stickyTop]);
 
-  const showFilters = items.length >= FEED_CONTROLS_MIN;
+  // Nothing has been filed at all, which is a different thing from a filter
+  // that matched nothing and wants a different answer.
+  const nothingFiled = items.length === 0;
+  // The controls stay on an empty feed. Hiding them says the feed has no
+  // filters rather than that it has nothing to filter, and a reader who
+  // arrives to an empty rail should still be able to see what the filters are.
+  const showFilters = nothingFiled || items.length >= FEED_CONTROLS_MIN;
+  // What a combination of the three controls would leave on screen. The
+  // controls are guarded with it rather than the list being filtered and then
+  // repaired: a change that would empty the feed is refused before it lands,
+  // so the reader never sees a blank list and never has to work out which of
+  // three controls to undo.
+  const countFor = (
+    stance: StanceFilter,
+    type: TypeFilter,
+    following: boolean,
+  ) =>
+    items.filter((t) => {
+      const user = POSITION_USERS.find((u) => u.id === t.userId);
+      if (stance !== "all") {
+        const want =
+          stance === "endorsing"
+            ? "endorse"
+            : stance === "opposing"
+              ? "oppose"
+              : "no-position";
+        if (t.stance !== want) return false;
+      }
+      if (includeTypeFilter && type !== "all" && user?.userType !== type)
+        return false;
+      if (following && !user?.followedByViewer) return false;
+      return true;
+    }).length;
+  // Each control commits only if something survives it. Refusing the move is
+  // the same thing as undoing it the instant it empties the list, and it keeps
+  // whatever the reader set before, including Following.
+  const pickStance = (v: StanceFilter) => {
+    if (countFor(v, typeFilter, followingOnly) > 0) setFilter(v);
+  };
+  const pickType = (v: TypeFilter) => {
+    if (countFor(filter, v, followingOnly) > 0) setTypeFilter(v);
+  };
+  const toggleFollowing = () => {
+    const next = !followingOnly;
+    if (countFor(filter, typeFilter, next) > 0) setFollowingOnly(next);
+  };
   const stanceMatched =
     !showFilters || filter === "all"
       ? items
@@ -1029,6 +1316,47 @@ export function TestimonyFeed({
             typeFilter,
         )
       : filtered;
+  // Following stays on the row whatever else is set. It used to be withdrawn
+  // when the narrowed list held nobody followed, which meant a control the
+  // reader had turned on could vanish under them; it is guarded now instead,
+  // so it is always there and simply declines to empty the feed.
+  const anyFollowed = POSITION_USERS.some((u) => u.followedByViewer);
+
+  // Paged, the feed fits a fixed height instead of scrolling inside one. The
+  // page is clamped rather than reset, so narrowing the list while on a later
+  // page lands on the last one that still has entries instead of an empty view.
+  // Reported rather than recomputed outside: the feed is the only place that
+  // knows all three filters, Following included.
+  const count = shown.length;
+  useEffect(() => {
+    onCountChange?.(count);
+  }, [count, onCountChange]);
+
+  const narrowed =
+    showFilters && (filter !== "all" || typeFilter !== "all" || followingOnly);
+  useEffect(() => {
+    onFilteredChange?.(narrowed);
+  }, [narrowed, onFilteredChange]);
+
+  const pageCount = pageSize
+    ? Math.max(1, Math.ceil(shown.length / pageSize))
+    : 1;
+  const current = Math.min(page, pageCount - 1);
+  const paged = pageSize
+    ? shown.slice(current * pageSize, current * pageSize + pageSize)
+    : shown;
+
+  // Composing in place takes the whole surface rather than sitting above the
+  // feed. Half a narrow column each would make both worse, and the reading that
+  // matters happens before you start writing, not while.
+  if (composing && composeMode === "inline") {
+    return (
+      <ComposeInline
+        onClose={() => setComposing(false)}
+        composeHref={composeHref}
+      />
+    );
+  }
 
   return (
     <div>
@@ -1040,60 +1368,61 @@ export function TestimonyFeed({
           style={stickyTop ? { top: stickyTop } : undefined}
           className={
             stickyTop
-              ? "sticky z-[8] bg-ground pt-[16px] pb-[16px]"
+              ? "sticky z-[8] bg-ground pt-[16px] pb-[16px] data-[stuck=true]:pt-[24px] data-[stuck=true]:pb-[8px]"
               : "mb-[16px]"
           }
         >
-          <div
-            className={
-              asCards ? "" : ""
-            }
-          >
+          <div className={asCards ? "" : ""}>
             {/* One row above the cards: the two pickers on the left, Following
                 pinned right. Following is an overlay on whatever they set
                 rather than a third way to narrow, so it sits apart. */}
-            <div className="flex items-center gap-[12px] mb-[12px]">
-              <AccountTypePicker value={typeFilter} onChange={setTypeFilter} />
-              <PositionPicker value={filter} onChange={setFilter} />
-              {includeFollowingFilter && (
-                // Pinned right, and the divider goes with it: Following is an
-                // overlay on whatever else is set rather than another way to
-                // narrow by position or account, so it reads better as its
-                // own thing at the end of the row than as the last item in
-                // the same list.
-                <FilterChip
-                  active={followingOnly}
-                  ariaPressed={followingOnly}
-                  onClick={() => setFollowingOnly((f) => !f)}
-                  title={
-                    followingOnly
-                      ? "Clear the Following filter"
-                      : "Only accounts you follow"
-                  }
-                  className="ml-auto inline-flex items-center gap-[5px]"
-                >
-                  Following
-                  {followingOnly && <X className="w-[12px] h-[12px]" />}
-                </FilterChip>
-              )}
-              {/* An action, not a filter: pushed to the far right so the chips
-                  read as one group and this reads as separate from them. Same
-                  height as they are, square corners so it does not look like
-                  one more thing to toggle. */}
-              {!hideAddButton && (
-              <button
-                onClick={() => setComposing(true)}
-                className="ml-auto shrink-0 inline-flex items-center gap-[5px] font-body font-semibold text-xs px-[10px] py-[4px] rounded-control border border-brand text-brand hover:bg-brand-soft cursor-pointer transition-colors"
-              >
-                <Plus className="w-[13px] h-[13px]" />
-                {/* Two labels, one shown at a time: at narrow widths the row
-                    needs the space more than the sentence. */}
-                <span className="max-[1010px]:hidden">
-                  Add Your Perspective
-                </span>
-                <span className="hidden max-[1010px]:inline">Add</span>
-              </button>
-              )}
+            <div className="@container flex items-center gap-[12px] mb-[12px]">
+              <AccountTypePicker
+                value={typeFilter}
+                onChange={pickType}
+                locked={lockTypeFilter}
+              />
+              <PositionPicker value={filter} onChange={pickStance} />
+              {/* Following and the action are one group pinned to the end of
+                  the row, with their own spacing. Held together rather than
+                  laid out as two more items in the filter row, so a wider
+                  account picker or a selected position moves the filters on the
+                  left without moving this pair or the gap inside it. */}
+              <div className="ml-auto shrink-0 flex items-center gap-[8px]">
+                {includeFollowingFilter && anyFollowed && (
+                  // Following is an overlay on whatever else is set rather than
+                  // another way to narrow by position or account, so it reads
+                  // better here than as the last item among the chips.
+                  <FilterChip
+                    active={followingOnly}
+                    ariaPressed={followingOnly}
+                    onClick={toggleFollowing}
+                    title={
+                      followingOnly
+                        ? "Clear the Following filter"
+                        : "Only accounts you follow"
+                    }
+                    className="inline-flex items-center gap-[5px]"
+                  >
+                    Following
+                    {followingOnly && <X className="w-[12px] h-[12px]" />}
+                  </FilterChip>
+                )}
+                {!hideAddButton && (
+                  <button
+                    onClick={() => setComposing(true)}
+                    className="shrink-0 inline-flex items-center gap-[5px] font-body font-semibold text-xs px-[10px] py-[4px] rounded-control border border-brand bg-brand text-ink-inverse hover:bg-brand-hover hover:border-brand-hover cursor-pointer transition-colors"
+                  >
+                    <Plus className="w-[13px] h-[13px]" />
+                    {/* Two labels, one shown at a time: at narrow widths the
+                        row needs the space more than the sentence. */}
+                    <span className="@max-[946px]:hidden">
+                      Add Your Perspective
+                    </span>
+                    <span className="hidden @max-[946px]:inline">Add</span>
+                  </button>
+                )}
+              </div>
             </div>
             {/* Parked: the narrowing row that sat closest to the cards.
                 Account type moved up to the picker and Following with it,
@@ -1103,10 +1432,7 @@ export function TestimonyFeed({
                 <div className="flex items-center gap-[6px]">
                   {includeTypeFilter && (
                     <>
-                      <TypeFilterMenu
-                        value={typeFilter}
-                        onChange={setTypeFilter}
-                      />
+                      <TypeFilterMenu value={typeFilter} onChange={pickType} />
                       <span
                         aria-hidden="true"
                         className="text-line-strong select-none mx-[2px]"
@@ -1120,7 +1446,7 @@ export function TestimonyFeed({
                       row above replaces it.
 
                   <div className="min-[1191px]:hidden">
-                    <StanceFilterMenu value={filter} onChange={setFilter} />
+                    <StanceFilterMenu value={filter} onChange={pickStance} />
                   </div>
                   <div
                     role="group"
@@ -1130,7 +1456,7 @@ export function TestimonyFeed({
                     {STANCE_FILTERS.map(({ id, label, glyph }) => (
                       <button
                         key={id}
-                        onClick={() => setFilter(id)}
+                        onClick={() => pickStance(id)}
                         aria-pressed={filter === id}
                         aria-label={glyph ? label : undefined}
                         title={glyph ? label : undefined}
@@ -1159,59 +1485,68 @@ export function TestimonyFeed({
       )}
 
       {shown.length > 0 ? (
-        asCards ? (
-          <div
-            ref={feedRef}
-            style={
-              stickyTop
-                ? {
-                    maskImage:
-                      "linear-gradient(to bottom, transparent calc(var(--fade-end, 0px) - 44px), #000 var(--fade-end, 0px))",
-                    WebkitMaskImage:
-                      "linear-gradient(to bottom, transparent calc(var(--fade-end, 0px) - 44px), #000 var(--fade-end, 0px))",
-                  }
-                : undefined
-            }
-            className="flex flex-col gap-[16px]"
-          >
-            {shown.map((t) => (
-              <div
-                key={t.id}
-                className="bg-surface rounded-control border border-line"
-              >
-                <TestimonyEntry
-                  t={t}
-                  showTypeIcon={showTypeIcon}
-                  showDescriptor={showDescriptor}
-                  onOpen={setOpenId}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <TestimonyList
-            items={shown}
-            showTypeIcon={showTypeIcon}
-            showDescriptor={showDescriptor}
-          />
-        )
+        <>
+          {asCards ? (
+            <div
+              ref={feedRef}
+              style={
+                stickyTop
+                  ? {
+                      maskImage:
+                        "linear-gradient(to bottom, transparent calc(var(--fade-end, 0px) - 44px), #000 var(--fade-end, 0px))",
+                      WebkitMaskImage:
+                        "linear-gradient(to bottom, transparent calc(var(--fade-end, 0px) - 44px), #000 var(--fade-end, 0px))",
+                    }
+                  : undefined
+              }
+              className="flex flex-col gap-[20px]"
+            >
+              {paged.map((t) => (
+                <div
+                  key={t.id}
+                  className="bg-surface rounded-control border border-line"
+                >
+                  <TestimonyEntry
+                    t={t}
+                    showTypeIcon={showTypeIcon}
+                    showDescriptor={showDescriptor}
+                    onOpen={setOpenId}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <TestimonyList
+              items={paged}
+              showTypeIcon={showTypeIcon}
+              showDescriptor={showDescriptor}
+            />
+          )}
+          {pageSize && pageCount > 1 && (
+            <Pagination page={current} pageCount={pageCount} onPage={setPage} />
+          )}
+        </>
       ) : (
         // Individuals is the one empty result a visitor can act on themselves,
         // so it keeps the invitation; every other empty result only offers a
         // way back out of the filters.
         <div className="border-[1.5px] border-dashed border-line-strong rounded-panel p-[22px] text-center bg-surface">
           <p className="font-body font-semibold text-lg text-ink mb-[4px]">
-            {typeFilter === "individual"
-              ? "No individual testimony yet"
-              : "No testimony matches these filters"}
+            {nothingFiled
+              ? "No testimony yet"
+              : typeFilter === "individual"
+                ? "No individual testimony yet"
+                : "No testimony matches these filters"}
           </p>
           <p className="font-body text-sm text-ink-muted leading-[1.5] max-w-[560px] mx-auto">
-            {typeFilter === "individual"
-              ? "No residents have submitted testimony on this question yet. Be among the first to add your perspective."
-              : "Try widening your selection to see submissions on this question."}
+            {nothingFiled
+              ? "Nobody has written about this yet. Yours would be the first on the record."
+              : typeFilter === "individual"
+                ? "No residents have submitted testimony on this question yet. Be among the first to add your perspective."
+                : "Try widening your selection to see submissions on this question."}
           </p>
           <div className="flex gap-[10px] justify-center mt-[14px] flex-wrap">
-            {typeFilter === "individual" && (
+            {(nothingFiled || typeFilter === "individual") && (
               <button
                 onClick={() => setComposing(true)}
                 className="bg-brand text-ink-inverse font-body font-semibold text-sm px-[18px] py-[8px] rounded-pill cursor-pointer hover:bg-brand-hover"
@@ -1219,16 +1554,20 @@ export function TestimonyFeed({
                 Add Your Perspective
               </button>
             )}
-            <button
-              onClick={() => {
-                setFilter("all");
-                setTypeFilter("all");
-                setFollowingOnly(false);
-              }}
-              className="bg-surface border border-brand text-brand font-body font-semibold text-sm px-[18px] py-[8px] rounded-pill cursor-pointer hover:bg-brand-soft/60"
-            >
-              Clear Filters
-            </button>
+            {/* Nothing to clear when nothing was filed: the filters are not
+                why the feed is empty. */}
+            {!nothingFiled && (
+              <button
+                onClick={() => {
+                  setFilter("all");
+                  setTypeFilter("all");
+                  setFollowingOnly(false);
+                }}
+                className="bg-surface border border-brand text-brand font-body font-semibold text-sm px-[18px] py-[8px] rounded-pill cursor-pointer hover:bg-brand-soft/60"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         </div>
       )}

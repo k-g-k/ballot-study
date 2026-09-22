@@ -15,7 +15,9 @@ export function FinanceLedger({
         {committees.map((c) => (
           <div
             key={c.name}
-            className="flex-1 border border-line-strong rounded-panel p-[18px]"
+            // A column, so the donor list is the part that grows and the two
+            // cards end level whether or not a committee filed anything.
+            className="flex-1 flex flex-col border border-line-strong rounded-panel p-[18px]"
           >
             <div className="flex items-center gap-[8px] flex-wrap">
               <p className="font-body font-semibold text-lg text-ink">
@@ -44,19 +46,31 @@ export function FinanceLedger({
             <p className="font-body font-semibold text-2xs text-ink-muted mt-[14px] mb-[6px]">
               Top donors
             </p>
-            <div className="space-y-[5px]">
-              {c.donors.map((d) => (
-                <div
-                  key={d.name}
-                  className="flex justify-between gap-[12px] text-sm border-b border-dotted border-line pb-[4px]"
-                >
-                  <span className="font-body text-ink">{d.name}</span>
-                  <span className="font-body text-ink whitespace-nowrap tabular-nums">
-                    {d.amount} <span className="text-ink-faint">{d.kind}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
+            {c.donors.length ? (
+              <div className="space-y-[5px]">
+                {c.donors.map((d) => (
+                  <div
+                    key={d.name}
+                    className="flex justify-between gap-[12px] text-sm border-b border-dotted border-line pb-[4px]"
+                  >
+                    <span className="font-body text-ink">{d.name}</span>
+                    <span className="font-body text-ink whitespace-nowrap tabular-nums">
+                      {d.amount}{" "}
+                      <span className="text-ink-faint">{d.kind}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // A recessed panel rather than blank space. A committee that
+              // filed nothing is a fact, and an empty gap under a heading reads
+              // as something that failed to load.
+              <div className="flex-1 bg-sunken rounded-panel px-[14px] py-[12px]">
+                <p className="font-body text-sm text-ink-muted leading-[1.5]">
+                  None reported in this filing window.
+                </p>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -39,7 +39,7 @@ export function UserAvatar({
         style={{ fontSize: size >= 40 ? 12 : 10 }}
         className="font-body font-semibold text-brand-ink tracking-[0.02em]"
       >
-        {user.initials}
+        {user.initials ?? user.name.slice(0, 2).toUpperCase()}
       </span>
     </div>
   );
@@ -147,7 +147,7 @@ export const STANCE_CHIP: Record<
     bg: "bg-positive-soft",
     bd: "border-positive",
     tx: "text-positive-ink",
-    label: "Endorses",
+    label: "Supports",
   },
   oppose: {
     bg: "bg-negative-soft",

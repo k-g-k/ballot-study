@@ -68,6 +68,18 @@ export const PROSE = {
      * bullets carry the chronology, which is what a reader skims for.
      */
     lead: "Supporters argue the measure restores a taxpayer refund guarantee that has been quietly eroded. Opponents warn it would shrink the state budget and send the largest refunds to the highest earners.",
+    /**
+     * The same route to the ballot as five steps, for the top of the chapter.
+     * Labels are deliberately the same words the full timeline uses, so the
+     * summary and the record read as one account rather than two.
+     */
+    steps: [
+      { when: "Aug 2025", label: "Petition filed" },
+      { when: "Dec 2025", label: "Signatures certified" },
+      { when: "Feb 2026", label: "Introduced as H.5006" },
+      { when: "May 2026", label: "Legislature does not act" },
+      { when: "Jul 2026", label: "Numbered Question 5" },
+    ],
     bullets: [
       "Filed August 2025, certified that December after 85,588 first-round signatures",
       "Entered the Legislature as House Bill 5006 in February 2026, where leaders called it a special-interest measure",

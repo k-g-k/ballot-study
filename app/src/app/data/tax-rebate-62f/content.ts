@@ -259,7 +259,7 @@ export const RC = {
       funding: "$1.71m",
       fundingCash: "$100k",
       fundingInKind: "$1.61m",
-      sideLabel: "Endorsing Orgs",
+      sideLabel: "Supporting Orgs",
       official: {
         text: "This is placeholder language standing in for the endorsing parties' official statement as it will appear in the Information for Voters once the question is numbered. It will lay out, in the state's official wording, why supporters believe voters should vote YES to restore the taxpayer-refund guarantee of Chapter 62F.",
         who: "Rep for Taxpayers for an Affordable Massachusetts",

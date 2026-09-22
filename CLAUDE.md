@@ -49,9 +49,12 @@ lower layer imports a higher one.
 
 2. **`app/src/app/components/ballot/`** — the generic, question-agnostic library.
    Depends only on its own `types.ts`, `helpers.ts`, and `sources-context.tsx`.
-   - `primitives/` — generic UI: `Card`, `CitationBlock`, `Cite`, `SourceNote`,
-     `SynthSourcesNote`, `SynthSummaryCard`, `AnalysisSection`, `AISynth`,
-     `ContentItem`, `FilterChip`, `Pagination`, `TwoColList`.
+   - `primitives/` — generic UI, in barrel order: `Card`, `Modal`, `Cite`,
+     `SourceNote`, `AIChip`, `AISynthSources`, `SynthSourcesNote`,
+     `CitationBlock`, `SynthSummaryCard`, `AnalysisSection`, `AISynth`,
+     `ContentItem`, `FilterChip`, `Pagination`, `ScaleFloor`, `DepthProvider`,
+     `useDepth`, `Section`, `SectionRail`, `useActiveSection`, `TabBar`,
+     `TwoColList`.
    - `sections/` — typed, data-driven blocks: `StakeholderGrid`, `ArgList`,
      `ArgColumn`, `Timeline`, `Facts`, `ClaimMap`, `Polls`, `FinanceLedger`,
      `MediaPhase`, `ResearchGroup`, `RefGroup`, `EmptyState`, `DelibStat`,

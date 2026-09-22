@@ -24,6 +24,14 @@ export const SOURCES: Sources = {
     meta: "Office of the Attorney General",
     note: "The AG's plain-language summary of the measure, prepared for voters and signature sheets.",
   },
+  voterGuide: {
+    label: "Information for Voters: 2026 Ballot Questions",
+    kind: "official",
+    url: "https://www.sec.state.ma.us/divisions/elections/download/voter-info/2026-Information-for-Voters.pdf",
+    title: "Information for Voters — 2026 Ballot Questions",
+    meta: "Office of the Secretary of the Commonwealth",
+    note: "The Commonwealth's own voter guide: the Attorney General's summary, what a yes or no vote does, the fiscal-consequences statement, both statutory 150-word arguments, the Special Joint Committee's majority and minority reports, and the full text of the proposed law.",
+  },
   chapter62F: {
     label: "M.G.L. c. 62F, §2 (Mass. Legislature)",
     kind: "official",

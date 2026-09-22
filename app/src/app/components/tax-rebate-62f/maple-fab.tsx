@@ -21,10 +21,13 @@ export function MapleFab({
   open,
   onOpenChange,
   nudge = 0,
+  inline = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   nudge?: number;
+  /** Let the page position it, for a row that holds more than this button. */
+  inline?: boolean;
 }) {
   // Bumped to replay the one-shot wave (via key on the wrapper).
   const [pop, setPop] = useState(0);
@@ -46,7 +49,19 @@ export function MapleFab({
   };
 
   return (
-    <div className="fixed bottom-[24px] right-[24px] z-50 flex flex-col items-end gap-[12px]">
+    <div
+      // `inline` hands positioning to the page, for a page that wants the leaf
+      // in a row with another control: as a flex item it gets pushed along by
+      // whatever grows beside it, instead of being covered by it. The panel
+      // then has to come out of the flow, or a 320px popover would set the
+      // row's width. Unset, the button places itself where it always has, and
+      // the page can still move it in from the right edge with --fab-r.
+      className={
+        inline
+          ? "relative flex flex-col items-end"
+          : "fixed bottom-[24px] right-[var(--fab-r,24px)] z-50 flex flex-col items-end gap-[12px] transition-[right] duration-300 ease-out motion-reduce:transition-none"
+      }
+    >
       <style>{`
         @keyframes maple-wave {
           0%   { transform: rotate(0deg); }
@@ -61,7 +76,11 @@ export function MapleFab({
         }
       `}</style>
       {open && (
-        <div className="w-[320px] bg-surface border border-line rounded-card shadow-[0_12px_32px_rgba(0,0,0,0.18)] p-[16px]">
+        <div
+          className={`w-[320px] bg-surface border border-line rounded-card shadow-[0_12px_32px_rgba(0,0,0,0.18)] p-[16px] ${
+            inline ? "absolute bottom-[calc(100%+12px)] right-0" : "mb-0"
+          }`}
+        >
           <div className="flex items-center gap-[8px] mb-[6px]">
             <img src={mapleUrl} alt="" className="w-[24px] h-[24px]" />
             <p className="font-body font-semibold text-lg text-ink flex-1">

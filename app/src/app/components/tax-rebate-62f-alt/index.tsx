@@ -1,12 +1,24 @@
-import { useEffect, useState } from "react";
-import { ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  ArrowUpRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Menu,
+  X,
+} from "lucide-react";
 import { SourcesProvider } from "../ballot";
-import type {
-  StanceFilter,
-  TypeFilter,
+import {
+  TestimonyFeed,
+  type StanceFilter,
+  type TypeFilter,
 } from "../tax-rebate-62f/testimony";
-import { RC, SOURCES } from "../../data/tax-rebate-62f";
-import { MapleFab, ASK_DELAY_MS } from "../tax-rebate-62f/maple-fab";
+import {
+  RC,
+  SOURCES,
+  TESTIMONY,
+  testimonyFor,
+} from "../../data/tax-rebate-62f";
+import { MapleFab } from "../tax-rebate-62f/maple-fab";
 import {
   WhatWouldItChange,
   WhatEachSideSays,
@@ -20,6 +32,7 @@ import {
   WhereThisComesFrom,
 } from "./chapters";
 import { Callout, Segments, Split, Synth } from "./spine";
+import { WhatIsThePublicSaying } from "./public-saying";
 
 const CONTENTS = [
   { id: "change", label: "What it changes" },
@@ -27,13 +40,16 @@ const CONTENTS = [
   // Parked with the chapter itself: the agreement material now sits inside
   // the sides chapter, so it has no anchor of its own.
   // { id: "agree", label: "Agreement" },
-  { id: "testimony", label: "Testimony" },
+  // Parked with the chapter.
+  // { id: "testimony", label: "Testimony" },
   // Parked with the chapter.
   // { id: "affects", label: "Who it affects" },
   // Parked with the chapter.
   // { id: "cost", label: "Cost" },
-  { id: "discussions", label: "Discussions" },
-  { id: "history", label: "How it got here" },
+  // Parked with the chapter.
+  // { id: "discussions", label: "Discussions" },
+  { id: "public", label: "Public" },
+  { id: "history", label: "Path to the ballot" },
   { id: "funding", label: "Funding" },
   { id: "sources", label: "Sources" },
 ];
@@ -160,8 +176,24 @@ export function SiteNav() {
             </button>
           ))}
         </nav>
-        <button className="ml-auto hidden sm:inline-flex font-body font-semibold text-sm text-ink-inverse bg-brand hover:bg-brand-hover px-[16px] py-[8px] rounded-control cursor-pointer">
-          Sign in
+        {/* Drawn the way an account without a picture is drawn in the feed
+            below, but hollow until you reach it: the pale brand edge and the
+            initials in brand ink, with the soft fill arriving on hover. Signing
+            in is the way into an account rather than the page's own action, so
+            it wears an account's clothes and not a button's.
+ */}
+        <button
+          aria-label="Account"
+          className="ml-auto hidden sm:inline-flex items-center gap-[10px] cursor-pointer group"
+        >
+          <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-full border border-brand-edge group-hover:bg-brand-soft group-hover:border-brand transition-colors">
+            <span
+              style={{ fontSize: 12 }}
+              className="font-body font-semibold text-brand-ink tracking-[0.02em]"
+            >
+              GK
+            </span>
+          </span>
         </button>
         <button
           onClick={() => setOpen((o) => !o)}
@@ -187,7 +219,9 @@ export function SiteNav() {
                 {n}
               </button>
             ))}
-            <button className="sm:hidden mt-[12px] mb-[8px] font-body font-semibold text-base text-ink-inverse bg-brand px-[16px] py-[10px] rounded-control cursor-pointer">
+            {/* The open menu has room for words, so it keeps them; only the
+                collapsed bar trades the label for the mark. */}
+            <button className="sm:hidden mt-[12px] mb-[8px] font-body font-semibold text-base text-brand border border-brand px-[16px] py-[10px] rounded-control cursor-pointer">
               Sign in
             </button>
           </nav>
@@ -355,14 +389,17 @@ function Brief() {
 /** Sticky index. Horizontally scrollable so eleven entries fit any width. */
 function Contents({ active }: { active: string }) {
   return (
-    <div className="sticky top-0 lg:top-[60px] z-20 bg-ground/95 backdrop-blur border-b border-line">
+    <div
+      data-contents-bar
+      className="sticky top-0 lg:top-[calc(var(--nav-h)+1px)] z-20 bg-ground/95 backdrop-blur border-b border-line"
+    >
       <div className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px]">
-        <div className="flex gap-[18px] sm:gap-[22px] overflow-x-auto scrollbar-hide">
+        <div className="flex items-stretch gap-[18px] sm:gap-[22px] h-[var(--subnav-h)] overflow-x-auto scrollbar-hide">
           {CONTENTS.map((c) => (
             <a
               key={c.id}
               href={`#${c.id}`}
-              className={`shrink-0 whitespace-nowrap font-body text-sm py-[12px] border-b-2 transition-colors ${
+              className={`shrink-0 whitespace-nowrap font-body text-sm flex items-center border-b-2 transition-colors ${
                 active === c.id
                   ? "text-ink border-brand font-semibold"
                   : "text-ink-muted border-transparent hover:text-ink"
@@ -380,11 +417,82 @@ function Contents({ active }: { active: string }) {
 export function TaxRebate62FAlt() {
   const [active, setActive] = useState(CONTENTS[0].id);
   const [askOpen, setAskOpen] = useState(false);
-  const [askNudge, setAskNudge] = useState(0);
   // The campaign cards and the feed sit in different chapters, so the filters
   // they share have to live above both.
   const [stance, setStance] = useState<StanceFilter>("all");
   const [accountType, setAccountType] = useState<TypeFilter>("all");
+  // The strip is standing chrome, there from the first paint. Testimony is the
+  // point of the page, so the handle should not be something you have to find a
+  // button to summon; collapsing folds the panel back to the strip rather than
+  // closing it away.
+  const [rail, setRail] = useState<"open" | "min">("min");
+  // The rail begins under the contents bar, and the contents bar moves: it sits
+  // below the hero until you scroll past it, then pins under the nav. So the
+  // offset is measured rather than declared, and written straight to the DOM
+  // instead of through state, which would re-render the page on every frame of
+  // a scroll. The class keeps the pinned value as its fallback, so the rail is
+  // in the right place for the first paint and if this never runs.
+  const shellRef = useRef<HTMLDivElement>(null);
+  // Read inside the scroll handler, which is set up once and must not be torn
+  // down and rebuilt every time the rail opens or closes.
+  const openRef = useRef(false);
+  openRef.current = rail === "open";
+  useEffect(() => {
+    /**
+     * Where the contents bar's underside sits once it has pinned. Read off the
+     * shell rather than the document, because --subnav-h is declared on the
+     * shell and the root knows nothing about it.
+     */
+    const pinnedBottom = (el: HTMLElement) => {
+      const cs = getComputedStyle(el);
+      const px = (v: string) => parseFloat(cs.getPropertyValue(v)) || 0;
+      return px("--nav-h") + px("--subnav-h") + 2;
+    };
+    const shell = shellRef.current;
+    const bar = shell?.querySelector<HTMLElement>("[data-contents-bar]");
+    if (!shell || !bar) return;
+    const sync = () => {
+      const bottom = bar.getBoundingClientRect().bottom;
+      shell.style.setProperty("--rail-top", `${Math.max(0, Math.round(bottom))}px`);
+      // Scrolled back up into the hero, the contents bar leaves its pinned
+      // position and the rail has nothing to sit under. Rather than let it hang
+      // from a bar that is halfway down the page, it folds itself away and the
+      // strip is waiting when you come back down. Collapsing is cheap because
+      // the panel is never unmounted, so nothing is lost by it.
+      if (openRef.current && bottom > pinnedBottom(shell) + 1) setRail("min");
+    };
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    // Opening the rail narrows the page, which reflows the hero and moves the
+    // bar even though nothing scrolled.
+    const ro = new ResizeObserver(sync);
+    ro.observe(shell);
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      ro.disconnect();
+    };
+  }, []);
+  const railOpen = rail === "open";
+  const [railCount, setRailCount] = useState(0);
+  // Working the rail itself is a fresh start: the panel comes back showing
+  // everything rather than whatever narrowing was left behind last time.
+  // Arriving from a campaign card is the exception, since that click is a
+  // request for one particular slice.
+  const [railReset, setRailReset] = useState(0);
+  const openRailClean = () => {
+    setStance("all");
+    setAccountType("all");
+    setRailReset((n) => n + 1);
+    setRail("open");
+  };
+  const collapseRail = () => {
+    setStance("all");
+    setAccountType("all");
+    setRailReset((n) => n + 1);
+    setRail("min");
+  };
   useDeviceWidthViewport();
   useResizeScrollAnchor();
 
@@ -402,38 +510,66 @@ export function TaxRebate62FAlt() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const askMaple = () => {
-    setAskNudge((n) => n + 1);
-    window.setTimeout(() => setAskOpen((o) => !o), ASK_DELAY_MS);
-  };
-
   return (
     <SourcesProvider value={SOURCES}>
-      <div className="bg-ground min-h-screen font-body text-ink overflow-x-clip">
+      <div
+        ref={shellRef}
+        className={`bg-ground min-h-screen font-body text-ink overflow-x-clip [--drawer-w:clamp(400px,34vw,520px)] [--rail-tab-w:44px] [--page-gutter:calc((100vw-min(1180px,100vw))/2+32px)] [--page-right:calc((100vw-min(1180px,100vw))/2+1180px)] [--subnav-h:46px] ${
+          rail === "open"
+            ? "lg:[--fab-r:calc(var(--drawer-w)+24px)]"
+            : "lg:[--fab-r:calc(var(--rail-tab-w)+24px)]"
+        }`}>
+        {/* Outside the region the drawer pushes, so it spans the window and
+            its own contents stay put. The nav is chrome over the whole
+            application; the page is what the drawer takes room from. */}
         <SiteNav />
+        {/* The hero and the contents bar sit above where the rail begins, so
+            they keep the whole window and stay centred in it. Only what is
+            level with the rail moves over. */}
         <Brief />
         <Contents active={active} />
-        <main className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] pt-[36px] sm:pt-[48px] pb-[96px] flex flex-col gap-[44px] sm:gap-[64px]">
+        {/* The chapters move rather than being covered: the margin is what does
+            the pushing, the transform is what does the sliding, and the two run
+            on the same 300ms so the panel and the page arrive together. */}
+        <div
+          className={`transition-[margin] duration-300 ease-out motion-reduce:transition-none ${
+            rail === "open"
+              ? "lg:mr-[var(--drawer-w)] lg:[--page-w:calc(100vw-var(--drawer-w))]"
+              : "lg:mr-[var(--rail-tab-w)] lg:[--page-w:calc(100vw-var(--rail-tab-w))]"
+          }`}
+        >
+        {/* With the rail open the region is narrower than the page's own
+            measure, so re-centring in it would pull the chapters left of the
+            nav and the contents bar, which still have the whole window. The
+            left edge is held at the window's own gutter instead, so the
+            chapters stay in line with the chrome above them and the rail simply
+            takes width off the right. */}
+        <main className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] pt-[36px] sm:pt-[48px] pb-[80px] flex flex-col gap-[44px] sm:gap-[64px] lg:mx-0 lg:max-w-[var(--page-right)] lg:pl-[var(--page-gutter)] lg:pr-[32px]">
           <WhatWouldItChange />
           <WhatEachSideSays
-            onViewTestimony={(s) => {
+            railStance={railOpen ? stance : null}
+            onViewTestimony={(side) => {
               // "Endorsing Orgs" means both halves of that phrase: the side and
-              // the kind of account, so the feed opens on exactly the list the
-              // card was showing.
-              setStance(s);
+              // the kind of account, so the drawer opens on exactly the list
+              // the card was showing.
+              setStance(side);
               setAccountType("organization");
+              setRail("open");
             }}
           />
           {/* Parked: the agreement material moved into WhatEachSideSays,
               where it reads as the second half of that chapter's answer.
           <WhereTheyAgree />
           */}
+          {/* Parked: the feed now lives in the Public Perspectives rail, so the
+              chapter was the same list a second time.
           <WhatPeopleAreSaying
             filter={stance}
             onFilterChange={setStance}
             typeFilter={accountType}
             onTypeFilterChange={setAccountType}
           />
+          */}
           {/* Parked: both now appear as disclosures inside "What would it
               change?", so as chapters they said the same thing a second time.
           <WhoItAffects />
@@ -443,28 +579,89 @@ export function TaxRebate62FAlt() {
               now carry the same coalition, and the testimony chapter carries the
               statements, so it was saying both a second time. `WhoIsOnTheRecord`
               is still exported from ./chapters. */}
+          {/* Parked: what the discussions produced is the subject of the new
+              chapter below, which will carry the explorer when it exists.
           <FromTheDiscussions />
+          */}
+          <WhatIsThePublicSaying onOpenRail={openRailClean} />
           <HowItGotHere />
           <WhoIsFunding />
           <WhereThisComesFrom />
         </main>
-        <footer className="border-t border-line">
-          <div className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] py-[32px] flex flex-col sm:flex-row sm:items-center justify-between gap-[16px] sm:gap-[24px]">
-            <p className="font-body text-sm text-ink-muted max-w-[60ch]">
-              Design prototype. Content, testimony, positions, citations, and
-              AI syntheses are illustrative only.
-            </p>
-            <button
-              onClick={askMaple}
-              className="shrink-0 inline-flex items-center gap-[6px] font-body font-semibold text-sm text-brand hover:text-alert cursor-pointer"
-            >
-              Ask Maple about this question
-              <ChevronDown className="w-[14px] h-[14px]" />
-            </button>
-          </div>
-        </footer>
+        </div>
+        {/* Pinned to the bottom: the note has to stay visible without being
+            the first thing on the page, and a footer that scrolls away is a
+            note most readers never reach. */}
+      {/* Pinned to the window under the nav, its own scroller, always mounted
+          and parked off the right edge so the feed keeps its place between
+          openings. Below lg there is no width to give up, so it stays away. */}
+      <aside
+        aria-label="Public Perspectives"
+        aria-hidden={!railOpen}
+        className={`hidden lg:flex fixed right-0 top-[var(--rail-top,calc(var(--nav-h)+var(--subnav-h)+2px))] bottom-0 z-40 w-[var(--drawer-w)] flex-col bg-ground border-l border-line transition-transform duration-300 ease-out motion-reduce:transition-none ${
+          railOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <header className="shrink-0 flex items-center justify-between gap-[12px] px-[18px] pt-[24px] pb-[4px]">
+          <p className="font-display font-medium text-lg text-ink">Public Perspectives</p>
+          <button
+            onClick={collapseRail}
+            aria-label="Collapse public perspectives"
+            title="Collapse"
+            className="shrink-0 -mr-[6px] p-[6px] rounded-control text-ink-muted hover:text-ink hover:bg-wash cursor-pointer transition-colors"
+          >
+            <ChevronsRight className="w-[18px] h-[18px]" />
+          </button>
+        </header>
+        {/* Opened at the side and the account type the card was showing, and
+            both stay live: arriving on a view is not the same as being held
+            there. */}
+        <div className="flex-1 overflow-y-auto px-[18px] pb-[22px] [--pinned-h:0px]">
+          <TestimonyFeed
+            filter={stance}
+            onFilterChange={setStance}
+            typeFilter={accountType}
+            onTypeFilterChange={setAccountType}
+            hideAddButton
+            items={testimonyFor(() => true)}
+            stickyTop="var(--pinned-h)"
+            includeFollowingFilter
+            includeTypeFilter
+            asCards
+            onCountChange={setRailCount}
+            resetSignal={railReset}
+          />
+        </div>
+      </aside>
+      {/* The panel folded to its edge. Same top, same bottom, same left border,
+          so it reads as the drawer standing on end rather than as a new piece
+          of furniture. The count is the reason it is worth keeping on screen:
+          a bare handle is a button, a handle that says 9 says the filters are
+          still set and there is something behind it.
+
+          It never moves. It sits a layer below the panel and the panel slides
+          over it, so opening covers it and closing uncovers it. Sliding both at
+          once meant two things crossing in the same strip of screen, which is
+          what made the transition read as a scramble. */}
+      <button
+        onClick={openRailClean}
+        aria-label={`Show public perspectives, ${railCount} matching`}
+        title="Show public perspectives"
+        aria-hidden={rail === "open"}
+        tabIndex={rail === "open" ? -1 : 0}
+        className="hidden lg:flex fixed right-0 top-[var(--rail-top,calc(var(--nav-h)+var(--subnav-h)+2px))] bottom-0 z-30 w-[var(--rail-tab-w)] flex-col items-center gap-[14px] pt-[13px] bg-ground border-l border-line text-ink-muted hover:text-ink hover:bg-wash cursor-pointer transition-colors"
+      >
+        <ChevronsLeft className="shrink-0 w-[18px] h-[18px]" />
+        <span className="font-display font-medium text-sm tracking-[0.02em] text-ink [writing-mode:vertical-rl]">
+          Public Perspectives
+        </span>
+        <span className="font-body font-semibold text-xs text-ink-muted [writing-mode:vertical-rl]">
+          {railCount}
+        </span>
+      </button>
+      <MapleFab open={askOpen} onOpenChange={setAskOpen} />
       </div>
-      <MapleFab open={askOpen} onOpenChange={setAskOpen} nudge={askNudge} />
+
     </SourcesProvider>
   );
 }

@@ -112,7 +112,9 @@ export function ContentItem({
     ai: { bg: "bg-ai-soft", bd: "border-ai-edge", tx: "text-ai-ink" },
   }[type];
   return (
-    <div className={`${c.bg} border ${c.bd} rounded-control px-[12px] py-[8px]`}>
+    <div
+      className={`${c.bg} border ${c.bd} rounded-control px-[12px] py-[8px]`}
+    >
       <div className={`font-body text-base ${c.tx} tracking-[0.14px]`}>
         {children}
       </div>

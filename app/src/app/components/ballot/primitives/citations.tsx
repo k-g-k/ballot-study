@@ -93,6 +93,23 @@ export function AISynthSources({ ids }: { ids: string[] }) {
   );
 }
 
+/**
+ * The mark that says a block is synthesis rather than record.
+ *
+ * Greyscaled at rest and full colour on hover, so a page carrying synthesis in
+ * most of its sections is not covered in purple. It expects a `group` on an
+ * ancestor; standing alone it simply stays muted, which is the resting state
+ * anyway.
+ */
+export function AIChip({ label = "AI Synthesis" }: { label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-[4px] border border-ai-edge text-ai-ink grayscale-[50%] group-hover:filter-none group-focus-within:filter-none font-body font-semibold text-2xs uppercase tracking-[0.08em] px-[7px] py-[2px] rounded-control">
+      <Sparkles className="w-[10px] h-[10px]" />
+      {label}
+    </span>
+  );
+}
+
 // Sources popover trigger.
 //  - "ai" (default): muted AI Synthesis chip + "Check our work".
 //  - "plain": no chip, "View Sources" — for non-AI provenance (e.g. claims).
@@ -107,6 +124,7 @@ export function SynthSourcesNote({
   linkClass,
   inline = false,
   extra,
+  note,
 }: {
   ids: string[];
   prompt?: string;
@@ -117,6 +135,11 @@ export function SynthSourcesNote({
   inline?: boolean;
   /** Extra content rendered in the trigger row, beside the trigger. */
   extra?: ReactNode;
+  /**
+   * Provenance told in words rather than through the source registry, for a
+   * page whose material is not in one. Shown in place of the source list.
+   */
+  note?: ReactNode;
 }) {
   const sources = useSources();
   const [open, setOpen] = useState(false);
@@ -190,6 +213,9 @@ export function SynthSourcesNote({
           </p>
         </div>
       )}
+      {note && (
+        <div className="font-body text-sm text-ink leading-[1.55]">{note}</div>
+      )}
       {ids.map((id, i) => {
         const s = sources[id];
         if (!s) return null;
@@ -260,12 +286,7 @@ export function SynthSourcesNote({
           carries synthesis in most sections. Opacity rather than display, so
           nothing shifts on hover and the control stays reachable by keyboard. */}
       <span className="group flex items-center gap-[10px] flex-wrap">
-        {variant === "ai" && (
-          <span className="inline-flex items-center gap-[4px] border border-ai-edge text-ai-ink grayscale-[50%] group-hover:filter-none group-focus-within:filter-none font-body font-semibold text-2xs uppercase tracking-[0.08em] px-[7px] py-[2px] rounded-control">
-            <Sparkles className="w-[10px] h-[10px]" />
-            AI Synthesis
-          </span>
-        )}
+        {variant === "ai" && <AIChip />}
         <span
           className={
             variant === "ai"

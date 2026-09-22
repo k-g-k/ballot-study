@@ -68,10 +68,13 @@
   --tracking-display: -0.02em;
   --tracking-heading: -0.01em;
 
-  /* ---------- Surfaces ---------- */
+  /* ---------- Surfaces ----------
+     The warm greige the Claude system starts from. Two degrees off neutral, so
+     it reads as paper rather than as screen grey, and it keeps the page warm
+     without pulling toward the blue the ballot-question prototype used. */
   --color-ground: #f8f8f6;
   --color-surface: #ffffff;
-  --color-sunken: #f0efec;
+  --color-sunken: #efefef;
   --color-inverse: #141413;
 
   /* ---------- Ink ---------- */
@@ -161,6 +164,17 @@
   --color-negative-soft: #f7dcdc;
   --color-negative-ink: #b53333;
 
+  /* Roll-call votes, which are their own pair and nothing else's. Kept apart
+     from the party colours so a red cell is never ambiguous between "a
+     Republican" and "a No". */
+  --color-yea: #2f6b46;
+  /* Amber, not red. The brick this started as sat a few degrees from the
+     Republican red, and at the map's 45% fill the two became the same dusty
+     rose: a reader could not tell a No vote from a Republican seat. Amber is
+     the one warm hue nothing else on these pages claims, and it still reads as
+     the opposite of the green. */
+  --color-nay: #b4651a;
+
   --color-caution: #ecb72e;
   --color-caution-soft: #faeec5;
   --color-caution-ink: #8a5a00;
@@ -195,6 +209,30 @@
   }
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* The opposite, for the bill viewer: a scrollbar that stays put rather than
+     the overlay kind macOS fades out when the pointer stops. A document that
+     runs past the bottom of the sheet should say so while it is being read,
+     not only while it is being scrolled. `scrollbar-gutter` reserves the track
+     whether or not there is anything to scroll, so the text does not reflow
+     when a short document is swapped for a long one. */
+  .scrollbar-always {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  .scrollbar-always::-webkit-scrollbar {
+    width: 10px;
+  }
+  .scrollbar-always::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-always::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
 
   body {

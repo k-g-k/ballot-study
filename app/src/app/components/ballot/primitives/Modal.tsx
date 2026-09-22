@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 // The overlay panel every modal on the page is built from. Grey ground with
@@ -83,12 +84,17 @@ export function Modal({
     return () => observer.disconnect();
   }, []);
 
-  return (
+  // Rendered into the body rather than in place. `position: fixed` is measured
+  // against the nearest ancestor with a transform, filter, or containment, not
+  // against the viewport, so a modal opened from inside the testimony rail
+  // (which slides on a transform) was laying itself out inside that panel. A
+  // portal puts it where it has always meant to be.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-[32px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[3px] p-[32px]"
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -144,6 +150,7 @@ export function Modal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

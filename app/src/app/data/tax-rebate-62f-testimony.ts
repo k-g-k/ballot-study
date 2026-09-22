@@ -19,6 +19,83 @@ export interface TestimonyItem {
 }
 
 export const TESTIMONY: TestimonyItem[] = [
+  // ── Individuals ───────────────────────────────────────────────────────────
+  // Fabricated for the prototype. Unlike the organizational statements above,
+  // which are real public positions recast as MAPLE submissions, nothing below
+  // was said by anyone: these are written to show what a page carrying
+  // individual testimony would hold, and to give the account-type and
+  // no-position filters something to find.
+  {
+    id: "ramirez-fixed-income",
+    userId: "p-ramirez",
+    stance: "endorse",
+    date: "June 7, 2026",
+    body: "I retired in 2019 and my property tax has gone up every year since. In 2022 I got a 62F check and it covered most of that increase. Then it never happened again, and the state kept collecting more. If the law was supposed to send money back when there is extra, I would like it to actually do that instead of almost doing it once every twenty years.",
+  },
+  {
+    id: "okafor-small-business",
+    userId: "p-okafor",
+    stance: "endorse",
+    date: "May 16, 2026",
+    body: "I run a two-location print shop and I plan a year at a time. What I want from the state is a rule I can read. Right now the cap is calculated off a number that is itself a cap, which is not something any of my customers could explain to me. Tying it to what was actually collected is at least a number that means something.",
+  },
+  {
+    id: "bergeron-promise-kept",
+    userId: "p-bergeron",
+    stance: "endorse",
+    date: "April 29, 2026",
+    body: "I voted for this in 1986 and I am voting for it again. The argument against it seems to be that the state has found ways around it and we should leave those in place. That is not a reason. If the Legislature thinks the refund is bad policy they should repeal it in the open rather than let the formula quietly do it for them.",
+  },
+  {
+    id: "whitcomb-not-a-windfall",
+    userId: "p-whitcomb",
+    stance: "endorse",
+    date: "April 9, 2026",
+    body: "My refund in 2022 was about $200. Nobody is getting rich. But it arrived the same month my heating bill did, and I noticed it. I understand the people worried about school funding and I do not think they are wrong to worry. I would rather the state budget to the money it should have than keep money it said it would return.",
+  },
+  {
+    id: "tran-counselor-caseload",
+    userId: "p-tran",
+    stance: "oppose",
+    date: "May 28, 2026",
+    body: "I am one of two counselors for about 900 students. The last time the budget tightened, the second position was frozen for a year and I did that alone. A rule that lowers the ceiling a little more after every slow year is not an abstraction to me. It is the year they do not refill the position, and it is a lot of kids who do not get seen.",
+  },
+  {
+    id: "alvarez-surtax-vote",
+    userId: "p-alvarez",
+    stance: "oppose",
+    date: "May 8, 2026",
+    body: "We voted in 2022 to have the highest earners pay more and to send that money to schools and transportation. I knocked doors for it. Now the same money would count toward a cap that sends refunds back out, and most of the dollars would go to the people who paid the surtax. I do not understand how that is anything but undoing what we just decided.",
+  },
+  {
+    id: "donnelly-after-the-downturn",
+    userId: "p-donnelly",
+    stance: "oppose",
+    date: "April 18, 2026",
+    body: "In 2009 they cut service and it took eight years to get it back. This measure would pull money out right after a bad year, which is exactly when the buses are how people get to work. I would rather a refund I do not get than a route that does not run.",
+  },
+  {
+    id: "shah-would-benefit",
+    userId: "p-shah",
+    stance: "oppose",
+    date: "April 2, 2026",
+    body: "I would get money back under this and I am voting against it. A refund proportional to what you paid is the most regressive way to return a surplus: it gives the most to the people who needed it least. If the state genuinely over-collects, I would rather it went to the T or to childcare than came back to me in a check I would not notice.",
+  },
+  {
+    id: "lindqvist-open-question",
+    userId: "p-lindqvist",
+    stance: "no-position",
+    date: "March 24, 2026",
+    body: "I prepare returns for a few hundred households and I have read the petition twice. Nobody has explained what happens in the first year the recalculated base is set: whether it is drawn from a normal year or from whichever year happens to precede the vote. That choice decides how often this triggers for a decade. I am not arguing either way, I am asking somebody to answer it.",
+  },
+  {
+    id: "boudreau-both-true",
+    userId: "p-boudreau",
+    stance: "no-position",
+    date: "March 18, 2026",
+    body: "Both sides here are describing something real. The refund has been triggered twice in forty years, which does look like a promise that stopped working. And a cap that steps down after every lean year does look like it would squeeze the budget over time. I have not seen anyone address both of those honestly in the same sentence, and until somebody does I am undecided.",
+  },
+
   // ── Endorse ─────────────────────────────────────────────────────────────────
   {
     id: "massfiscal-craney-loophole",

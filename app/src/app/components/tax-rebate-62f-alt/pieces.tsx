@@ -184,7 +184,7 @@ const AVATAR_GAP = 6;
  */
 function useAvatarFit(total: number) {
   const rowRef = useRef<HTMLDivElement>(null);
-  const linkRef = useRef<HTMLAnchorElement>(null);
+  const linkRef = useRef<HTMLButtonElement>(null);
   const [shown, setShown] = useState(total);
   useLayoutEffect(() => {
     const row = rowRef.current;
@@ -322,14 +322,14 @@ export function CampaignCard({
               </span>
             </div>
           )}
-          <a
+          <button
             ref={linkRef}
-            href="#testimony"
+            onClick={onViewTestimony}
             className="group ml-auto shrink-0 font-body font-semibold text-sm text-brand hover:text-brand-hover cursor-pointer inline-flex items-center gap-[4px]"
           >
             View testimony
             <ArrowRight className="w-[14px] h-[14px] group-hover:[stroke-width:2.75]" />
-          </a>
+          </button>
         </div>
         {finance && (
           <div className="mt-[18px]">{finance}</div>

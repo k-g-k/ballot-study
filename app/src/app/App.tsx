@@ -18,6 +18,10 @@ import BallotQuestions from "./components/ballot-questions";
 import RentControlAlt from "./components/rent-control-alt";
 import TaxRebate62FGrace from "./components/tax-rebate-62f/grace";
 import TaxRebate62FAlt from "./components/tax-rebate-62f-alt";
+import TaxRebate62FAlt2 from "./components/tax-rebate-62f-alt2";
+import TaxRebate62FAlt3 from "./components/tax-rebate-62f-alt3";
+import TaxRebate62FAlt3Compose from "./components/tax-rebate-62f-alt3/compose";
+import BillExample from "./components/bill-example";
 import TestimonyExperiment from "./components/testimony-experiment";
 
 // Sticky disclaimer shown on certain prototypes; content scrolls under it.
@@ -42,7 +46,9 @@ type GroupKey = (typeof GROUPS)[number]["key"];
 
 type Prototype = {
   id: string; // "A".."I"
-  path: string; // route path, e.g. "prototype/2024-ballot-question/audit/e-content-schemata"
+  path: string;
+  /** Where the Dev Nav links, when `path` is a route pattern rather than a URL. */
+  href?: string;
   label: string;
   group: GroupKey;
   element: ReactNode;
@@ -91,6 +97,38 @@ const PROTOTYPES: Prototype[] = [
     element: <TaxRebate62FAlt />,
   },
   {
+    id: "BQ5",
+    path: "ballotQuestions/tax-rebate-62f-alt2",
+    label: "62F — alt 2",
+    group: "ballot-questions",
+    element: <TaxRebate62FAlt2 />,
+  },
+  {
+    id: "BQ6",
+    path: "ballotQuestions/tax-rebate-62f-alt3",
+    label: "62F — alt 3",
+    group: "ballot-questions",
+    element: <TaxRebate62FAlt3 />,
+  },
+  {
+    id: "BQ6C",
+    path: "ballotQuestions/tax-rebate-62f-alt3/compose",
+    label: "62F — alt 3 compose",
+    group: "ballot-questions",
+    element: <TaxRebate62FAlt3Compose />,
+  },
+  {
+    // One route for all twenty-four bills in conference. The picker at the
+    // bottom-left jumps between them; :billId is the number, "h5630".
+    id: "BILL",
+    path: "bills/:billId",
+    /** Where the Dev Nav should land, since the path itself is a pattern. */
+    href: "bills/h5630",
+    label: "Bills in conference",
+    group: "ballot-questions",
+    element: <BillExample />,
+  },
+  {
     id: "TX",
     path: "testimony-experiment",
     label: "Testimony experiment",
@@ -99,7 +137,10 @@ const PROTOTYPES: Prototype[] = [
   },
 ];
 
-const DEFAULT_PATH = "/ballotQuestions/tax-rebate-62f-grace";
+// The branch preview opens on alt3, since that is the work. Everything else is
+// still reachable by its own path, including the earlier alt and alt2 passes
+// and /testimony-experiment.
+const DEFAULT_PATH = "/ballotQuestions/tax-rebate-62f-alt3";
 
 // Collapsible navigation panel flush against the bottom-right edge of the
 // screen. Rendered only in development (see Layout) — Vite strips it from
@@ -141,11 +182,11 @@ function DevNav() {
               {g.title}
             </div>
             {PROTOTYPES.filter((p) => p.group === g.key).map((p) => {
-              const active = `/${p.path}` === pathname;
+              const active = `/${p.href ?? p.path}` === pathname;
               return (
                 <Link
                   key={p.id}
-                  to={`/${p.path}`}
+                  to={`/${p.href ?? p.path}`}
                   className={active ? "block rounded" : "block rounded hover:bg-[#f0f0f0]"}
                   style={{
                     padding: "5px 8px",

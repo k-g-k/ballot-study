@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { ArrowUpRight, Check, Plus } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  FileText,
+  Plus,
+  Sparkles,
+  X,
+} from "lucide-react";
 import {
   RC,
   SOURCES,
   PROSE,
   POSITION_USERS,
+  TESTIMONY,
   VOTER_GUIDES,
   BALLOT_TIMELINE,
   COVERAGE_BY_TOPIC,
+  type CoverageArticle,
+  type CoverageType,
   BIBLIOGRAPHY,
   DELIB_THEMES,
   DELIB_TRANSCRIPTS,
@@ -227,113 +237,108 @@ function ArgList({ args }: { args: typeof RC.yesArgs }) {
 
 export function WhatEachSideSays({
   onViewTestimony,
+  railStance,
 }: {
   onViewTestimony?: (stance: StanceFilter) => void;
+  /** The side the page's drawer is currently showing, or null when closed. */
+  railStance?: StanceFilter | null;
 }) {
-  /* Parked: the chapter's AI framing. The campaigns and the argument columns
-     below say the same thing in the sides' own words, so the synthesis was
-     answering a question the chapter then answers again.
-
-      answer={
-        <Span>
-          <Synth
-            ids={[...PROSE.argumentsGlance.ids]}
-            prompt={PROSE.argumentsGlance.prompt}
-          >
-            <Body size="lead">{PROSE.argumentsGlance.text}</Body>
-          </Synth>
-        </Span>
-      }
-  */
+  /* Parked: the chapter's AI framing, `PROSE.argumentsGlance`, which used to
+     sit in the chapter's `answer`. The campaigns say the same thing in the
+     sides' own words, so the synthesis was answering a question the chapter
+     then answers again. */
   return (
-    <Chapter
-      id="sides"
-      question="What are the arguments?"
-      band={
-        <>
-          {/* The campaigns sit in the chapter's band rather than either side
-              taking its own card. The white is the page for this stretch, not a
-              container around the content, so the spine is not drawn inside it:
-              the pairing does the work the rule used to.
+    <Chapter id="sides" question="What are the arguments?">
+      <div className="flex flex-col gap-[28px] sm:gap-[40px]">
+        {/* The campaigns sit in the chapter's band rather than either side
+            taking its own card. The white is the page for this stretch, not a
+            container around the content, so the spine is not drawn inside it:
+            the pairing does the work the rule used to.
 
-              Campaigns and arguments still share one grid, with placement stated
-              explicitly rather than left to auto-flow. The empty 1px track is the
-              old spine's column, kept so the parked argument columns below land in
-              the right cells if they come back.
+            Campaigns and arguments still share one grid, with placement stated
+            explicitly rather than left to auto-flow. The empty 1px track is the
+            old spine's column, kept so the parked argument columns below land in
+            the right cells if they come back.
 
-              Who is making the case comes before the case itself: knowing who is
-              behind a claim changes how you read it. */}
-          <div className="flex flex-col gap-[32px] sm:grid sm:grid-cols-[1fr_1px_1fr] sm:gap-x-[28px] sm:gap-y-[40px] lg:gap-x-[48px]">
-            <div className="sm:col-start-1 sm:row-start-1 flex flex-col gap-[16px] min-w-0">
-              <SideHead vote="yes" label="Supporting Campaign" />
-              <CampaignCard
-                d={RC.overviewVotes.yes}
-                stance="endorse"
-              />
-            </div>
-            <div className="sm:col-start-3 sm:row-start-1 flex flex-col gap-[16px] min-w-0">
-              <SideHead vote="no" label="Opposing Campaign" />
-              <CampaignCard
-                d={RC.overviewVotes.no}
-                stance="oppose"
-              />
-            </div>
-
-            {/* Parked: the yes and no argument columns.
-            <div className="sm:col-start-1 sm:row-start-2 flex flex-col gap-[16px] min-w-0">
-              <SideHead vote="yes" label="Yes arguments" />
-              <ArgList args={RC.yesArgs} />
-            </div>
-            <div className="sm:col-start-3 sm:row-start-2 flex flex-col gap-[16px] min-w-0">
-              <SideHead vote="no" label="No arguments" />
-              <ArgList args={RC.noArgs} />
-            </div>
-            */}
+            Who is making the case comes before the case itself: knowing who is
+            behind a claim changes how you read it. */}
+        <div className="@container">
+        {/* Two up or stacked is a question of how much room this row has, not of
+            whether the rail is open. The rail takes about a third, which still
+            leaves the pair side by side on a wide window, so the columns are
+            measured against the row itself. */}
+        <div className="flex flex-col gap-[32px] @[700px]:grid @[700px]:grid-cols-[1fr_1px_1fr] @[700px]:gap-x-[28px] @[700px]:gap-y-[40px] @[960px]:gap-x-[48px]">
+          <div className="@[700px]:col-start-1 @[700px]:row-start-1 flex flex-col gap-[16px] min-w-0">
+            <SideHead vote="yes" label="Supporting Campaign" />
+            <CampaignCard
+              d={RC.overviewVotes.yes}
+              stance="endorse"
+              onViewTestimony={() => onViewTestimony?.("endorsing")}
+            />
           </div>
-        </>
-      }
-    >
-      {/* The agreement material belongs to this chapter rather than standing
-          on its own, and it is not subordinate to the campaigns: it is the
-          second half of the same answer, so it keeps the question form and the
-          full chapter heading size. It sits outside the band, though. The white
-          is what marks the stretch where the two sides are apart, and this is
-          the part where they are not. */}
-      <Span>
-        <h3 className="font-display font-medium text-xl sm:text-2xl lg:text-3xl tracking-display text-ink max-w-[20ch] text-balance">
-          Where do they agree?
-        </h3>
-        <div className="mt-[16px]">
-          <Body size="lead">
-            Both campaigns accept these points. The gutter closes here
-            because nothing on this list is in dispute.
-          </Body>
+          <div
+            // Stacked, the side you asked to see comes first. Two up, explicit
+            // placement decides and the order is reset so it cannot interfere.
+            className={`@[700px]:col-start-3 @[700px]:row-start-1 flex flex-col gap-[16px] min-w-0 ${
+              railStance === "opposing" ? "order-first @[700px]:order-none" : ""
+            }`}
+          >
+            <SideHead vote="no" label="Opposing Campaign" />
+            <CampaignCard
+              d={RC.overviewVotes.no}
+              stance="oppose"
+              onViewTestimony={() => onViewTestimony?.("opposing")}
+            />
+          </div>
+
+          {/* Parked: the yes and no argument columns.
+          <div className="sm:col-start-1 sm:row-start-2 flex flex-col gap-[16px] min-w-0">
+            <SideHead vote="yes" label="Yes arguments" />
+            <ArgList args={RC.yesArgs} />
+          </div>
+          <div className="sm:col-start-3 sm:row-start-2 flex flex-col gap-[16px] min-w-0">
+            <SideHead vote="no" label="No arguments" />
+            <ArgList args={RC.noArgs} />
+          </div>
+          */}
         </div>
-      </Span>
-      <Span>
-        <ul className="flex flex-col gap-[14px]">
-          {RC.consensus.map((c) => (
-            <li key={c} className="flex gap-[12px] items-start">
-              <Check className="w-[16px] h-[16px] mt-[4px] shrink-0 text-positive-ink" />
-              <span className="font-body text-lg text-ink leading-[1.65]">
-                {c}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Span>
-      <Span>
-        <Label>Still Contested</Label>
-        <ul className="flex flex-col gap-[14px]">
-          {RC.disagreement.map((d) => (
-            <li key={d} className="border-l-2 border-line-strong pl-[16px]">
-              <span className="font-body text-lg text-ink leading-[1.65]">
-                {d}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Span>
+        </div>
+        {/* The agreement material belongs to this chapter rather than standing
+            on its own, and it is not subordinate to the campaigns: it is the
+            second half of the same answer, so it keeps the question form and the
+            full chapter heading size. It sits outside the band, though. The white
+            is what marks the stretch where the two sides are apart, and this is
+            the part where they are not. */}
+        <Span>
+          <h3 className="font-display font-medium text-xl sm:text-2xl lg:text-3xl tracking-display text-ink max-w-[20ch] text-balance">
+            Where do they agree?
+          </h3>
+        </Span>
+        <Span>
+          <ul className="flex flex-col gap-[14px]">
+            {RC.consensus.map((c) => (
+              <li key={c} className="flex gap-[12px] items-start">
+                <Check className="w-[16px] h-[16px] mt-[4px] shrink-0 text-positive-ink" />
+                <span className="font-body text-lg text-ink leading-[1.65]">
+                  {c}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Span>
+        <Span>
+          <Label>Still Contested</Label>
+          <ul className="flex flex-col gap-[14px]">
+            {RC.disagreement.map((d) => (
+              <li key={d} className="border-l-2 border-line-strong pl-[16px]">
+                <span className="font-body text-lg text-ink leading-[1.65]">
+                  {d}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Span>
+      </div>
     </Chapter>
   );
 }
@@ -540,11 +545,7 @@ export function WhatPeopleAreSaying({
       }
     >
       <div className="[--pinned-h:48px] lg:[--pinned-h:106px]">
-        {/* Back inside the feed, so the heading, the filters and the add
-            button share one row rather than the button sitting under the
-            heading it belongs beside. */}
         <TestimonyFeed
-          title="Testimony"
           filter={filter}
           onFilterChange={onFilterChange}
           typeFilter={typeFilter}
@@ -563,6 +564,51 @@ export function WhatPeopleAreSaying({
 }
 
 // ---------------------------------------------------------------- 8
+/**
+ * One theme from the sessions, in three parts that are peers rather than
+ * sides: what the room agreed on, where it split, and the trade-off it was
+ * weighing. Not the page's yes/no spine, which is for a binary and would say
+ * these three were two opposed positions.
+ */
+function DelibTheme({
+  th,
+  n,
+}: {
+  th: (typeof DELIB_THEMES)[number];
+  n: number;
+}) {
+  const parts = [
+    { label: "Agreed", text: th.agreed, dot: "bg-positive" },
+    { label: "Split", text: th.split, dot: "bg-caution" },
+    { label: "Trade-off weighed", text: th.tradeoff, dot: "bg-ink-faint" },
+  ];
+  return (
+    <div className="border-t border-line pt-[20px]">
+      <div className="flex gap-[12px] items-baseline">
+        <span className="font-body font-semibold text-sm text-ink-faint tabular-nums shrink-0">
+          {n}
+        </span>
+        <p className="font-display font-medium text-lg sm:text-xl text-ink leading-[1.35] max-w-[46ch]">
+          {th.title}
+        </p>
+      </div>
+      {/* Three columns where there is room, so the shape of the discussion is
+          visible before any of it is read. */}
+      <div className="mt-[18px] ml-[26px] grid gap-x-[32px] gap-y-[20px] lg:grid-cols-3">
+        {parts.map((p) => (
+          <div key={p.label}>
+            <p className="flex items-center gap-[7px] font-body font-semibold text-xs uppercase tracking-[0.08em] text-ink-muted mb-[6px]">
+              <span aria-hidden className={`w-[7px] h-[7px] rounded-full ${p.dot}`} />
+              {p.label}
+            </p>
+            <p className="font-body text-base text-ink leading-[1.6]">{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function FromTheDiscussions() {
   const d = PROSE.deliberation;
   return (
@@ -571,8 +617,13 @@ export function FromTheDiscussions() {
       question="What came out of the discussions?"
       answer={
         <Span>
+          {/* The caveat first and in a mark, not as a footnote under the
+              paragraph. None of this has happened yet, which is the single
+              most important thing to know before reading any of it. */}
+          <p className="inline-flex items-center gap-[6px] font-body font-semibold text-2xs uppercase tracking-[0.08em] text-caution-ink bg-caution-soft px-[8px] py-[3px] rounded-control mb-[14px]">
+            {d.note}
+          </p>
           <Body size="lead">{d.body}</Body>
-          <p className="font-body text-xs text-ink-muted mt-[8px]">{d.note}</p>
         </Span>
       }
     >
@@ -586,145 +637,222 @@ export function FromTheDiscussions() {
           {d.recruitment}
         </p>
       </Span>
-      {DELIB_THEMES.map((th) => (
-        <div key={th.title}>
-          <p className="font-display font-medium text-lg sm:text-xl text-ink mb-[16px]">
-            {th.title}
+
+      <div>
+        {/* The themes are written from the transcripts rather than quoted from
+            them, so they carry the page's synthesis mark and say what they were
+            written from. The transcripts themselves are directly below, which
+            is what makes the claim checkable. */}
+        <div className="ml-[6px] border-l-2 border-ai pl-[14px] sm:pl-[20px] mb-[26px]">
+          <p className="font-body text-base text-ink-muted leading-[1.6] max-w-[70ch]">
+            {d.themesNote}
           </p>
-          <Span>
-            <Label>Where groups agreed</Label>
-            <Body>{th.agreed}</Body>
-          </Span>
-          <div className="mt-[20px]">
-            <Split
-              left={
-                <div>
-                  <Label>Where they split</Label>
-                  <Body>{th.split}</Body>
-                </div>
-              }
-              right={
-                <div>
-                  <Label>The trade-off weighed</Label>
-                  <Body>{th.tradeoff}</Body>
-                </div>
-              }
-            />
-          </div>
+          <span className="inline-flex items-center gap-[4px] border border-ai-edge text-ai-ink font-body font-semibold text-2xs uppercase tracking-[0.08em] px-[7px] py-[2px] rounded-control grayscale-[50%] mt-[10px]">
+            <Sparkles className="w-[10px] h-[10px]" />
+            AI Synthesis
+          </span>
         </div>
-      ))}
+        <div className="flex flex-col gap-[28px]">
+          {DELIB_THEMES.map((th, i) => (
+            <DelibTheme key={th.title} th={th} n={i + 1} />
+          ))}
+        </div>
+      </div>
+
       <Span>
         <Label>Anonymized transcripts</Label>
-        {DELIB_TRANSCRIPTS.map((t) => (
-          <div key={t.title} className="py-[12px] border-b border-line">
-            <p className="font-body font-semibold text-base text-ink">
-              {t.title}
-            </p>
-            <p className="font-body text-sm text-ink-muted">{t.meta}</p>
-          </div>
-        ))}
+        <ul className="flex flex-col gap-[10px]">
+          {DELIB_TRANSCRIPTS.map((t) => (
+            <li key={t.title} className="flex gap-[10px]">
+              <FileText
+                aria-hidden
+                className="w-[15px] h-[15px] shrink-0 mt-[3px] text-ink-faint"
+              />
+              <div>
+                <p className="font-body font-semibold text-base text-ink leading-[1.4]">
+                  {t.title}
+                </p>
+                <p className="font-body text-sm text-ink-muted">{t.meta}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </Span>
     </Chapter>
   );
 }
 
 // ---------------------------------------------------------------- 9
+/**
+ * Where an article came from, in the page's own provenance colours: blue for
+ * government, green for outside reporting, amber for an interested party. The
+ * data has carried this on every article all along and the page was dropping
+ * it, on a page whose whole argument is that provenance should be visible.
+ */
+const COVERAGE_CHIP: Record<CoverageType, { bg: string; tx: string }> = {
+  "GOV'T": { bg: "bg-official-soft", tx: "text-official-ink" },
+  NEWS: { bg: "bg-outside-soft", tx: "text-outside-ink" },
+  ADVOCACY: { bg: "bg-caution-soft", tx: "text-caution-ink" },
+};
+
+function ArticleRow({ a }: { a: CoverageArticle }) {
+  const chip = COVERAGE_CHIP[a.type];
+  return (
+    <li>
+      <a
+        href={a.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        // Grid rather than inline: the chips line up in a column of their own,
+        // so a stack of articles can be read down the left edge for kind and
+        // across for what it says.
+        className="group grid grid-cols-[62px_1fr] gap-[10px] items-baseline py-[5px]"
+      >
+        <span
+          className={`justify-self-start font-body font-semibold text-2xs tracking-[0.06em] px-[6px] py-[2px] rounded-chip ${chip.bg} ${chip.tx}`}
+        >
+          {a.type}
+        </span>
+        <span className="font-body text-sm text-ink-muted leading-[1.5] group-hover:text-ink">
+          <span className="font-semibold text-ink">{a.outlet}</span> {a.title}
+        </span>
+      </a>
+    </li>
+  );
+}
+
 export function HowItGotHere() {
+  const [view, setView] = useState<"date" | "topic">("date");
+  const total = BALLOT_TIMELINE.reduce((n, m) => n + m.articles.length, 0);
   return (
     <Chapter
       id="history"
-      question="How did it get here?"
+      question="Path to the ballot"
       answer={
-        <Span>
-          <Synth
-            ids={[...PROSE.ballotHistory.ids]}
-            prompt={PROSE.ballotHistory.prompt}
-          >
-            {/* Just the beats. The framing sentence and the original two
-                paragraphs are both still in `prose.ts`, as `lead` and
-                `paragraphs`, if the chapter wants prose again. */}
-            <ul className="flex flex-col gap-[8px]">
-              {PROSE.ballotHistory.bullets.map((b) => (
-                <li key={b} className="flex gap-[10px]">
-                  <span aria-hidden className="text-ink-faint">
-                    •
-                  </span>
-                  <span className="font-body text-lg text-ink-muted leading-[1.5]">
-                    {b}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Synth>
-        </Span>
+        // The route to the ballot as five steps, oldest first, in the same
+        // geometry as the record below so the two read as one system: dates in
+        // a column, a rule with a node at each step. No synthesis mark, because
+        // this is the chronology stated plainly rather than written from
+        // sources.
+        <ol className="flex flex-col max-w-[820px]">
+          {PROSE.ballotHistory.steps.map((step, i, all) => (
+            <li
+              key={step.label}
+              className="grid grid-cols-[86px_1fr] sm:grid-cols-[104px_1fr] gap-x-[16px] sm:gap-x-[22px]"
+            >
+              <p className="font-body font-semibold text-sm text-ink-muted text-right pt-[2px] tabular-nums">
+                {step.when}
+              </p>
+              <div
+                className={`relative border-l border-line pl-[22px] pb-[16px] ${
+                  i === all.length - 1 ? "border-transparent pb-0" : ""
+                }`}
+              >
+                <span
+                  aria-hidden
+                  className="absolute left-[-4px] top-[7px] w-[7px] h-[7px] rounded-full bg-ink-faint"
+                />
+                <p className="font-display font-medium text-lg text-ink leading-[1.35]">
+                  {step.label}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
       }
     >
-      <Span>
-        <Label>Every step, newest first</Label>
-        <div className="flex flex-col">
-          {BALLOT_TIMELINE.map((m) => (
-            <div
-              key={m.label}
-              className="grid grid-cols-1 sm:grid-cols-[110px_1fr] gap-[6px] sm:gap-[24px] py-[18px] border-b border-line"
-            >
-              <p className="font-body font-semibold text-xs text-ink-muted pt-[3px]">
-                {m.when}
-              </p>
-              <div>
-                <p className="font-display font-medium text-lg text-ink">
-                  {m.label}
-                </p>
-                {m.body && (
-                  <p className="font-body text-lg text-ink leading-[1.65] mt-[4px]">
-                    {m.body}
-                  </p>
-                )}
-                {m.articles.length > 0 && (
-                  <ul className="mt-[10px] flex flex-col gap-[4px]">
-                    {m.articles.map((a) => (
-                      <li key={a.url}>
-                        <a
-                          href={a.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group font-body text-sm text-ink-muted hover:text-brand"
-                        >
-                          <span className="font-semibold">{a.outlet}</span>{" "}
-                          {a.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Span>
-      <Span>
-        <Label>The same coverage, by topic</Label>
-        {COVERAGE_BY_TOPIC.map((t) => (
-          <div key={t.topic} className="py-[14px] border-b border-line">
-            <p className="font-display font-medium text-lg text-ink mb-[6px]">
-              {t.topic}
-            </p>
-            <ul className="flex flex-col gap-[4px]">
-              {t.articles.map((a) => (
-                <li key={a.url}>
-                  <a
-                    href={a.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body text-sm text-ink-muted hover:text-brand"
-                  >
-                    <span className="font-semibold">{a.outlet}</span> {a.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
+      <div className="max-w-[820px]">
+        {/* One library, two ways in. The chapter used to print the whole
+            coverage list twice, by date and then by topic, with nothing saying
+            the second was the same articles. It is one set, and which axis you
+            want is the reader's choice, so it is a control rather than two
+            sections. */}
+        <div className="flex items-baseline justify-between gap-[16px] flex-wrap mb-[20px]">
+          <p className="font-body font-semibold text-sm text-ink-muted">
+            {total} articles and documents
+          </p>
+          <div className="flex items-center gap-[2px]">
+            {(
+              [
+                ["date", "By date"],
+                ["topic", "By topic"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => setView(id)}
+                aria-pressed={view === id}
+                className={`font-body font-semibold text-sm px-[10px] py-[4px] rounded-pill cursor-pointer transition-colors ${
+                  view === id
+                    ? "bg-wash-strong text-ink"
+                    : "text-ink-muted hover:bg-wash"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-        ))}
-      </Span>
+        </div>
+
+        {view === "date" ? (
+          // A drawn line with dated nodes on it, rather than rows separated by
+          // rules. A chronology should look like one before you read a word of
+          // it, and the date is what you scan, so it leads rather than sitting
+          // in grey beside the heading.
+          <ol className="flex flex-col">
+            {BALLOT_TIMELINE.map((m, i) => (
+              <li
+                key={m.label}
+                className="grid grid-cols-[86px_1fr] sm:grid-cols-[104px_1fr] gap-x-[16px] sm:gap-x-[22px]"
+              >
+                <p className="font-display font-medium text-sm sm:text-base text-ink text-right pt-[1px]">
+                  {m.when}
+                </p>
+                <div
+                  className={`relative border-l border-line pl-[22px] pb-[26px] ${
+                    i === BALLOT_TIMELINE.length - 1 ? "border-transparent" : ""
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className="absolute left-[-4px] top-[7px] w-[7px] h-[7px] rounded-full bg-ink-faint"
+                  />
+                  <p className="font-display font-medium text-lg text-ink leading-[1.35]">
+                    {m.label}
+                  </p>
+                  {m.body && (
+                    <p className="font-body text-base text-ink-muted leading-[1.6] mt-[6px]">
+                      {m.body}
+                    </p>
+                  )}
+                  {m.articles.length > 0 && (
+                    <ul className="mt-[10px] flex flex-col">
+                      {m.articles.map((a) => (
+                        <ArticleRow key={a.url} a={a} />
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <div className="flex flex-col gap-[26px]">
+            {COVERAGE_BY_TOPIC.map((t) => (
+              <div key={t.topic}>
+                <p className="font-display font-medium text-lg text-ink mb-[8px]">
+                  {t.topic}
+                </p>
+                <ul className="flex flex-col">
+                  {t.articles.map((a) => (
+                    <ArticleRow key={a.url} a={a} />
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </Chapter>
   );
 }
@@ -791,6 +919,34 @@ export function WhoIsFunding() {
 }
 
 // ---------------------------------------------------------------- 11
+/**
+ * The bibliography's four sections are the provenance kinds this page already
+ * colour-codes everywhere else, so they wear the same colours here: blue for
+ * the state's own documents, green for outside and nonpartisan work, grey for
+ * reporting, amber for material published by an interested party.
+ */
+const SECTION_DOT: Record<string, string> = {
+  "Official government documentation": "bg-official",
+  "Educational (Nonpartisan)": "bg-outside",
+  News: "bg-ink-faint",
+  Advocacy: "bg-caution",
+};
+
+function SourceSectionHead({ name, count }: { name: string; count: number }) {
+  return (
+    <div className="flex items-baseline gap-[8px] mb-[10px]">
+      <span
+        aria-hidden
+        className={`w-[7px] h-[7px] rounded-full shrink-0 translate-y-[-2px] ${
+          SECTION_DOT[name] ?? "bg-ink-faint"
+        }`}
+      />
+      <p className="font-body font-semibold text-sm text-ink">{name}</p>
+      <p className="font-body text-sm text-ink-faint tabular-nums">{count}</p>
+    </div>
+  );
+}
+
 export function WhereThisComesFrom() {
   return (
     <Chapter
@@ -803,43 +959,56 @@ export function WhereThisComesFrom() {
       }
     >
       <Span>
-        <Label>Independent voter guides</Label>
-        {VOTER_GUIDES.map((g) => (
-          <div key={g.name} className="py-[12px] border-b border-line">
-            <p className="font-body font-semibold text-base text-ink">
-              {g.name}
-            </p>
-            <p className="font-body text-sm text-ink-muted">
-              {g.publisher} · {g.note}
-            </p>
+        <SourceSectionHead
+          name="Independent voter guides"
+          count={VOTER_GUIDES.length}
+        />
+        <ul className="flex flex-col gap-[10px]">
+          {VOTER_GUIDES.map((g) => (
+            <li key={g.name}>
+              <p className="font-body font-semibold text-base text-ink leading-[1.4]">
+                {g.name}
+              </p>
+              <p className="font-body text-sm text-ink-muted leading-[1.5]">
+                {g.publisher} · {g.note}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </Span>
+      {/* Two columns from lg. The entries are short and there are dozens of
+          them, so one column turns the whole chapter into a scroll; paired,
+          a section is something you take in at once. */}
+      <div className="grid gap-x-[48px] gap-y-[32px] lg:grid-cols-2">
+        {BIBLIOGRAPHY.map((sec) => (
+          <div key={sec.section}>
+            <SourceSectionHead
+              name={sec.section}
+              count={sec.entries.length}
+            />
+            <ul className="flex flex-col gap-[10px]">
+              {sec.entries.map((e) => (
+                <li key={e.url}>
+                  <a
+                    href={e.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-body text-base text-ink leading-[1.4] hover:text-brand"
+                  >
+                    {e.person ? `${e.person}, ` : ""}
+                    <span className={sec.italicTitle ? "italic" : ""}>
+                      {e.title}
+                    </span>
+                  </a>
+                  <p className="font-body text-xs text-ink-faint mt-[1px]">
+                    {e.author} · {e.date}
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
-      </Span>
-      {BIBLIOGRAPHY.map((sec) => (
-        <Span key={sec.section}>
-          <Label>{sec.section}</Label>
-          <ul className="flex flex-col">
-            {sec.entries.map((e) => (
-              <li key={e.url} className="py-[10px] border-b border-line">
-                <a
-                  href={e.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group font-body text-base text-ink hover:text-brand"
-                >
-                  {e.person ? `${e.person}, ` : ""}
-                  <span className={sec.italicTitle ? "italic" : ""}>
-                    {e.title}
-                  </span>
-                </a>
-                <p className="font-body text-xs text-ink-muted mt-[2px]">
-                  {e.author} · {e.date}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </Span>
-      ))}
+      </div>
     </Chapter>
   );
 }
