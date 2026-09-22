@@ -16,20 +16,20 @@ My role: volunteer product and design lead, as part of Code for Boston
 ## How it got here
 
 **1. Making the content visible**
-[grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)
+Prototype: [grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)
 
-*Problem: the page's content comes from very different places: official records,
+**Problem:** the page's content comes from very different places: official records,
 testimony people submit themselves, outside media and research, both partisan and
 non-partisan. It also uses AI-generated synthesis to make dense material readable
-for the average user. The team was focused on what content to display and where,
-but we didn't really have a shared picture of the content blocks themselves.
-There were many possibilities and I wanted to create something concrete to anchor on.*
+for the average user. 
 
-In order to accomplish this, I worked with Claude to create content schemata based on team conversations and
+**Underlying Problem:** The team was focused on what content to display and where,
+but we didn't really have a shared picture of the content blocks themselves.
+
+
+There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create content schemata based on team conversations and
 competitive analysis of Ballotpedia, producing around sixty items across four
 source types. 
-
-<img width="696" height="679" alt="image" src="https://github.com/user-attachments/assets/d731e076-fca2-4d9c-9257-d20f9e65bc59" />
 
 I then took the existing designs for the ballot page and fed the
 schemata into Figma Make to produce a visual map the team could anchor on
