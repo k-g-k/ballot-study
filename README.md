@@ -13,10 +13,8 @@ My role: volunteer product and design lead, as part of Code for Boston
 > ⚠️ Prototype only. Content, campaign positions, testimony, citations, and AI
 > syntheses are illustrative, not real ballot-measure data.
 
-## How it got here
 
-**1. Making the content visible**
-Prototype: [grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)
+##Making the content visible##
 
 **Problem:** 
 1. the page's content comes from very different places: official records,
@@ -26,16 +24,13 @@ for the average user.
 2. The team was focused on what content to display and where,
 but we didn't really have a shared picture of the content blocks themselves.
 
-**Approach:** 
 There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create content schemata based on team conversations and
 competitive analysis of Ballotpedia, producing around sixty items across four
-source types. 
-
-I then took the existing designs for the ballot page and fed the
+source types. I then took the existing designs for the ballot page and fed the
 schemata into Figma Make to produce a visual map the team could anchor on
 (Concept E). 
 
-<img width="1628" height="876" alt="image" src="https://github.com/user-attachments/assets/f81b9cdf-256d-421c-b058-7dc8913b4659" />
+<img width="814" height="438" alt="image" src="https://github.com/user-attachments/assets/f81b9cdf-256d-421c-b058-7dc8913b4659" />
 
 
 From there I had Figma Make generate several structural concepts for
@@ -44,9 +39,12 @@ for the team to review (Concept H).
 
 <img width="498" height="830" alt="image" src="https://github.com/user-attachments/assets/bb6872d9-c985-4a28-b5c9-44d59ae85b7c" />
 
+View it live here: [grow-turn-02824673.figma.site](https://grow-turn-02824673.figma.site)
 
-**2. Ported to code**
-[ballot-pi.vercel.app](https://ballot-pi.vercel.app/) · [GitHub](https://github.com/k-g-k/ballot)
+
+##2. Creating a shared environment##
+
+View it live here:[ballot-pi.vercel.app](https://ballot-pi.vercel.app/) · [GitHub](https://github.com/k-g-k/ballot)
 
 *Problem: we had feedback to implement and wanted to iterate as a team, but the
 prototype lived in Figma Make, which the team couldn't build from or work in
@@ -64,7 +62,7 @@ there.
 <img width="715" height="858" alt="image" src="https://github.com/user-attachments/assets/388cb59e-252e-4a3a-ab1c-6cbdee0f6b6b" />
 
 
-**3. Current exploration**
+##Current exploration##
 
 MAPLE is currently focused on other areas of the product, but we plan to return
 to the ballot project sometime in early 2027. In the meantime, I have started
