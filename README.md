@@ -7,13 +7,15 @@ proposed laws. Below is the evolution of the ballot measure project.
 
 **The Goal:**&nbsp; provide a one-stop shop where citizens can fully understand a ballot q, scaffolded to accommodate every user type
 
-**My Role:** &nbsp;volunteer product and design lead
+**My Role:** &nbsp;volunteer product and design lead, 
 
 
 **Latest Exploration:**&nbsp; https://ballot-study.vercel.app/
 <br><br>
 
-## Making the content visible ##
+
+## Making the content visible ## 
+**Design Time:** ~8-10hrs/one day in May 2026
 
 
 ***Problem:** The page's content comes from very different places: official records,
@@ -35,7 +37,7 @@ source types. I then crafted a context doc for Figma Make to ingest.
 I then took the latest MAPLE designs for the ballot page and fed the
 schemata and context doc into Figma Make to produce a visual map the team could anchor on and iterated, producing Concept E. From there I had Figma Make generate several structural concepts for
 a single tab, and combined the strongest parts of each into one combined example
-for the team to review (Concept H).
+for the team to review (Concept H). 
 
 Prototype: [Figma Make Preview](https://grow-turn-02824673.figma.site)
 <div><img width="814" height="438" alt="image" src="https://github.com/user-attachments/assets/f81b9cdf-256d-421c-b058-7dc8913b4659" /></div>
@@ -43,6 +45,7 @@ Prototype: [Figma Make Preview](https://grow-turn-02824673.figma.site)
 <br><br>
 
 ## Creating a shared environment ##
+**Design Time:** ~6hrs/one lateish evening in May 2026
 
 ***Problem:** we had feedback to implement and wanted to iterate as a team, but the
 prototype lived in Figma Make, which the team couldn't build from or work in
@@ -67,6 +70,7 @@ While refactoring I also made refinements to the overall design and content stru
 <br><br>
 
 ## Current exploration ##
+**Design Time:** Reskin ~1h, ideation/iterations over multiple days | Aug-Sep 2026
 
 MAPLE is currently focused on other areas of the product, but we plan to return
 to the ballot project sometime in early 2027. In the meantime, I have started
