@@ -1,16 +1,16 @@
 # Ballot Question Prototype
 
-MAPLE is a Massachusetts civic engagement platform: a virtual public square where
+MAPLE is a Massachusetts civic engagement platform in the [Partners in Democracy](https://partnersindemocracy.us/) family of products. It serves as a virtual public square where
 citizens, organizations, and legislators can see how others are thinking about
-legislation. Below is the evolution of the ballot measure project. 
+proposed laws. Below is the evolution of the ballot measure project. 
 
 
-**The Goal:**&nbsp; provide a one-stop shop where a citizen can fully understand a ballot q, scaffolded to accommodate every user type
+**The Goal:**&nbsp; provide a one-stop shop where citizens can fully understand a ballot q, scaffolded to accommodate every user type
 
-**My Role:** &nbsp;volunteer product and design lead, as part of Code for Boston
+**My Role:** &nbsp;volunteer product and design lead
 
 
-**Latest Exploration:** &nbsp; https://ballot-study.vercel.app/
+**Latest Exploration:**&nbsp; https://ballot-study.vercel.app/
 <br><br>
 
 ## Making the content visible ##
@@ -22,9 +22,9 @@ non-partisan. It also uses AI-generated synthesis to make dense material readabl
 for the average user. The team was focused on what content to display and where,
 but we didn't really have a shared picture of the content blocks themselves.*
 
-There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create a content schemata based on what I've learned and
+There were many possibilities and I wanted to create something concrete for us to anchor on. In order to accomplish this, I worked with Claude to create a content schemata based on my discovery findings as well as a corresponding
 competitive analysis of Ballotpedia, producing around sixty items across four
-source types. I then crafted a context doc that included the following information:
+source types. I then crafted a context doc for Figma Make to ingest. 
 
 <img width="202.5" height="251" alt="image" src="https://github.com/user-attachments/assets/5f509667-0548-42f3-a44c-9e69d4ce1ce8" />
 
@@ -33,9 +33,8 @@ source types. I then crafted a context doc that included the following informati
 
 ### Prototyping with Figma Make ###
 I then took the latest MAPLE designs for the ballot page and fed the
-schemata into Figma Make to produce a visual map the team could anchor on
-(Concept E). From there I had Figma Make generate several structural concepts for
-a single tab, and combined the strongest parts of each into one worked example
+schemata and context doc into Figma Make to produce a visual map the team could anchor on and iterated, producing Concept E. From there I had Figma Make generate several structural concepts for
+a single tab, and combined the strongest parts of each into one combined example
 for the team to review (Concept H).
 
 Prototype: [Figma Make Preview](https://grow-turn-02824673.figma.site)
