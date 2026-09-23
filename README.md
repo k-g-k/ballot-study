@@ -2,15 +2,16 @@
 
 MAPLE is a Massachusetts civic engagement platform: a virtual public square where
 citizens, organizations, and legislators can see how others are thinking about
-legislation. 
-
-Below is the evolution of the ballot measure project. The original goal was to provide a
-one-stop shop where an individual can fully understand a measure, scaffolded so
-different kinds of readers can go as deep as they want.
-
-My Role: volunteer product and design lead, as part of Code for Boston
+legislation. Below is the evolution of the ballot measure project. 
 
 
+**The Goal:**&nbsp; provide a one-stop shop where a citizen can fully understand a ballot q, scaffolded to accommodate every user type
+
+**My Role:** &nbsp;volunteer product and design lead, as part of Code for Boston
+
+
+**Latest Exploration:** &nbsp; https://ballot-study.vercel.app/
+<br><br>
 
 ## Making the content visible ##
 
@@ -21,9 +22,17 @@ non-partisan. It also uses AI-generated synthesis to make dense material readabl
 for the average user. The team was focused on what content to display and where,
 but we didn't really have a shared picture of the content blocks themselves.*
 
-There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create content schemata based on team conversations and
+There were many possibilities and I wanted to create something concrete to anchor on. In order to accomplish this, I worked with Claude to create a content schemata based on what I've learned and
 competitive analysis of Ballotpedia, producing around sixty items across four
-source types. I then took the existing designs for the ballot page and fed the
+source types. I then crafted a context doc that included the following information:
+
+<img width="202.5" height="251" alt="image" src="https://github.com/user-attachments/assets/5f509667-0548-42f3-a44c-9e69d4ce1ce8" />
+
+<img width="202" height="250.5" alt="image" src="https://github.com/user-attachments/assets/3cdac048-ddbb-47b6-b058-231ca78032ac" />
+<br><br>
+
+### Prototyping with Figma Make ###
+I then took the latest MAPLE designs for the ballot page and fed the
 schemata into Figma Make to produce a visual map the team could anchor on
 (Concept E). From there I had Figma Make generate several structural concepts for
 a single tab, and combined the strongest parts of each into one worked example
@@ -32,9 +41,9 @@ for the team to review (Concept H).
 Prototype: [Figma Make Preview](https://grow-turn-02824673.figma.site)
 <div><img width="814" height="438" alt="image" src="https://github.com/user-attachments/assets/f81b9cdf-256d-421c-b058-7dc8913b4659" /></div>
 
+<br><br>
 
-
-## 2. Creating a shared environment ##
+## Creating a shared environment ##
 
 ***Problem:** we had feedback to implement and wanted to iterate as a team, but the
 prototype lived in Figma Make, which the team couldn't build from or work in
@@ -50,10 +59,13 @@ can be found in [k-g-k/ballot](https://github.com/k-g-k/ballot). The refactor an
 
 Prototype: [Vercel Preview](https://ballot-pi.vercel.app/) · [GitHub](https://github.com/k-g-k/ballot)
 
+<img width="497.5" height="434.5" alt="image" src="https://github.com/user-attachments/assets/0b510bcd-f105-483e-a2f0-5ec7683af99d" />
+<br> 
+<br> 
 
 While refactoring I also made refinements to the overall design and content structure that you can explore in the prototype. Including some fun bonus features such as our new AI mascot and corresponding micro interactions!
 <div><img width="311" height="298" alt="image" src="https://github.com/user-attachments/assets/7bee1757-0063-4bb4-a52e-52dea461b25b" /></div>
-
+<br><br>
 
 ## Current exploration ##
 
