@@ -31,6 +31,7 @@ import {
   type CommitteeMember,
 } from "../../data/bill-lineage/committees";
 import { MEMBER_BY_SEAT } from "../../data/bill-lineage/members";
+import { EDUCATION_HEARING, hearingUrl } from "../../data/bill-lineage/hearing";
 import {
   HOUSE_EARLY_STAGES,
   HOUSE_ORIGINS,
@@ -45,6 +46,24 @@ const CHAMBER_INK: Record<string, string> = {
   Senate: "text-official-ink",
   House: "text-user-ink",
   Conference: "text-brand",
+};
+
+/**
+ * What kind of step it was, for the line under the date.
+ *
+ * A vote is read off the roll calls, so only the steps that are neither a vote
+ * nor the current one need naming here. "New draft" is the legislature's own
+ * phrase, out of "Accompanied a new draft, see H4745".
+ */
+const KIND: Record<string, string> = {
+  filed: "filed",
+  "h-filed": "filed",
+  // Short for the committee's own first action on each of these drafts,
+  // "Reported from the committee on Education".
+  s2549: "reported",
+  s2561: "floor amendments",
+  h4745: "reported",
+  h5349: "new draft",
 };
 
 /**
@@ -116,6 +135,47 @@ const surname = (name: string) => {
     last = parts[parts.length - 2];
   }
   return `${parts[0][0]}. ${last}${suffix}`;
+};
+
+/**
+ * A leadership title, short enough to sit beside a name.
+ *
+ * The General Court writes these out in full ("Second Assistant Majority
+ * Leader" is thirty-two characters), which pushes the name onto a second line
+ * and clips the title on the first. Four rules, applied to every title rather
+ * than to particular ones, so this keeps working for any bill's lineage:
+ *
+ *   The chamber goes, because the page is already one chamber's and "House
+ *   Ways and Means Chair" says House twice.
+ *
+ *   "Speaker of the House" is just the Speaker, and the same for the Senate
+ *   President. There is only one of each.
+ *
+ *   Ordinals become figures, and "Pro Tempore" becomes "Pro Tem".
+ *
+ *   Assistant, Majority and Minority abbreviate only in the titles that carry
+ *   "Assistant", which are the long ones. A bare "Majority Leader" fits and
+ *   reads better spelled out, so it stays.
+ *
+ * Longest result is "1st Asst. Min. Leader", down from thirty-two characters.
+ */
+const shortTitle = (role: string) => {
+  const r = role
+    .replace(/^(House|Senate) /, "")
+    .replace(/^Speaker of the House$/, "Speaker")
+    .replace(/^President of the Senate$/, "President")
+    .replace("Pro Tempore", "Pro Tem")
+    .replace("Ranking Minority", "Rank. Min.")
+    .replace(/^First /, "1st ")
+    .replace(/^Second /, "2nd ")
+    .replace(/^Third /, "3rd ")
+    .replace(/^Fourth /, "4th ");
+  return r.includes("Assistant")
+    ? r
+        .replace("Assistant", "Asst.")
+        .replace("Majority", "Maj.")
+        .replace("Minority", "Min.")
+    : r;
 };
 
 const office = (role: string) =>
@@ -212,8 +272,10 @@ function StageCard({
         {s.label}
       </p>
       <p className="font-body text-xs text-ink-muted mt-[4px]">{s.date}</p>
+      {/* The eyebrow already names the chamber, so this says only what kind of
+          step it was. "Roll call" was the clerk's word for it. */}
       <p className="font-body text-xs text-ink-faint mt-[8px]">
-        {now ? "where it is now" : votable ? "roll call" : ""}
+        {now ? "where it is now" : votable ? "vote" : (KIND[s.id] ?? "")}
       </p>
     </button>
   );
@@ -337,16 +399,16 @@ function Stages({
   return (
     <div className="flex items-stretch">
       {/* The same 10px the strip uses between cards, so the break is spaced
-          the same here as it is inside the list. */}
+              the same here as it is inside the list. */}
       <div className="shrink-0 flex items-stretch gap-[10px]">
         <StageCard s={current} on={current.id === active} now onPick={onPick} />
         {history.length > 0 && <Break label="current" />}
       </div>
 
       {/* Horizontal and scrollable: the sequence is the point, so it stays one
-          line at any width rather than reflowing into a grid that loses the
-          order. The scrollbar is hidden, so the fade at the right edge is what
-          says there is more. */}
+              line at any width rather than reflowing into a grid that loses the
+              order. The scrollbar is hidden, so the fade at the right edge is what
+              says there is more. */}
       <div
         ref={rail}
         className={`ml-[10px] min-w-0 flex-1 overflow-x-auto scrollbar-hide ${
@@ -367,9 +429,9 @@ function Stages({
                 />
               </li>
               {/* Its own item, so the strip's gap falls on both sides of it.
-                  Inside a card's item the gap landed on one side only, which
-                  is what made this break wider than the other one. Newest
-                  first, so it sits after this card rather than before. */}
+                      Inside a card's item the gap landed on one side only, which
+                      is what made this break wider than the other one. Newest
+                      first, so it sits after this card rather than before. */}
               {s.id === VEHICLE_SWAP_BEFORE && (
                 <li aria-hidden className="flex items-stretch">
                   <Break label="new bill" />
@@ -427,6 +489,7 @@ function VoteMap({
   roll,
   highlight,
   selected = [],
+  enlarged,
   onHover,
   onPin,
   people,
@@ -438,8 +501,16 @@ function VoteMap({
   roll?: RollCall;
   /** Seat keys to fill by party, when there is no roll call to show. */
   highlight?: string[];
-  /** Every seat currently being read: what is pinned, plus any hover. */
+  /** Every seat currently being read: the page showing, plus any hover. */
   selected?: string[];
+  /**
+   * Which of those get the thick edge. Separate from `selected` because the
+   * two say different things now: a page of six is all equally the subject and
+   * sits at full strength, while the one under the pointer is the only one
+   * worth growing. Left out, the old rule applies and every lit selected seat
+   * is drawn thick.
+   */
+  enlarged?: string[];
   /** Given, the lit seats become the way to read the rest of the committee. */
   onHover?: (key: string | null) => void;
   onPin?: (key: string) => void;
@@ -501,10 +572,10 @@ function VoteMap({
   return (
     <div className={className}>
       {/* How much of the chamber this step involved, rather than how big the
-          chamber is. Three of a hundred and sixty is the fact the map is
-          making, and the label should not leave it to be counted off the
-          picture. On a roll call the number is how many votes were recorded,
-          which is rarely the whole chamber. */}
+              chamber is. Three of a hundred and sixty is the fact the map is
+              making, and the label should not leave it to be counted off the
+              picture. On a roll call the number is how many votes were recorded,
+              which is rarely the whole chamber. */}
       <p className="font-body font-semibold text-2xs uppercase tracking-[0.08em] text-ink-muted mb-[8px]">
         {label ?? (chamber === "house" ? "House" : "Senate")} ·{" "}
         {shown === null ? seats : `${shown} of ${seats}`}
@@ -519,7 +590,7 @@ function VoteMap({
             </clipPath>
           </defs>
           {/* The coastline under the cells, so any sliver a cell does not reach
-            still reads as land rather than as a hole. */}
+                still reads as land rather than as a hole. */}
           {L.geo.outline.map((d) => (
             <path key={d.slice(0, 24)} d={d} className="fill-sunken" />
           ))}
@@ -587,33 +658,32 @@ function VoteMap({
               );
             })}
             {/* Drawn last so no later cell paints over them. Outline only:
-                the fill underneath is already at full opacity. */}
+                    the fill underneath is already at full opacity. */}
             {/* Only where a few seats are lit in a mostly empty chamber. On a
-                roll call every seat is filled, so an edge that grows past the
-                white separators reads as one cell swallowing its neighbours;
-                there the chosen seat is marked by taking the separator's own
-                colour instead. */}
-            {!live &&
-              mine
-                .filter((k) => lit.has(k))
-                .map((k) => {
-                  const pts = cells[k];
-                  return (
-                    <polygon
-                      key={k}
-                      points={Array.isArray(pts) ? pts[0] : pts}
-                      fill="none"
-                      stroke={edgeFor(k)}
-                      strokeWidth={5}
-                      strokeLinejoin="round"
-                      vectorEffect="non-scaling-stroke"
-                      pointerEvents="none"
-                    />
-                  );
-                })}
+                    roll call every seat is filled, so an edge that grows past the
+                    white separators reads as one cell swallowing its neighbours;
+                    there the chosen seat is marked by taking the separator's own
+                    colour instead. */}
+            {(enlarged ?? (live ? [] : mine.filter((k) => lit.has(k))))
+              .filter((k) => k in cells)
+              .map((k) => {
+                const pts = cells[k];
+                return (
+                  <polygon
+                    key={k}
+                    points={Array.isArray(pts) ? pts[0] : pts}
+                    fill="none"
+                    stroke={edgeFor(k)}
+                    strokeWidth={5}
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    pointerEvents="none"
+                  />
+                );
+              })}
           </g>
           {/* The coastline again on top, as a hairline, so the state has an edge
-            of its own rather than ending wherever the cells happen to. */}
+                of its own rather than ending wherever the cells happen to. */}
           {L.geo.outline.map((d) => (
             <path
               key={d.slice(0, 24)}
@@ -659,8 +729,8 @@ function ProvisionRow({ p }: { p: Provision }) {
               "no single originating bill"
             )}
             {/* How solid the trace is, said on the row rather than in a note
-                at the bottom. "Inferred" is doing real work here: it marks a
-                judgement rather than a record. */}
+                    at the bottom. "Inferred" is doing real work here: it marks a
+                    judgement rather than a record. */}
             <span
               className={`ml-[8px] font-semibold text-2xs uppercase tracking-[0.08em] ${
                 p.conf === "documented" ? "text-ink-muted" : "text-user-ink"
@@ -703,6 +773,24 @@ const STAGE_SOURCE: Record<
     number: "S.2549",
     what: "the Senate draft the same committee reported",
     href: "https://malegislature.gov/Bills/194/S2549",
+  },
+  // The hearing, on the step where the bills were filed rather than on a step
+  // of its own. Both chambers' filings were heard in one afternoon, so the same
+  // link sits on each route.
+  //
+  // It is also the only one. Joint Rule 1B requires a hearing on every matter
+  // referred to a joint standing committee, and this chain got exactly that
+  // one: every step after it happened on the floor, where no testimony is
+  // taken.
+  "h-filed": {
+    number: "17 June 2025",
+    what: "the hearing where all six were heard",
+    href: hearingUrl(EDUCATION_HEARING.eventId),
+  },
+  filed: {
+    number: "17 June 2025",
+    what: "the hearing where all seven were heard",
+    href: hearingUrl(EDUCATION_HEARING.eventId),
   },
 };
 
@@ -747,6 +835,16 @@ export function BillLineageSection({
   return <TracedLineage bill={bill} active={active} onActive={onActive} />;
 }
 
+/**
+ * How many members the panel shows at once.
+ *
+ * Six is what fits the panel stacked without it becoming the tallest thing on
+ * the card. It also changes what the map is saying: a page of six is six people
+ * equally the subject, so they all sit at full strength and none is singled
+ * out until the pointer picks one.
+ */
+const PAGE = 6;
+
 function TracedLineage({
   bill,
   active,
@@ -770,13 +868,12 @@ function TracedLineage({
   // "Ways and Means struck everything" and never says what they struck it for.
   const stages = chamber === "House" ? [...HOUSE_EARLY_STAGES, ...own] : own;
 
-  // Which seat the reader is reading, and which one they kept. Both clear on a
-  // new step, because the committee changes with it and a name left over from
-  // the last one would be wrong.
-  // Nothing selected to begin with, on any step. A default answers a question
-  // the reader has not asked yet, and on a map it also lights a seat that the
-  // step is not especially about.
-  const [pinned, setPinned] = useState<string[]>([]);
+  // Which page the panel is on, and which name the pointer is over. Both reset
+  // on a new step, because the roster changes with it.
+  const [page, setPage] = useState(0);
+  // The conference and the filings carry their own lists and no roster to page
+  // through, so on those two steps the map still follows one chosen entry.
+  const [picked, setPicked] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const stage = stages.find((s) => s.id === active) ?? stages[0];
   const roll = L.votes[active];
@@ -869,12 +966,6 @@ function TracedLineage({
               ]),
             )
           : undefined;
-  // What is being read: everything pinned, plus whatever the pointer is over.
-  // Hover replaces what is held rather than adding to it, so only ever one
-  // seat is being read. The pin is what the panel falls back to once the
-  // pointer leaves.
-  const reading = hovered ? [hovered] : pinned;
-
   /**
    * Rank first, then alphabetical.
    *
@@ -890,12 +981,6 @@ function TracedLineage({
     if (i >= 0) return i;
     return people?.[key]?.title ? 500 : 1000;
   };
-  const shownKeys = [...reading].sort(
-    (a, b) =>
-      rankOf(a) - rankOf(b) ||
-      (people?.[a]?.name ?? "").localeCompare(people?.[b]?.name ?? ""),
-  );
-
   /** One seat, as much as the step knows about it. */
   const readSeat = (key: string) => {
     const seat = L.seats[key];
@@ -909,10 +994,8 @@ function TracedLineage({
       vote: roll ? roll.votes[key] : undefined,
     };
   };
-  // What the panel can rotate through: the committee on a committee step, and
-  // the whole voting chamber on a roll call, in alphabetical order because
-  // there is no rank to follow. Stepping sets the selection, so the map lights
-  // whoever the panel is showing.
+  // Everyone the panel can show: the committee on a committee step, the whole
+  // voting chamber on a roll call.
   const rotatable: string[] = committee
     ? committee.members.map((m) => m.key)
     : roll
@@ -921,51 +1004,112 @@ function TracedLineage({
           .sort((a, b) => a[1].n.localeCompare(b[1].n))
           .map(([k]) => k)
       : [];
-  // A step opens on one of its members, chosen at random, the way the followed
-  // testimony card opens on a random entry. Somebody is better than nobody: an
-  // empty panel asks the reader to discover that the map is pointable, and a
-  // fixed default would say that member mattered more than the rest.
+  /**
+   * Leadership first, then alphabetical.
+   *
+   * On a committee step the body's own order already is that: its officers,
+   * then the rest by surname. On a roll call there is no such list, so rank
+   * falls back to whether the General Court records an office at all, and a
+   * chamber leader sorts above a back-bencher.
+   */
+  const ordered = [...rotatable].sort(
+    (a, b) =>
+      rankOf(a) - rankOf(b) ||
+      (people?.[a]?.name ?? "").localeCompare(people?.[b]?.name ?? ""),
+  );
+  /**
+   * Committees page six at a time; votes rotate one at a time.
+   *
+   * A committee is a list, short enough to read down, so the panel shows it as
+   * one. A roll call is the whole chamber: there is no list to read, so paging
+   * through 160 members six at a time would be a phone book. There the panel
+   * offers one member at random and the arrows walk the alphabet, which is
+   * what it did before and what the map's own rotation does elsewhere.
+   *
+   * Keyed on whether the step has a committee, not on which step it is, so it
+   * holds for any bill's lineage.
+   */
+  const paged = Boolean(committee);
+  const pageCount = Math.max(1, Math.ceil(ordered.length / PAGE));
+  const onPage = Math.min(page, pageCount - 1);
+  const solo = hovered ?? picked;
+  const shownKeys = paged
+    ? ordered.slice(onPage * PAGE, onPage * PAGE + PAGE)
+    : solo
+      ? [solo]
+      : [];
+
+  // A new step clears both. A committee opens on its first page, which is its
+  // own order. A vote opens on somebody, chosen at random: an empty panel asks
+  // the reader to discover that the map is pointable, and a fixed default would
+  // say that member mattered more than the rest.
   //
-  // Keyed to the step as well as its roster. The three roll calls share one
+  // Keyed to the step as well as its roster: the three roll calls share one
   // chamber and so one roster, and keying on the roster alone left the same
   // member seated as a reader moved between them.
   const roster = rotatable.join(",");
   useEffect(() => {
     const keys = roster ? roster.split(",") : [];
     setHovered(null);
-    setPinned(
-      keys.length ? [keys[Math.floor(Math.random() * keys.length)]] : [],
+    setPage(0);
+    setPicked(
+      committee || !keys.length
+        ? null
+        : keys[Math.floor(Math.random() * keys.length)],
     );
+    // `committee` is derived from the step, so `active` already covers it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, roster]);
 
-  const stepMember = (dir: 1 | -1) => {
+  // Both arrows are always there and both wrap around, so the panel never
+  // presents a dead control. There is nothing to step through when a roster
+  // fits on one page.
+  const canStep = paged ? pageCount > 1 : rotatable.length > 0;
+
+  const step = (dir: 1 | -1) => {
+    setHovered(null);
+    if (paged) {
+      if (pageCount > 1) setPage((onPage + dir + pageCount) % pageCount);
+      return;
+    }
     if (!rotatable.length) return;
-    const at = pinned.length ? rotatable.indexOf(pinned[0]) : -1;
+    const i = picked ? rotatable.indexOf(picked) : -1;
     const next =
-      at < 0
+      i < 0
         ? dir === 1
           ? 0
           : rotatable.length - 1
-        : (at + dir + rotatable.length) % rotatable.length;
-    setHovered(null);
-    setPinned([rotatable[next]]);
+        : (i + dir + rotatable.length) % rotatable.length;
+    setPicked(rotatable[next]);
   };
 
   // The two steps that carry their own list; everywhere else the panel does it.
   const hasList = stage.id === "conf" || stage.id === "h-filed";
-  // Stacked, the map and the people sit side by side under the blurb rather
-  // than in one tall column. The conference has two maps and no room for it.
-  const narrowPair = !joint;
-  // One at a time. Clicking another seat replaces the one held; clicking the
-  // held seat again hands it back to chance rather than emptying the panel,
-  // which is where the step started.
-  const togglePin = (key: string) =>
-    setPinned((p) => {
-      if (!p.includes(key)) return [key];
+  // Narrow, the map and the people stack: the map under the blurb and the
+  // people under the map. Side by side in a column this narrow left the name
+  // panel too tight to hold a district and a vote on one line. The conference
+  // has two maps and orders itself.
+  const stackPair = !joint;
+  // Clicking a seat on the map turns to the page that holds it, rather than
+  // pulling it out of the list. The panel is the list; the map is a way into
+  // it.
+  const showSeat = (key: string) => {
+    if (paged) {
+      const i = ordered.indexOf(key);
+      if (i >= 0) setPage(Math.floor(i / PAGE));
+      return;
+    }
+    // One at a time. Clicking another seat replaces the one held; clicking the
+    // held seat again hands it back to chance rather than emptying the panel,
+    // which is where the step started. With no roster to fall back on, it
+    // simply lets go.
+    setPicked((prev) => {
+      if (prev !== key) return key;
       const others = rotatable.filter((k) => k !== key);
-      if (!others.length) return rotatable.length ? [key] : [];
-      return [others[Math.floor(Math.random() * others.length)]];
+      if (!others.length) return rotatable.length ? key : null;
+      return others[Math.floor(Math.random() * others.length)];
     });
+  };
 
   // Who the step is about, when it is not a vote.
   //
@@ -1012,13 +1156,13 @@ function TracedLineage({
         />
 
         {/* Container queries, not viewport ones. This section sits in a column
-            the testimony rail can narrow by several hundred pixels, so a `lg:`
-            breakpoint asks the wrong box how much room there is and lays out
-            two columns into the width of one. Everything below sizes against
-            whatever box it is actually in. */}
+                the testimony rail can narrow by several hundred pixels, so a `lg:`
+                breakpoint asks the wrong box how much room there is and lays out
+                two columns into the width of one. Everything below sizes against
+                whatever box it is actually in. */}
         {/* The container is a wrapper, not the grid itself: `@container` sets
-            up a context for an element's descendants, so a query written on the
-            same element has nothing to measure and never matches. */}
+                up a context for an element's descendants, so a query written on the
+                same element has nothing to measure and never matches. */}
         <div className="@container mt-[24px]">
           <div
             // The map, or both maps on the conference step, then one column
@@ -1030,9 +1174,7 @@ function TracedLineage({
             // map spanning both rows has its height shared between them, so a
             // short blurb is stretched and the people below it start further
             // down on one step than on another.
-            className={`grid gap-[24px] border border-line rounded-card p-[24px] @[840px]:items-stretch @[840px]:grid-rows-[auto_1fr] ${
-              narrowPair ? "grid-cols-2" : "grid-cols-1"
-            } ${
+            className={`grid gap-[24px] border border-line rounded-card p-[24px] @[840px]:items-stretch @[840px]:grid-rows-[auto_1fr] grid-cols-1 ${
               joint
                 ? "@[840px]:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)_minmax(0,1fr)]"
                 : roll
@@ -1044,13 +1186,13 @@ function TracedLineage({
             }`}
           >
             {/* The extra room goes here rather than on the grid's gap, which
-                would also push the two maps apart on the conference step. On
-                the right of this column now, since the maps sit to its
-                right. */}
+                    would also push the two maps apart on the conference step. On
+                    the right of this column now, since the maps sit to its
+                    right. */}
             {/* Three siblings, placed rather than nested, so the same three
-                blocks can sit one way across and another way stacked. */}
+                    blocks can sit one way across and another way stacked. */}
             <div
-              className={`${narrowPair ? "col-span-2 row-start-1" : ""} @[840px]:col-span-1 @[840px]:row-start-1 ${
+              className={`${stackPair ? "row-start-1" : ""} @[840px]:col-span-1 @[840px]:row-start-1 ${
                 roll
                   ? "@[840px]:col-start-2 @[840px]:pl-[16px]"
                   : "@[840px]:col-start-1 @[840px]:pr-[16px]"
@@ -1063,22 +1205,19 @@ function TracedLineage({
                 {stage.body && (
                   <p className="font-body text-sm text-ink leading-[1.65] mt-[8px]">
                     {stage.body}
-                    {stage.id === "conf" && (
-                      // At the end of the sentence rather than under it: where
-                      // the step goes next is part of what the step says. The
-                      // conference page does not exist yet.
-                      <>
-                        {" "}
-                        <a
-                          href="/conferenceCommittees/s2581-h5366"
-                          className="font-semibold underline decoration-dotted underline-offset-[4px] text-official-ink hover:text-official"
-                        >
-                          Go to conference committee
-                          <ArrowUpRight className="inline w-[13px] h-[13px] ml-[3px] align-[-1px] no-underline" />
-                        </a>
-                      </>
-                    )}
                   </p>
+                )}
+                {/* On its own line, like every other step's link, rather than
+                    trailing the sentence. The conference page does not exist
+                    yet. */}
+                {stage.id === "conf" && (
+                  <a
+                    href="/conferenceCommittees/s2581-h5366"
+                    className="inline-flex items-center gap-[4px] mt-[12px] font-body font-semibold text-sm underline decoration-dotted underline-offset-[4px] text-official-ink hover:text-official"
+                  >
+                    Go to conference committee
+                    <ArrowUpRight className="w-[13px] h-[13px] no-underline" />
+                  </a>
                 )}
                 {source && (
                   <a
@@ -1118,87 +1257,153 @@ function TracedLineage({
             </div>
 
             <div
-              className={`@container ${narrowPair ? "col-start-2 row-start-2" : ""} @[840px]:row-start-2 flex flex-col gap-[22px] ${
+              className={`@container ${stackPair ? "row-start-3" : ""} @[840px]:row-start-2 flex flex-col gap-[22px] ${
                 roll
                   ? "@[840px]:col-start-2 @[840px]:pl-[16px]"
                   : "@[840px]:col-start-1 @[840px]:pr-[16px]"
               }`}
             >
               {/* Where a step has no list of its own, the seats being read
-                  are printed here. More than one can be held at a time, so
-                  they sit side by side, senior first and alphabetical after
-                  that. Steps that already show their members do not need this
-                  and do not get it. */}
+                      are printed here. More than one can be held at a time, so
+                      they sit side by side, senior first and alphabetical after
+                      that. Steps that already show their members do not need this
+                      and do not get it. */}
               {!hasList && people && (
-                // Floor set to what a filled panel measures: a 42px portrait
-                // between 12px of padding. The panel then keeps its size
-                // whether or not a seat is chosen, so nothing below it moves
-                // when one is.
-                <div className="group min-h-[66px] flex items-stretch gap-[6px] flex-1 bg-sunken rounded-panel px-[6px] py-[10px]">
+                // Floor set to what one filled row measures: a 36px
+                // portrait between 10px of padding. The panel then keeps its
+                // size whether or not a seat is chosen, so nothing below it
+                // moves when one is.
+                <div className="group min-h-[60px] flex items-stretch gap-[4px] flex-1 bg-sunken rounded-panel overflow-hidden">
                   {/* Chevrons at the panel's edges, the way the followed
-                      testimony card cycles its entries. Hidden by opacity
-                      rather than display, so the panel keeps its width and the
-                      member beside them does not shift when they appear, and
-                      so they stay reachable by keyboard.
-                      testimony card cycles its entries. Stepping is a third way
-                      into the same one selection, beside the map and the lists,
-                      and the only one that works without knowing which district
-                      to point at. */}
+                          testimony card cycles its entries. Hidden by opacity
+                          rather than display, so the panel keeps its width and the
+                          member beside them does not shift when they appear, and
+                          so they stay reachable by keyboard.
+                          testimony card cycles its entries. Stepping is a third way
+                          into the same one selection, beside the map and the lists,
+                          and the only one that works without knowing which district
+                          to point at. */}
                   <button
-                    onClick={() => stepMember(-1)}
-                    disabled={!rotatable.length}
-                    aria-label="Previous member"
-                    className="shrink-0 self-stretch flex items-center px-[6px] rounded-control text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+                    disabled={!canStep}
+                    onClick={() => step(-1)}
+                    aria-label={paged ? "Previous six" : "Previous member"}
+                    className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
                   >
-                    <ChevronLeft className="w-[16px] h-[16px]" />
+                    <ChevronLeft className="w-[14px] h-[14px]" />
                   </button>
-                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+
+                  <div className="flex-1 min-w-0 flex flex-col justify-center py-[10px]">
                     {shownKeys.length ? (
-                      <div className="flex flex-wrap gap-x-[28px] gap-y-[14px]">
+                      // A page of six is three across and two down.
+                      //
+                      // `auto` rather than equal thirds: a column takes the
+                      // width its own content needs and the surplus is shared
+                      // out. Equal thirds gave the same width to a cell holding
+                      // "A. Michlewitz chair" and one holding "K. Diggs asst.
+                      // vice chair", so the first had slack going spare while
+                      // the second wrapped. The cost is that columns are no
+                      // longer identical and shift a little between pages.
+                      <div
+                        className={
+                          paged
+                            ? "grid grid-cols-[auto_auto_auto] auto-rows-[minmax(48px,auto)] gap-x-[20px] gap-y-[10px]"
+                            : "flex"
+                        }
+                      >
                         {shownKeys.map((key) => {
                           const { seat, vacant, card, vote } = readSeat(key);
                           if (!card && !vacant) return null;
                           return (
                             <div
                               key={key}
-                              className="flex items-center gap-[12px]"
+                              // Hovering a name is what grows its district on
+                              // the map. The six are already at full strength
+                              // there, so this is the only thing singling one
+                              // out, and it reads in both directions: the map
+                              // answers the list and the list answers the map.
+                              onPointerEnter={() => setHovered(key)}
+                              onPointerLeave={() => setHovered(null)}
+                              className={`min-w-0 h-full flex items-center gap-[10px] ${
+                                // Alone, claim the panel. In a grid the cell
+                                // already sets the width.
+                                paged ? "" : "flex-1"
+                              }`}
                             >
                               {vacant || !card?.portrait ? (
-                                <span className="shrink-0 w-[42px] h-[42px] rounded-full bg-sunken border border-line flex items-center justify-center">
+                                <span className="shrink-0 w-[36px] h-[36px] rounded-full bg-sunken border border-line flex items-center justify-center">
                                   <Scale className="w-[18px] h-[18px] text-ink-faint" />
                                 </span>
                               ) : (
                                 <img
                                   src={card.portrait}
                                   alt=""
-                                  className={`shrink-0 w-[42px] h-[42px] rounded-full object-cover bg-sunken border-[3px] ${
+                                  className={`shrink-0 w-[36px] h-[36px] rounded-full object-cover bg-sunken border-[3px] transition-[box-shadow] ${
                                     card.party === "R"
                                       ? "border-negative"
                                       : "border-official"
+                                  } ${
+                                    hovered === key
+                                      ? "ring-2 ring-ink ring-offset-2 ring-offset-sunken"
+                                      : ""
                                   }`}
                                 />
                               )}
                               <span className="min-w-0">
                                 {/* Name, then office. The office sits with the
-                                  name because it qualifies who they are. */}
-                                <span className="block leading-[1.35] whitespace-nowrap">
-                                  <span className="font-body font-semibold text-base text-ink">
+                                    name because it qualifies who they are.
+                                    The line wraps rather than running on: the
+                                    panel is a fixed box and a long surname
+                                    ("A. Sullivan-Almeida") is wider than it. Each
+                                    piece still holds together, so a break lands
+                                    between the name and the office rather than
+                                    inside either. */}
+                                {/* The leading goes on the same elements as
+                                      the type sizes, not on this wrapper. In
+                                      Tailwind v4 `text-sm` and `text-xs` set a
+                                      line-height of their own through
+                                      `--tw-leading`, which does not inherit, so a
+                                      `leading` on the parent is silently ignored.
+                                      That is why the district below, which
+                                      carries its own, has always spaced
+                                      correctly and the name never did.
+
+                                      It also has to sit on this wrapper, because
+                                      the height of a line box is the larger of
+                                      the inline content and the block's own
+                                      strut. Tightening only the inline spans left
+                                      the strut inheriting 1.5 and holding the
+                                      lines apart anyway.
+
+                                      Under 1 on purpose: the two halves of a
+                                      wrapped name should read as one thing, and
+                                      at 1 the gap left over is the font's own
+                                      space inside the em box. */}
+                                <span className="block leading-[0.9]">
+                                  <span className="font-body font-semibold text-sm leading-[0.9] text-ink">
                                     {vacant ? "Vacant seat" : card?.name}
                                   </span>
+                                  {/* A real space, not just the margin. Two
+                                      adjacent spans give the browser nowhere to
+                                      break, so it was splitting the name itself
+                                      and leaving "K." alone. With a space here
+                                      the break falls between the name and the
+                                      office, and the office, being nowrap,
+                                      moves down whole. */}
+                                  {!vacant && card?.title && " "}
                                   {!vacant && card?.title && (
-                                    <span className="ml-[7px] font-body text-xs text-caution-ink">
-                                      {card.title}
+                                    <span className="font-body text-xs leading-[0.9] text-caution-ink whitespace-nowrap">
+                                      {shortTitle(card.title).toLowerCase()}
                                     </span>
                                   )}
                                 </span>
-                                <span className="block font-body text-xs text-ink-muted leading-[1.4] whitespace-nowrap">
+                                <span className="block mt-[3px] font-body text-xs text-ink-muted leading-[1.3]">
                                   {seat?.d}
                                   {/* With the district rather than the name: a
-                                    vote is something the seat did, not part of
-                                    who holds it. */}
+                                      vote is something the seat did, not part of
+                                      who holds it. */}
                                   {/* No vote line on a vacant seat: "Vacant
-                                      seat" has already said there was nobody
-                                      to cast one. */}
+                                        seat" has already said there was nobody
+                                        to cast one. */}
                                   {roll && !vacant && (
                                     <span
                                       className={`ml-[7px] font-semibold ${
@@ -1237,12 +1442,12 @@ function TracedLineage({
                     )}
                   </div>
                   <button
-                    onClick={() => stepMember(1)}
-                    disabled={!rotatable.length}
-                    aria-label="Next member"
-                    className="shrink-0 self-stretch flex items-center px-[6px] rounded-control text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+                    disabled={!canStep}
+                    onClick={() => step(1)}
+                    aria-label={paged ? "Next six" : "Next member"}
+                    className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
                   >
-                    <ChevronRight className="w-[16px] h-[16px]" />
+                    <ChevronRight className="w-[14px] h-[14px]" />
                   </button>
                 </div>
               )}
@@ -1254,15 +1459,15 @@ function TracedLineage({
                 <div className="grid gap-x-[20px] gap-y-[16px] @[440px]:grid-cols-2">
                   <Conferees
                     ch="S"
-                    showing={reading}
+                    showing={shownKeys}
                     onHover={setHovered}
-                    onPin={togglePin}
+                    onPin={showSeat}
                   />
                   <Conferees
                     ch="H"
-                    showing={reading}
+                    showing={shownKeys}
                     onHover={setHovered}
-                    onPin={togglePin}
+                    onPin={showSeat}
                   />
                 </div>
               )}
@@ -1277,7 +1482,7 @@ function TracedLineage({
                     </p>
                     <ul className="flex flex-wrap gap-x-[24px] gap-y-[10px]">
                       {HOUSE_ORIGINS.map((o) => {
-                        const on = reading.includes(o.key);
+                        const on = shownKeys.includes(o.key);
                         return (
                           // The row hovers, the portrait pins, and the number is
                           // a link out to the bill on MAPLE. A link cannot sit
@@ -1293,10 +1498,10 @@ function TracedLineage({
                             <button
                               type="button"
                               aria-label={o.sponsor}
-                              aria-pressed={reading.includes(o.key)}
+                              aria-pressed={shownKeys.includes(o.key)}
                               onFocus={() => setHovered(o.key)}
                               onBlur={() => setHovered(null)}
-                              onClick={() => togglePin(o.key)}
+                              onClick={() => showSeat(o.key)}
                               className="shrink-0 block rounded-full cursor-pointer"
                             >
                               <img
@@ -1375,7 +1580,7 @@ function TracedLineage({
                 // centred instead: it grows from the middle of its column
                 // outward rather than being pinned to both sides of it.
                 className={`${
-                  narrowPair ? "col-start-1 row-start-2" : ""
+                  stackPair ? "row-start-2" : ""
                 } @[840px]:row-start-1 @[840px]:row-span-2 ${
                   joint
                     ? ch === "senate"
@@ -1388,9 +1593,20 @@ function TracedLineage({
                 chamber={ch}
                 roll={roll}
                 highlight={highlight}
-                selected={reading}
+                selected={shownKeys}
+                // Only the name under the pointer grows. The page of six is
+                // already at full strength; growing all six would say the
+                // chamber had six edges rather than six members on it.
+                // On a committee step only the name under the pointer grows:
+                // the page of six is already at full strength. On a roll call
+                // nothing grows, because every seat is filled and a thick edge
+                // reads as one cell swallowing its neighbours. On the two steps
+                // with their own list, the chosen entry grows as it always did.
+                enlarged={
+                  paged ? (hovered ? [hovered] : []) : roll ? [] : shownKeys
+                }
                 onHover={setHovered}
-                onPin={people ? togglePin : undefined}
+                onPin={people ? showSeat : undefined}
                 people={people}
               />
             ))}

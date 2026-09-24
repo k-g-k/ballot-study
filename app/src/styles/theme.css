@@ -72,7 +72,7 @@
      The warm greige the Claude system starts from. Two degrees off neutral, so
      it reads as paper rather than as screen grey, and it keeps the page warm
      without pulling toward the blue the ballot-question prototype used. */
-  --color-ground: #f8f8f6;
+  --color-ground: #f7f7f7;
   --color-surface: #ffffff;
   --color-sunken: #efefef;
   --color-inverse: #141413;

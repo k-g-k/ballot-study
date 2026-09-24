@@ -475,11 +475,10 @@ function BillPage({ bill }: { bill: BillRecord }) {
         <Contents active={active} />
         <div className="lg:mr-[var(--taken-w)] lg:[--page-w:calc(100vw-var(--taken-w))] transition-[margin] duration-300 ease-out motion-reduce:transition-none [[data-resizing]_&]:transition-none">
           <main className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] pt-[36px] sm:pt-[48px] pb-[80px] flex flex-col gap-[44px] sm:gap-[64px] lg:mx-0 lg:max-w-[var(--page-right)] lg:pl-[var(--page-gutter)] lg:pr-[32px]">
-            {/* Parked while the page is rethought: what it does, who filed
-                it, and the action history. All three still read from the
-                legislature's record and come back by uncommenting.
+            {/* Still parked while the page is rethought: what it does, and
+                the action history. Both read from the legislature's record and
+                come back by uncommenting.
             <WhatItDoes bill={bill} />
-            <WhoFiledIt bill={bill} />
             <History bill={bill} />
             */}
             <section
@@ -549,6 +548,10 @@ function BillPage({ bill }: { bill: BillRecord }) {
                 </div>
               </div>
             </section>
+            {/* Who filed it, back in the overview. The sponsor record is the
+                legislature's own and it is the part of a bill a reader can act
+                on, so it belongs above the lineage rather than behind it. */}
+            <WhoFiledIt bill={bill} />
             <BillLineageSection
               bill={bill}
               active={stage}
