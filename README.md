@@ -7,7 +7,7 @@ proposed laws. Below is the evolution of the ballot measure project.
 
 **The Goal:**&nbsp; provide a one-stop shop where citizens can fully understand a ballot q, scaffolded to accommodate every user type
 
-**My Role:** &nbsp;volunteer product and design lead, 
+**My Role:** &nbsp;volunteer product and design lead
 
 
 **Latest Exploration:**&nbsp; https://ballot-study.vercel.app/
@@ -15,7 +15,7 @@ proposed laws. Below is the evolution of the ballot measure project.
 
 
 ## Making the content visible ## 
-**Design Time:** ~8-10hrs/one day in May 2026
+**Design Time:** ~8-10hrs/one day
 
 
 ***Problem:** The page's content comes from very different places: official records,
@@ -45,7 +45,7 @@ Prototype: [Figma Make Preview](https://grow-turn-02824673.figma.site)
 <br><br>
 
 ## Creating a shared environment ##
-**Design Time:** ~6hrs/one lateish evening in May 2026
+**Design Time:** ~6hrs/one lateish evening
 
 ***Problem:** we had feedback to implement and wanted to iterate as a team, but the
 prototype lived in Figma Make, which the team couldn't build from or work in
@@ -70,7 +70,7 @@ While refactoring I also made refinements to the overall design and content stru
 <br><br>
 
 ## Current exploration ##
-**Design Time:** Reskin ~1h, ideation/iterations over multiple days | Aug-Sep 2026
+**Design Time:** Reskin ~1h, ideation/iterations over multiple days
 
 MAPLE is currently focused on other areas of the product, but we plan to return
 to the ballot project sometime in early 2027. In the meantime, I have started
