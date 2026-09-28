@@ -10,6 +10,7 @@ import {
   MoreVertical,
   UserPlus,
   Flag,
+  FileText,
   Users,
   Plus,
   Share,
@@ -25,6 +26,7 @@ import {
   testimonyFor,
   type TestimonyItem,
   type TestimonyStance,
+  type PositionUser,
   type PositionUserType,
 } from "../../data/tax-rebate-62f";
 
@@ -94,6 +96,7 @@ function ClampedBody({ text }: { text: string }) {
 
 export function TestimonyEntry({
   t,
+  accounts = POSITION_USERS,
   showTypeIcon = true,
   showDescriptor = true,
   onOpen,
@@ -101,6 +104,13 @@ export function TestimonyEntry({
   hideAvatar = false,
 }: {
   t: TestimonyItem;
+  /**
+   * The roster a submission's `userId` resolves against. Defaults to the 62F
+   * question's accounts, so every existing call site is unchanged; a page whose
+   * testimony belongs to a different record (a conference committee, say) hands
+   * in its own roster rather than having its accounts added to this question's.
+   */
+  accounts?: PositionUser[];
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
   /** Click-through to the testimony's own page (routing wired later). */
@@ -113,7 +123,7 @@ export function TestimonyEntry({
   /** Omit the avatar, for views that already show it above the card. */
   hideAvatar?: boolean;
 }) {
-  const user = POSITION_USERS.find((u) => u.id === t.userId);
+  const user = accounts.find((u) => u.id === t.userId);
   if (!user) return null;
   const showDesc =
     showDescriptor === true ||
@@ -218,7 +228,11 @@ function EntryActions({ name }: { name: string }) {
           role="menu"
           className="absolute right-0 top-[calc(100%+4px)] z-20 min-w-[180px] bg-surface border border-line rounded-control shadow-popover py-[4px]"
         >
+          {/* First, because it is the one a reader wants: the others act on
+              the statement, this one opens it. Inert for now, until there is
+              a route for a single piece of testimony. */}
           {[
+            { label: "View testimony", Icon: FileText },
             { label: "Share", Icon: Share },
             { label: "Follow user", Icon: UserPlus },
             { label: "Report testimony", Icon: Flag },
@@ -241,10 +255,13 @@ function EntryActions({ name }: { name: string }) {
 
 export function TestimonyList({
   items,
+  accounts,
   showTypeIcon = true,
   showDescriptor = true,
 }: {
   items: TestimonyItem[];
+  /** Passed through to each entry; see TestimonyEntry. */
+  accounts?: PositionUser[];
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
 }) {
@@ -257,6 +274,7 @@ export function TestimonyList({
           )}
           <TestimonyEntry
             t={t}
+            accounts={accounts}
             showTypeIcon={showTypeIcon}
             showDescriptor={showDescriptor}
           />
@@ -489,16 +507,18 @@ const STANCE_MARK: Record<
 // this gets its own route; the modal is the step before that.
 function TestimonyModal({
   t,
+  accounts = POSITION_USERS,
   showTypeIcon,
   showDescriptor,
   onClose,
 }: {
   t: TestimonyItem;
+  accounts?: PositionUser[];
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
   onClose: () => void;
 }) {
-  const user = POSITION_USERS.find((u) => u.id === t.userId);
+  const user = accounts.find((u) => u.id === t.userId);
   return (
     <Modal
       onClose={onClose}
@@ -564,6 +584,7 @@ function TestimonyModal({
       <div className="bg-surface rounded-control">
         <TestimonyEntry
           t={t}
+          accounts={accounts}
           showTypeIcon={showTypeIcon}
           showDescriptor={showDescriptor}
           fullBody
@@ -1073,6 +1094,7 @@ export function AccountTypePicker({
 
 export function TestimonyFeed({
   items,
+  accounts = POSITION_USERS,
   showTypeIcon = true,
   showDescriptor = true,
   includeFollowingFilter = false,
@@ -1097,6 +1119,13 @@ export function TestimonyFeed({
   composeHref,
 }: {
   items: TestimonyItem[];
+  /**
+   * The roster these submissions were filed by. Defaults to the 62F question's
+   * accounts, so the ballot pages are unchanged; the feed reaches for the
+   * roster on every name, type filter and Following check, so a page with its
+   * own record supplies it here once rather than in each of those places.
+   */
+  accounts?: PositionUser[];
   showTypeIcon?: boolean;
   showDescriptor?: DescriptorMode;
   /** Render each entry in its own card instead of as rows inside one. */
@@ -1265,7 +1294,7 @@ export function TestimonyFeed({
     following: boolean,
   ) =>
     items.filter((t) => {
-      const user = POSITION_USERS.find((u) => u.id === t.userId);
+      const user = accounts.find((u) => u.id === t.userId);
       if (stance !== "all") {
         const want =
           stance === "endorsing"
@@ -1304,23 +1333,21 @@ export function TestimonyFeed({
   const filtered =
     showFilters && followingOnly
       ? stanceMatched.filter(
-          (t) =>
-            POSITION_USERS.find((u) => u.id === t.userId)?.followedByViewer,
+          (t) => accounts.find((u) => u.id === t.userId)?.followedByViewer,
         )
       : stanceMatched;
   const shown =
     showFilters && includeTypeFilter && typeFilter !== "all"
       ? filtered.filter(
           (t) =>
-            POSITION_USERS.find((u) => u.id === t.userId)?.userType ===
-            typeFilter,
+            accounts.find((u) => u.id === t.userId)?.userType === typeFilter,
         )
       : filtered;
   // Following stays on the row whatever else is set. It used to be withdrawn
   // when the narrowed list held nobody followed, which meant a control the
   // reader had turned on could vanish under them; it is guarded now instead,
   // so it is always there and simply declines to empty the feed.
-  const anyFollowed = POSITION_USERS.some((u) => u.followedByViewer);
+  const anyFollowed = accounts.some((u) => u.followedByViewer);
 
   // Paged, the feed fits a fixed height instead of scrolling inside one. The
   // page is clamped rather than reset, so narrowing the list while on a later
@@ -1368,7 +1395,7 @@ export function TestimonyFeed({
           style={stickyTop ? { top: stickyTop } : undefined}
           className={
             stickyTop
-              ? "sticky z-[8] bg-ground pt-[16px] pb-[16px] data-[stuck=true]:pt-[24px] data-[stuck=true]:pb-[8px]"
+              ? "sticky z-[8] bg-ground pt-[16px] pb-[16px] data-[stuck=true]:pt-[10px] data-[stuck=true]:pb-[8px]"
               : "mb-[16px]"
           }
         >
@@ -1508,6 +1535,7 @@ export function TestimonyFeed({
                 >
                   <TestimonyEntry
                     t={t}
+                    accounts={accounts}
                     showTypeIcon={showTypeIcon}
                     showDescriptor={showDescriptor}
                     onOpen={setOpenId}
@@ -1518,6 +1546,7 @@ export function TestimonyFeed({
           ) : (
             <TestimonyList
               items={paged}
+              accounts={accounts}
               showTypeIcon={showTypeIcon}
               showDescriptor={showDescriptor}
             />
@@ -1575,6 +1604,7 @@ export function TestimonyFeed({
       {openItem && (
         <TestimonyModal
           t={openItem}
+          accounts={accounts}
           showTypeIcon={showTypeIcon}
           showDescriptor={showDescriptor}
           onClose={() => setOpenId(null)}

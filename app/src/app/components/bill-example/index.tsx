@@ -42,8 +42,7 @@ import { WhatItDoes, WhoFiledIt, History } from "./sections";
 import { BillLineageSection } from "./lineage-section";
 import { BillTextSection } from "./bill-text";
 import { LINEAGE_TEXTS, TEXT_FOR_STAGE } from "../../data/bill-lineage/texts";
-
-const NAV = ["Ballot questions", "Bills", "Hearings", "Testimony", "About"];
+import { SiteNav } from "../site-nav";
 
 // Two tabs while we look at the lineage material. Overview is deliberately
 // empty: the page's own content is being rethought and standing it back up
@@ -63,72 +62,6 @@ const drawerWidth = () =>
 
 const RAIL_MAX_SHARE = 0.6;
 const RAIL_GUTTER_DROP = 0.4;
-
-function SiteNav() {
-  const [open, setOpen] = useState(false);
-  return (
-    <header className="relative lg:sticky lg:top-0 z-30 bg-ground/95 backdrop-blur border-b border-line">
-      <div className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] h-[var(--nav-h)] flex items-center gap-[32px]">
-        <span className="font-display font-semibold text-xl text-brand tracking-heading">
-          MAPLE
-        </span>
-        <nav className="hidden lg:flex items-center gap-[22px]">
-          {NAV.map((n) => (
-            <button
-              key={n}
-              className={`font-body text-base cursor-pointer ${
-                n === "Bills"
-                  ? "text-ink font-semibold"
-                  : "text-ink-muted hover:text-ink"
-              }`}
-            >
-              {n}
-            </button>
-          ))}
-        </nav>
-        <button
-          aria-label="Account"
-          className="ml-auto hidden sm:inline-flex items-center gap-[10px] cursor-pointer group"
-        >
-          <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-full border border-brand-edge group-hover:bg-brand-soft group-hover:border-brand transition-colors">
-            <span
-              style={{ fontSize: 12 }}
-              className="font-body font-semibold text-brand-ink tracking-[0.02em]"
-            >
-              GK
-            </span>
-          </span>
-        </button>
-        <button
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="ml-auto lg:hidden inline-flex items-center justify-center w-[40px] h-[40px] -mr-[8px] rounded-control text-ink hover:bg-wash cursor-pointer"
-        >
-          {open ? (
-            <X className="w-[20px] h-[20px]" />
-          ) : (
-            <Menu className="w-[20px] h-[20px]" />
-          )}
-        </button>
-      </div>
-      {open && (
-        <div className="lg:hidden border-t border-line">
-          <nav className="mx-auto max-w-[1180px] px-[20px] sm:px-[32px] py-[8px] flex flex-col">
-            {NAV.map((n) => (
-              <button
-                key={n}
-                className="text-left font-body text-base text-ink py-[10px]"
-              >
-                {n}
-              </button>
-            ))}
-          </nav>
-        </div>
-      )}
-    </header>
-  );
-}
 
 function Contents({ active }: { active: string }) {
   return (

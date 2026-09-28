@@ -17,15 +17,20 @@
 // list carrying both bill numbers, all six conferees, and the dates. Four
 // things it corrected against the trackers and reporting we had first:
 //
-//   Energy            H.5151, not H.5175.
+//   Energy            H.5151, not H.5175. This one was wrong, and it is the
+//                     reason the list is worth distrusting: the journal and
+//                     the conference's own meeting notice both name H.5175,
+//                     so the correction has been reversed here.
 //   Economic dev      S.3228, not S.3178. H.5576 is right; H.5527 is not in it.
 //   Child welfare     H.4646 / S.3121, not H.4644 / S.2659, and it is finished
 //                     rather than active: reported as H.5629 and enacted.
 //   Public records    Called "Legislative records access", H.5469 / S.3244.
 //
-// Two of those, the energy and economic development numbers, would have pointed
-// a whole page at the wrong bill. Bill numbers in reporting are unreliable
-// enough that a page built on them should say where it got them.
+// The economic development number would have pointed a whole page at the wrong
+// bill, and the energy one did, in the other direction. Bill numbers in
+// reporting are unreliable enough that a page built on them should say where it
+// got them, and should lose to the legislature's own record where the two
+// disagree.
 //
 // H.4706 turns out to be home care licensure, a different and now-finished
 // conference, which is why it kept turning up beside the workplace violence
@@ -88,8 +93,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 31, 2026",
     firstMeeting: null,
     conferees: people(
-      [["Cindy Friedman", "Arlington"], ["John Cronin", "Fitchburg"], ["Bruce Tarr", "Gloucester"]],
-      [["Aaron Michlewitz", "Boston"], ["Meghan Kilcoyne", "Clinton"], ["Hannah Kane", "Shrewsbury"]],
+      [
+        ["Cindy Friedman", "Arlington"],
+        ["John Cronin", "Fitchburg"],
+        ["Bruce Tarr", "Gloucester"],
+      ],
+      [
+        ["Aaron Michlewitz", "Boston"],
+        ["Meghan Kilcoyne", "Clinton"],
+        ["Hannah Kane", "Shrewsbury"],
+      ],
     ),
   },
   {
@@ -100,8 +113,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 31, 2026",
     firstMeeting: "July 31, 2026",
     conferees: people(
-      [["Cindy Creem", "Newton"], ["Cindy Friedman", "Arlington"], ["Kelly Dooner", "Taunton"]],
-      [["Alice Peisch", "Wellesley"], ["Andres Vargas", "Haverhill"], ["David Muradian", "Grafton"]],
+      [
+        ["Cindy Creem", "Newton"],
+        ["Cindy Friedman", "Arlington"],
+        ["Kelly Dooner", "Taunton"],
+      ],
+      [
+        ["Alice Peisch", "Wellesley"],
+        ["Andres Vargas", "Haverhill"],
+        ["David Muradian", "Grafton"],
+      ],
     ),
   },
   {
@@ -112,8 +133,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 30, 2026",
     firstMeeting: "July 31, 2026",
     conferees: people(
-      [["Barry Finegold", "Andover"], ["Michael Rodrigues", "Westport"], ["Peter Durant", "Spencer"]],
-      [["Aaron Michlewitz", "Boston"], ["Carole Fiola", "Fall River"], ["Michael Soter", "Bellingham"]],
+      [
+        ["Barry Finegold", "Andover"],
+        ["Michael Rodrigues", "Westport"],
+        ["Peter Durant", "Spencer"],
+      ],
+      [
+        ["Aaron Michlewitz", "Boston"],
+        ["Carole Fiola", "Fall River"],
+        ["Michael Soter", "Bellingham"],
+      ],
     ),
   },
   {
@@ -124,8 +153,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 27, 2026",
     firstMeeting: "July 31, 2026",
     conferees: people(
-      [["Paul Feeney", "Foxborough"], ["Jason Lewis", "Winchester"], ["Bruce Tarr", "Gloucester"]],
-      [["Jim O'Day", "West Boylston"], ["Jack Lewis", "Framingham"], ["Steven Howitt", "Seekonk"]],
+      [
+        ["Paul Feeney", "Foxborough"],
+        ["Jason Lewis", "Winchester"],
+        ["Bruce Tarr", "Gloucester"],
+      ],
+      [
+        ["Jim O'Day", "West Boylston"],
+        ["Jack Lewis", "Framingham"],
+        ["Steven Howitt", "Seekonk"],
+      ],
     ),
   },
   {
@@ -136,8 +173,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 23, 2026",
     firstMeeting: "September 3, 2026",
     conferees: people(
-      [["Cindy Friedman", "Arlington"], ["Joan Lovely", "Salem"], ["Kelly Dooner", "Taunton"]],
-      [["Michael Day", "Stoneham"], ["Fluker-Reid", "Boston"], ["Hannah Kane", "Shrewsbury"]],
+      [
+        ["Cindy Friedman", "Arlington"],
+        ["Joan Lovely", "Salem"],
+        ["Kelly Dooner", "Taunton"],
+      ],
+      [
+        ["Michael Day", "Stoneham"],
+        ["Fluker-Reid", "Boston"],
+        ["Hannah Kane", "Shrewsbury"],
+      ],
     ),
   },
   {
@@ -148,20 +193,36 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 23, 2026",
     firstMeeting: "July 31, 2026",
     conferees: people(
-      [["Sal DiDomenico", "Everett"], ["Jacob Oliveira", "Ludlow"], ["Ryan Fattman", "Sutton"]],
-      [["Dan Hunt", "Boston"], ["Alice Peisch", "Wellesley"], ["Paul Frost", "Auburn"]],
+      [
+        ["Sal DiDomenico", "Everett"],
+        ["Jacob Oliveira", "Ludlow"],
+        ["Ryan Fattman", "Sutton"],
+      ],
+      [
+        ["Dan Hunt", "Boston"],
+        ["Alice Peisch", "Wellesley"],
+        ["Paul Frost", "Auburn"],
+      ],
     ),
   },
   {
     id: "energy",
     name: "Energy affordability",
-    house: "H.5151",
+    house: "H.5175",
     senate: "S.3166",
     sentToConference: "July 16, 2026",
     firstMeeting: "July 29, 2026",
     conferees: people(
-      [["Michael Barrett", "Lexington"], ["Cindy Creem", "Newton"], ["Bruce Tarr", "Gloucester"]],
-      [["Mark Cusack", "Braintree"], ["Aaron Michlewitz", "Boston"], ["Brad Jones", "North Reading"]],
+      [
+        ["Michael Barrett", "Lexington"],
+        ["Cindy Creem", "Newton"],
+        ["Bruce Tarr", "Gloucester"],
+      ],
+      [
+        ["Mark Cusack", "Braintree"],
+        ["Aaron Michlewitz", "Boston"],
+        ["Brad Jones", "North Reading"],
+      ],
     ),
   },
   {
@@ -172,8 +233,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 15, 2026",
     firstMeeting: "July 31, 2026",
     conferees: people(
-      [["Michael Rodrigues", "Westport"], ["Joan Lovely", "Salem"], ["Patrick O'Connor", "Weymouth"]],
-      [["Daniel Ryan", "Boston"], ["Carlos González", "Springfield"], ["Kimberly Ferguson", "Holden"]],
+      [
+        ["Michael Rodrigues", "Westport"],
+        ["Joan Lovely", "Salem"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Daniel Ryan", "Boston"],
+        ["Carlos González", "Springfield"],
+        ["Kimberly Ferguson", "Holden"],
+      ],
     ),
   },
   {
@@ -184,8 +253,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "July 1, 2026",
     firstMeeting: "July 8, 2026",
     conferees: people(
-      [["Julian Cyr", "Provincetown"], ["Becca Rausch", "Needham"], ["Peter Durant", "Spencer"]],
-      [["Michael Finn", "West Springfield"], ["Christine Barber", "Somerville"], ["Ken Sweezey", "Duxbury"]],
+      [
+        ["Julian Cyr", "Provincetown"],
+        ["Becca Rausch", "Needham"],
+        ["Peter Durant", "Spencer"],
+      ],
+      [
+        ["Michael Finn", "West Springfield"],
+        ["Christine Barber", "Somerville"],
+        ["Ken Sweezey", "Duxbury"],
+      ],
     ),
   },
   {
@@ -196,8 +273,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "June 17, 2026",
     firstMeeting: "July 7, 2026",
     conferees: people(
-      [["Cindy Creem", "Newton"], ["Barry Finegold", "Andover"], ["Patrick O'Connor", "Weymouth"]],
-      [["Michael Moran", "Boston"], ["Tricia Farley-Bouvier", "Pittsfield"], ["David Vieira", "Falmouth"]],
+      [
+        ["Cindy Creem", "Newton"],
+        ["Barry Finegold", "Andover"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Michael Moran", "Boston"],
+        ["Tricia Farley-Bouvier", "Pittsfield"],
+        ["David Vieira", "Falmouth"],
+      ],
     ),
   },
   {
@@ -208,8 +293,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "May 20, 2026",
     firstMeeting: "June 4, 2026",
     conferees: people(
-      [["Brendan Crighton", "Lynn"], ["Michael Rodrigues", "Westport"], ["Peter Durant", "Spencer"]],
-      [["Alice Peisch", "Wellesley"], ["Frank Moran", "Lawrence"], ["David Vieira", "Falmouth"]],
+      [
+        ["Brendan Crighton", "Lynn"],
+        ["Michael Rodrigues", "Westport"],
+        ["Peter Durant", "Spencer"],
+      ],
+      [
+        ["Alice Peisch", "Wellesley"],
+        ["Frank Moran", "Lawrence"],
+        ["David Vieira", "Falmouth"],
+      ],
     ),
   },
   {
@@ -220,8 +313,16 @@ export const ACTIVE: ConferenceCommittee[] = [
     sentToConference: "April 9, 2026",
     firstMeeting: "April 15, 2026",
     conferees: people(
-      [["Jo Comerford", "Northampton"], ["Mike Rush", "Boston"], ["Kelly Dooner", "Taunton"]],
-      [["David Rogers", "Cambridge"], ["Mike Finn", "West Springfield"], ["Kelly Pease", "Westfield"]],
+      [
+        ["Jo Comerford", "Northampton"],
+        ["Mike Rush", "Boston"],
+        ["Kelly Dooner", "Taunton"],
+      ],
+      [
+        ["David Rogers", "Cambridge"],
+        ["Mike Finn", "West Springfield"],
+        ["Kelly Pease", "Westfield"],
+      ],
     ),
   },
 ];
@@ -245,8 +346,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     reported: { on: "July 30, 2026", as: "H.5627" },
     enacted: "July 31, 2026",
     conferees: people(
-      [["Will Brownsberger", "Belmont"], ["Pat Jehlen", "Somerville"], ["Ryan Fattman", "Sutton"]],
-      [["Thomas Stanley", "Waltham"], ["Frank Moran", "Lawrence"], ["David DeCoste", "Norwell"]],
+      [
+        ["Will Brownsberger", "Belmont"],
+        ["Pat Jehlen", "Somerville"],
+        ["Ryan Fattman", "Sutton"],
+      ],
+      [
+        ["Thomas Stanley", "Waltham"],
+        ["Frank Moran", "Lawrence"],
+        ["David DeCoste", "Norwell"],
+      ],
     ),
   },
   {
@@ -259,8 +368,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     reported: { on: "July 30, 2026", as: "H.5629" },
     enacted: "July 31, 2026",
     conferees: people(
-      [["Jo Comerford", "Northampton"], ["Robyn Kennedy", "Worcester"], ["Patrick O'Connor", "Weymouth"]],
-      [["Jay Livingstone", "Boston"], ["Judith Garcia", "Chelsea"], ["Alyson Sullivan-Almeida", "Abington"]],
+      [
+        ["Jo Comerford", "Northampton"],
+        ["Robyn Kennedy", "Worcester"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Jay Livingstone", "Boston"],
+        ["Judith Garcia", "Chelsea"],
+        ["Alyson Sullivan-Almeida", "Abington"],
+      ],
     ),
   },
   {
@@ -273,8 +390,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     reported: { on: "July 29, 2026", as: "H.5620" },
     enacted: "July 30, 2026",
     conferees: people(
-      [["Cindy Friedman", "Arlington"], ["Pavel Payano", "Lawrence"], ["Ryan Fattman", "Sutton"]],
-      [["Dan Cahill", "Lynn"], ["Andres Vargas", "Haverhill"], ["Marcus Vaughn", "Wrentham"]],
+      [
+        ["Cindy Friedman", "Arlington"],
+        ["Pavel Payano", "Lawrence"],
+        ["Ryan Fattman", "Sutton"],
+      ],
+      [
+        ["Dan Cahill", "Lynn"],
+        ["Andres Vargas", "Haverhill"],
+        ["Marcus Vaughn", "Wrentham"],
+      ],
     ),
   },
   {
@@ -287,8 +412,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     reported: { on: "June 30, 2026", as: "H.5555" },
     enacted: "July 1, 2026",
     conferees: people(
-      [["Michael Rodrigues", "Westport"], ["Jo Comerford", "Northampton"], ["Patrick O'Connor", "Weymouth"]],
-      [["Aaron Michlewitz", "Boston"], ["Kip Diggs", "Cotuit"], ["Todd Smola", "Warren"]],
+      [
+        ["Michael Rodrigues", "Westport"],
+        ["Jo Comerford", "Northampton"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Aaron Michlewitz", "Boston"],
+        ["Kip Diggs", "Cotuit"],
+        ["Todd Smola", "Warren"],
+      ],
     ),
   },
   {
@@ -301,8 +434,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     reported: { on: "June 17, 2026", as: "H.5511" },
     enacted: "June 18, 2026",
     conferees: people(
-      [["Sal DiDomenico", "Everett"], ["Jason Lewis", "Winchester"], ["Patrick O'Connor", "Weymouth"]],
-      [["Ken Gordon", "Bedford"], ["Simon Cataldo", "Concord"], ["John Marsi", "Dudley"]],
+      [
+        ["Sal DiDomenico", "Everett"],
+        ["Jason Lewis", "Winchester"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Ken Gordon", "Bedford"],
+        ["Simon Cataldo", "Concord"],
+        ["John Marsi", "Dudley"],
+      ],
     ),
   },
   {
@@ -316,8 +457,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     enacted: "June 4, 2026",
     signed: "June 12, 2026",
     conferees: people(
-      [["Michael Rodrigues", "Westport"], ["Jo Comerford", "Northampton"], ["Patrick O'Connor", "Weymouth"]],
-      [["Aaron Michlewitz", "Boston"], ["Kip Diggs", "Cotuit"], ["Ken Sweezey", "Duxbury"]],
+      [
+        ["Michael Rodrigues", "Westport"],
+        ["Jo Comerford", "Northampton"],
+        ["Patrick O'Connor", "Weymouth"],
+      ],
+      [
+        ["Aaron Michlewitz", "Boston"],
+        ["Kip Diggs", "Cotuit"],
+        ["Ken Sweezey", "Duxbury"],
+      ],
     ),
   },
   {
@@ -331,8 +480,16 @@ export const COMPLETED: ConferenceCommittee[] = [
     enacted: "April 9, 2026",
     signed: "April 19, 2026",
     conferees: people(
-      [["Adam Gomez", "Springfield"], ["Jo Comerford", "Northampton"], ["Peter Durant", "Spencer"]],
-      [["Daniel Donahue", "Worcester"], ["Carlos González", "Springfield"], ["Michael Soter", "Bellingham"]],
+      [
+        ["Adam Gomez", "Springfield"],
+        ["Jo Comerford", "Northampton"],
+        ["Peter Durant", "Spencer"],
+      ],
+      [
+        ["Daniel Donahue", "Worcester"],
+        ["Carlos González", "Springfield"],
+        ["Michael Soter", "Bellingham"],
+      ],
     ),
   },
 ];
@@ -347,29 +504,41 @@ export const COMPLETED: ConferenceCommittee[] = [
  */
 export const BILL_TITLES: Record<string, string> = {
   "H.4361": "An Act relative to benefits for teachers",
-  "H.4767": "An Act requiring health care employers to develop and implement programs to prevent workplace violence",
-  "H.4769": "An Act to build resilient infrastructure to generate higher-ed transformation",
-  "H.5151": "An Act relative to energy affordability, clean power and economic competitiveness",
-  "H.5366": "An Act promoting safe technology use and distraction-free education for youth",
-  "H.5469": "An Act promoting transparency and public access in state government",
+  "H.4767":
+    "An Act requiring health care employers to develop and implement programs to prevent workplace violence",
+  "H.4769":
+    "An Act to build resilient infrastructure to generate higher-ed transformation",
+  "H.5175":
+    "An Act relative to energy affordability, clean power and economic competitiveness",
+  "H.5366":
+    "An Act promoting safe technology use and distraction-free education for youth",
+  "H.5469":
+    "An Act promoting transparency and public access in state government",
   "H.5479": "An Act establishing the Massachusetts consumer data privacy act",
   "H.5518": "An Act to build resilience for Massachusetts communities",
-  "H.5558": "An Act improving campaign finance reporting for statewide ballot questions",
+  "H.5558":
+    "An Act improving campaign finance reporting for statewide ballot questions",
   "H.5576": "An Act relative to economic development in the commonwealth",
   "H.5589": "An Act promoting pet equity, treatment and safety",
-  "H.5630": "An Act strengthening primary care and advancing health care affordability",
+  "H.5630":
+    "An Act strengthening primary care and advancing health care affordability",
   "S.2581": "An Act to promote student learning and mental health",
   "S.2619": "An Act establishing the Massachusetts data privacy act",
-  "S.2916": "An Act improving campaign finance reporting for statewide ballot questions",
-  "S.2993": "An Act to build resilient infrastructure to generate higher-ed transformation",
+  "S.2916":
+    "An Act improving campaign finance reporting for statewide ballot questions",
+  "S.2993":
+    "An Act to build resilient infrastructure to generate higher-ed transformation",
   "S.3028": "An Act promoting pet equity, treatment and safety",
   "S.3064": "An Act to build resilience for Massachusetts communities",
   "S.3109": "An Act relative to benefits for teachers",
   "S.3141": "An Act relative to primary care for you",
-  "S.3166": "An Act to save people money, repair the climate and grow the economy",
-  "S.3184": "An Act requiring health care employers to develop and implement programs to prevent workplace violence",
+  "S.3166":
+    "An Act to save people money, repair the climate and grow the economy",
+  "S.3184":
+    "An Act requiring health care employers to develop and implement programs to prevent workplace violence",
   "S.3228": "An Act relative to economic development in the commonwealth",
-  "S.3244": "An Act promoting transparency and public access in state government",
+  "S.3244":
+    "An Act promoting transparency and public access in state government",
 };
 
 export const ALL = [...ACTIVE, ...COMPLETED];
@@ -406,3 +575,37 @@ export function findBill(slug: string) {
   }
   return null;
 }
+
+/**
+ * The bill explorer's slugs, against the scorecard's records.
+ *
+ * The two disagree on numbers for five of the twelve, because a bill is
+ * reprinted under a new number every time its text changes and each source
+ * caught it at a different printing. They are the same proposals: H.5151 and
+ * H.5175 are both "An Act relative to energy affordability, clean power and
+ * economic competitiveness", and S.3166 and S.3143 are both "An Act to save
+ * people money, repair the climate and grow the economy".
+ *
+ * The printing named in the journal's non-concurrence and the conference
+ * appointment wins, which is the document actually in conference, and the
+ * conference meeting notices corroborate it. That is how energy came to be
+ * H.5175 here rather than the scorecard's H.5151.
+ */
+export const RECORD_FOR_SLUG: Record<string, string> = {
+  "phone-free-schools": "phones",
+  "workplace-violence": "workplace",
+  "data-privacy": "privacy",
+  "public-records": "records",
+  "ballot-question-finance": "ballotfinance",
+  "bright-act": "bright",
+  "mass-ready": "massready",
+  "energy-affordability": "energy",
+  "pets-act": "pets",
+  "economic-development": "ecdev",
+  "teacher-benefits": "pension",
+  "primary-care": "primarycare",
+};
+
+/** The scorecard record behind an explorer slug, where there is one. */
+export const recordForSlug = (slug: string) =>
+  ACTIVE.find((c) => c.id === RECORD_FOR_SLUG[slug]);

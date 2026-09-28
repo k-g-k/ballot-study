@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import { SynthSourcesNote } from "../ballot";
+import { SynthSourcesNote, holdPress } from "../ballot";
 
 /**
  * The page is built on one idea: a ballot question is a binary decision, so the
@@ -116,6 +116,63 @@ export function SideHead({
 }
 
 /**
+ * A heading that comes to rest while its section is still on screen.
+ *
+ * Above the section's own content, which runs under it, and below the page's
+ * bar at z-10, which wins the overlap so a heading coming to rest slides under
+ * it rather than over it. Opaque, not 95%: at 95% the words underneath ghost
+ * through, and the blur went with the transparency it was covering for. Bled
+ * to the page's gutters rather than to the words, the same pair the bar above
+ * it uses, so the band reads as the full width of the page rather than as a
+ * patch behind the heading.
+ *
+ * Above the section's own pinned chrome as well, a table head or a filter row,
+ * and that is the part worth saying out loud. While the two are both at rest
+ * they only touch, so the order between them never shows. It shows when the
+ * chrome lets go: a sticky element cannot leave the box that holds it, so once
+ * the last row is past, the head travels back up the window and across
+ * whatever is still pinned above it. Painting below the heading, it cut the
+ * words in half on the way out. Painting above it, there is nothing to see:
+ * the band is opaque, so the head passes behind it.
+ *
+ * `top` is where it rests, which is the page's business: it is the sum of
+ * everything already pinned above it. Left off, the band does not pin at all,
+ * for a view whose headings scroll away. It keeps the ground and the paint
+ * order, so chrome letting go cannot cut a heading that has not left yet.
+ */
+export function StickyBand({
+  top,
+  innerRef,
+  children,
+}: {
+  /** Where it comes to rest. Left off, the band does not pin at all. */
+  top?: string;
+  /** For a page that has to know how tall the band is, because something
+   *  below it comes to rest under it. */
+  innerRef?: Ref<HTMLDivElement>;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      ref={innerRef}
+      style={top ? { top } : undefined}
+      // The top padding is larger than the gap it leaves at rest: a negative
+      // margin of the difference holds the heading where it was in the flow,
+      // and the padding is only visible once the band is pinned, which is when
+      // it is needed, to keep the words off the underside of the bar.
+      //
+      // One z whether it pins or not, because the reason for it is the same
+      // either way: over the section's own chrome, under the page's bar.
+      className={`z-[9] bg-ground -mx-[20px] sm:-mx-[32px] px-[20px] sm:px-[32px] -mt-[10px] pt-[16px] pb-[10px] ${
+        top ? "sticky" : "relative"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
  * One question a voter actually asks, answered before any evidence appears.
  *
  * The scale gap is the scaffolding: the question and its answer are set large
@@ -131,6 +188,11 @@ export function Chapter({
   answer,
   band,
   hideQuestion = false,
+  flush = false,
+  stickyHeading,
+  bandHeading,
+  headingRef,
+  titleClass,
   rail,
   children,
 }: {
@@ -154,6 +216,22 @@ export function Chapter({
   band?: ReactNode;
   /** Skip drawing the question here, for a page that draws it itself. */
   hideQuestion?: boolean;
+  /** Drop the chapter's own top padding and tighten the gap under the
+   *  heading, for a page that has already put the chapter in a box. */
+  flush?: boolean;
+  /** Pin the heading at this offset while the section's own content scrolls
+   *  past it, releasing when the section ends. Any CSS length. */
+  stickyHeading?: string;
+  /**
+   * Give the heading the band without pinning it, for a view that pins the
+   * section's chrome but not its headings. The heading keeps the band's paint
+   * order, so chrome letting go passes behind it rather than through it.
+   */
+  bandHeading?: boolean;
+  /** Handed to the pinned band, for a page measuring what rests under it. */
+  headingRef?: Ref<HTMLDivElement>;
+  /** Override the heading's type, for a page trying a different face. */
+  titleClass?: string;
   /**
    * A column down the right of this chapter, flush with its top rule and with
    * the window's right edge. The chapter's own content, heading included,
@@ -168,7 +246,10 @@ export function Chapter({
         <div className="flex items-baseline gap-[14px] flex-wrap min-w-0">
           <h2
             id={`${id}-q`}
-            className="font-display font-medium text-xl sm:text-2xl lg:text-3xl tracking-display text-ink max-w-[20ch] text-balance"
+            className={
+              titleClass ??
+              "font-display font-medium text-xl sm:text-2xl lg:text-3xl tracking-display text-ink max-w-[20ch] text-balance"
+            }
           >
             {question}
           </h2>
@@ -189,7 +270,7 @@ export function Chapter({
       // Clears whatever is pinned: the contents bar alone on narrow, the nav
       // and the bar together once the nav becomes sticky at lg.
       className={`scroll-mt-[64px] lg:scroll-mt-[120px] ${
-        band || hideQuestion ? "" : "pt-[28px] sm:pt-[40px]"
+        band || hideQuestion || flush ? "" : "pt-[28px] sm:pt-[40px]"
       }`}
     >
       {/* The full-width rule that used to open each chapter is gone; the
@@ -222,8 +303,29 @@ export function Chapter({
         </>
       ) : (
         <>
-          {heading}
-          {body && <div className="mt-[28px] sm:mt-[40px]">{body}</div>}
+          {/* Pinned, the heading says which section the content under it
+              belongs to for as long as that content is on screen. It sticks
+              inside its own section, so it leaves with it. Banded but not
+              pinned, it only takes the ground and the paint order. */}
+          {stickyHeading || bandHeading ? (
+            <StickyBand top={stickyHeading} innerRef={headingRef}>
+              {heading}
+            </StickyBand>
+          ) : (
+            heading
+          )}
+          {/* No heading, no gap under it. A hidden question means something
+              above the section already names it, and the space that separated
+              the two is then just a hole at the top of the content. */}
+          {body && (
+            <div
+              className={
+                heading ? (flush ? "mt-[20px]" : "mt-[28px] sm:mt-[40px]") : ""
+              }
+            >
+              {body}
+            </div>
+          )}
         </>
       )}
     </section>
@@ -289,10 +391,20 @@ export function Disclosure({
   defaultOpen = false,
   anchorId,
   variant = "label",
+  size = "default",
+  labelClass,
+  contentClass,
+  shaded = false,
+  hover = "wash",
   openSignal = 0,
   children,
 }: {
   label: string;
+  /** "large" is the heading disclosure for a page where the disclosures are
+   *  the main reading: same type size, but top-aligned and given a slightly
+   *  bigger chevron, because these labels routinely run to two or three lines
+   *  and a centred chevron drifts into the middle of the block. */
+  size?: "default" | "large";
   defaultOpen?: boolean;
   /**
    * Bump to open it from elsewhere on the page. A counter rather than a
@@ -308,6 +420,30 @@ export function Disclosure({
    * see the same page either way, with parts of it folded.
    */
   variant?: "label" | "heading";
+  /** Override the label's type, for a page trying a different face. */
+  labelClass?: string;
+  /**
+   * What hovering the row looks like. "wash" shades the whole hit area, which
+   * is right where the row is a control among other content. "text" leaves the
+   * ground alone and moves the label's colour instead, for a row that already
+   * sits on a surface of its own and would otherwise gain a second one.
+   * The hit area is the same either way.
+   */
+  hover?: "wash" | "text";
+  /**
+   * Shade the whole block while it is open: the label row and the material it
+   * opened onto sit on one surface, so an open block reads as one object
+   * rather than a pressed control with something loose under it. The row's own
+   * hover wash steps aside while that is on, since the wash is already there.
+   */
+  shaded?: boolean;
+  /**
+   * Override the opened panel's indent. The default lines the panel up under
+   * the label's words, which is right for prose. A panel that is a surface of
+   * its own wants the width of the pressable row instead, so that the card and
+   * the row it opened from have the same edges.
+   */
+  contentClass?: string;
   /**
    * Element to bring to the top of the viewport when this opens. Given the
    * group's id, opening any one of a stack puts the whole stack in view, so
@@ -324,9 +460,12 @@ export function Disclosure({
     lastOpenSignal.current = openSignal;
     setOpen(true);
   }, [openSignal]);
-  const toggle = () => {
+  const toggle = (e: { currentTarget: Element }) => {
     const opening = !open;
-    setOpen(opening);
+    // The row you pressed stays where it is on screen. Opening one of these
+    // adds height, and height added above the fold takes the page down with
+    // it, so the label slides out from under the pointer that just hit it.
+    holdPress(e, () => setOpen(opening));
     if (!opening || !anchorId) return;
     // After the browser has laid the opened content out, so the scroll lands
     // where the element actually ends up.
@@ -339,29 +478,63 @@ export function Disclosure({
       });
     });
   };
+  const lit = shaded && open;
   return (
-    <div>
+    // The padding arrives with the shading and is cancelled by a matching
+    // negative margin, so the block grows a surface around the words without
+    // the words themselves moving.
+    <div
+      className={
+        lit
+          ? "bg-surface rounded-card -mx-[16px] px-[16px] -my-[12px] py-[12px]"
+          : ""
+      }
+    >
       <button
         onClick={toggle}
         aria-expanded={open}
         // Negative margin against the padding, so the hover target is bigger
-        // than the words without the words moving.
-        className={`group -mx-[8px] -my-[4px] px-[8px] py-[4px] rounded-control flex items-center hover:bg-wash cursor-pointer ${
-          variant === "heading" ? "gap-[8px]" : "gap-[6px]"
-        }`}
+        // than the words without the words moving. Dropped once the whole
+        // block is shaded, where the wash comes from the wrapper instead.
+        //
+        // Top-aligned and full width at the large size: the label runs to two
+        // or three lines, a centred chevron drifts to the middle of the
+        // block, and the row is the whole column so the hit area should be
+        // too.
+        className={`group rounded-control flex cursor-pointer -mx-[8px] -my-[4px] px-[8px] py-[4px] ${
+          lit || hover === "text" ? "" : "hover:bg-wash"
+        } ${
+          size === "large" ? "w-full text-left items-start" : "items-center"
+        } ${variant === "heading" ? "gap-[8px]" : "gap-[6px]"}`}
       >
         <ChevronRight
           aria-hidden
           className={`shrink-0 text-ink-faint group-hover:text-ink-muted transition-transform duration-150 ${
-            variant === "heading" ? "w-[18px] h-[18px]" : "w-[14px] h-[14px]"
+            variant === "heading"
+              ? size === "large"
+                ? // Aligned to the label's first line optically rather than
+                  // geometrically. The line box is about 25 and the mark is
+                  // 19, so centring puts it at 3, but the words sit above the
+                  // middle of their own box because the descender space is
+                  // mostly empty, and the mark has to follow them up.
+                  "w-[19px] h-[19px] mt-[1px]"
+                : "w-[18px] h-[18px]"
+              : "w-[14px] h-[14px]"
           } ${open ? "rotate-90" : ""}`}
         />
         <span
-          className={
-            variant === "heading"
-              ? "font-display font-medium text-xl text-ink text-left"
-              : "font-body font-semibold text-sm text-ink-muted"
-          }
+          className={`${
+            labelClass ??
+            (variant === "heading"
+              ? `font-display font-medium text-ink text-left ${
+                  size === "large" ? "text-xl leading-[1.3]" : "text-xl"
+                }`
+              : "font-body font-semibold text-sm text-ink-muted")
+          } ${
+            hover === "text"
+              ? "group-hover:text-ink-muted transition-colors"
+              : ""
+          }`}
         >
           {label}
         </span>
@@ -370,7 +543,17 @@ export function Disclosure({
           lines up under the heading it belongs to. */}
       {open && (
         <div
-          className={`mt-[14px] ${variant === "heading" ? "pl-[26px]" : "pl-[20px]"}`}
+          // Indented to the words, not to the chevron: the panel lines up
+          // with the label it opened from. 27px is the chevron at 19 plus the
+          // 8px gap after it.
+          className={`mt-[14px] ${
+            contentClass ??
+            (size === "large"
+              ? "pl-[27px]"
+              : variant === "heading"
+                ? "pl-[26px]"
+                : "pl-[20px]")
+          }`}
         >
           {children}
         </div>

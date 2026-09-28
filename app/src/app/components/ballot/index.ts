@@ -7,6 +7,7 @@
 
 export * from "./types";
 export * from "./helpers";
+export * from "./hold-place";
 export { SourcesProvider, useSources } from "./sources-context";
 export * from "./primitives";
 export * from "./sections";

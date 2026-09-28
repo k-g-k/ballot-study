@@ -69,12 +69,14 @@
   --tracking-heading: -0.01em;
 
   /* ---------- Surfaces ----------
-     The warm greige the Claude system starts from. Two degrees off neutral, so
-     it reads as paper rather than as screen grey, and it keeps the page warm
-     without pulling toward the blue the ballot-question prototype used. */
+     A neutral page grey: equal red, green and blue, so it reads as grey
+     rather than as the warm greige this prototype started from or the warm
+     #eae7e7 the live site uses. Sunken is one step below it, on the same
+     neutral. */
   --color-ground: #f7f7f7;
   --color-surface: #ffffff;
-  --color-sunken: #efefef;
+  --color-sunken: #e2e2e2;
+
   --color-inverse: #141413;
 
   /* ---------- Ink ---------- */
@@ -85,10 +87,12 @@
 
   /* ---------- Lines ----------
      Translucent rather than solid so they sit correctly on both the ground and
-     a white card without needing two values. */
-  --color-line: rgba(31, 30, 29, 0.15);
-  --color-line-strong: rgba(31, 30, 29, 0.3);
-  --color-line-ghost: rgba(20, 20, 19, 0.06);
+     a white card without needing two values. The tint is MAPLE's slate
+     (`$maple-border-default`, rgba(15, 23, 42, .15)) rather than a warm black,
+     so rules on the grey read cool like the rest of the live site. */
+  --color-line: rgba(15, 23, 42, 0.15);
+  --color-line-strong: rgba(15, 23, 42, 0.3);
+  --color-line-ghost: rgba(15, 23, 42, 0.06);
 
   /* ---------- Brand ----------
      A slate blue rather than MAPLE's #12266f. The old navy was the only
@@ -98,6 +102,12 @@
      two and lets the blue sit on cream instead of fighting it. Same weight,
      same 10.8:1 against the ground. */
   --color-brand: #1f3b61;
+
+  /* Links. MAPLE's own `$maple-brand-primary`, the navy the header bar wears,
+     so a link and the bar agree. Hover settles back to the page's brand
+     slate rather than brightening, which keeps a followed link from reading
+     as a source chip. */
+  --color-link: #1a3185;
   --color-brand-hover: #152842;
   --color-brand-soft: #eaeff5;
   --color-brand-edge: #c4cfde;
@@ -107,9 +117,10 @@
      #c61e32 while every component said #c71e32; this settles it. */
   --color-alert: #c71e32;
 
-  /* Hover and press are a translucent black wash, never a fill swap. */
-  --color-wash: rgba(20, 20, 19, 0.04);
-  --color-wash-strong: rgba(20, 20, 19, 0.06);
+  /* Hover and press are a translucent wash, never a fill swap. Same slate as
+     the lines, so a hovered row and its border agree. */
+  --color-wash: rgba(15, 23, 42, 0.05);
+  --color-wash-strong: rgba(15, 23, 42, 0.08);
 
   --color-focus: rgba(70, 130, 213, 0.5);
 

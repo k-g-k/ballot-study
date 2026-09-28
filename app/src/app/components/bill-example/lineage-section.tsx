@@ -42,7 +42,7 @@ import { Chapter, Span, Disclosure } from "./spine";
 // Purple is the AI provenance colour on these pages, so a chamber cannot wear
 // it. The conference takes the brand navy: blue, like the Senate's, but darker,
 // so the two are not mistaken for each other.
-const CHAMBER_INK: Record<string, string> = {
+export const CHAMBER_INK: Record<string, string> = {
   Senate: "text-official-ink",
   House: "text-user-ink",
   Conference: "text-brand",
@@ -165,7 +165,6 @@ const shortTitle = (role: string) => {
     .replace(/^Speaker of the House$/, "Speaker")
     .replace(/^President of the Senate$/, "President")
     .replace("Pro Tempore", "Pro Tem")
-    .replace("Ranking Minority", "Rank. Min.")
     .replace(/^First /, "1st ")
     .replace(/^Second /, "2nd ")
     .replace(/^Third /, "3rd ")
@@ -288,17 +287,20 @@ function StageCard({
  * beside the map they belong to answers "who are those three cells" without the
  * reader carrying an answer across the page.
  */
-function Conferees({
+export function Conferees({
   ch,
   showing,
   onHover,
   onPin,
+  people = CONFEREES,
 }: {
   ch: "S" | "H";
   /** Every seat being read, so this list can answer the map. */
   showing: string[];
   onHover: (key: string | null) => void;
   onPin: (key: string) => void;
+  /** Whose conference. Defaults to the one this bill went to. */
+  people?: CommitteeMember[];
 }) {
   return (
     <div className="shrink-0">
@@ -306,8 +308,9 @@ function Conferees({
         {ch === "S" ? "Senate" : "House"}
       </p>
       <ul className="flex flex-col gap-[10px]">
-        {CONFEREES.filter((m) => m.key.startsWith("S:") === (ch === "S")).map(
-          (m) => (
+        {people
+          .filter((m) => m.key.startsWith("S:") === (ch === "S"))
+          .map((m) => (
             <li key={m.code}>
               <button
                 type="button"
@@ -346,8 +349,7 @@ function Conferees({
                 </span>
               </button>
             </li>
-          ),
-        )}
+          ))}
       </ul>
     </div>
   );
@@ -484,7 +486,7 @@ const VOTE_COLOR: Record<string, string> = {
  * seats and understates city ones. That is the trade for reading a chamber's
  * split at a glance, and the caption says so.
  */
-function VoteMap({
+export function VoteMap({
   chamber,
   roll,
   highlight,
@@ -496,6 +498,7 @@ function VoteMap({
   className,
   dim = true,
   label,
+  fit = false,
 }: {
   chamber: "house" | "senate";
   roll?: RollCall;
@@ -518,6 +521,14 @@ function VoteMap({
   people?: Record<string, SeatCard>;
   /** Room for the map, since a lone map given a whole column reads as a hero. */
   className?: string;
+  /**
+   * Scale to the height available rather than to the width.
+   *
+   * `w-full h-auto` ties the map's height to its width, so it can never match
+   * the height of the column beside it. Fitting lets it grow into whatever room
+   * is there and stop, with its own width cap still the ceiling.
+   */
+  fit?: boolean;
   /**
    * Whether the unchosen seats sit back at partial opacity. Off where all the
    * lit seats are equally the subject, so bringing one forward would say the
@@ -570,7 +581,9 @@ function VoteMap({
   };
 
   return (
-    <div className={className}>
+    <div
+      className={`${fit ? "@[840px]:flex @[840px]:flex-col" : ""} ${className ?? ""}`}
+    >
       {/* How much of the chamber this step involved, rather than how big the
               chamber is. Three of a hundred and sixty is the fact the map is
               making, and the label should not leave it to be counted off the
@@ -580,8 +593,21 @@ function VoteMap({
         {label ?? (chamber === "house" ? "House" : "Senate")} ·{" "}
         {shown === null ? seats : `${shown} of ${seats}`}
       </p>
-      <div className="relative">
-        <svg viewBox={`${x} ${y} ${w} ${h}`} className="w-full h-auto">
+      <div
+        className={`relative ${fit ? "@[840px]:flex-1 @[840px]:min-h-0" : ""}`}
+      >
+        <svg
+          viewBox={`${x} ${y} ${w} ${h}`}
+          // Out of flow when fitting. In flow, an SVG still reports its own
+          // intrinsic height, so it grew the row it was meant to be fitting
+          // into and then filled the row it had grown. Absolute, it contributes
+          // no height and can only take what the column beside it allows.
+          className={
+            fit
+              ? "w-full h-auto @[840px]:absolute @[840px]:inset-0 @[840px]:h-full"
+              : "w-full h-auto"
+          }
+        >
           <defs>
             <clipPath id={clip}>
               {L.geo.outline.map((d) => (
@@ -891,16 +917,22 @@ function TracedLineage({
   // Each step has an actor, and naming the wrong one would be worse than naming
   // none. Education merged the six House bills into H.4745; Ways and Means is
   // where that draft stopped and where the Senate's text was replaced instead.
-  const committee: { label: string; members: CommitteeMember[] } | null =
+  const committee: {
+    name: string;
+    label: string;
+    members: CommitteeMember[];
+  } | null =
     chamber !== "House"
       ? null
       : stage.id === "h4745"
         ? {
+            name: "Joint Committee on Education",
             label: `Joint Committee on Education · ${HOUSE_EDUCATION.length} House members`,
             members: HOUSE_EDUCATION,
           }
         : stage.id === "h5349"
           ? {
+              name: "House Ways and Means",
               label: `House Ways and Means · ${HOUSE_WAYS_AND_MEANS.length} members`,
               members: HOUSE_WAYS_AND_MEANS,
             }
@@ -1047,6 +1079,22 @@ function TracedLineage({
   // Keyed to the step as well as its roster: the three roll calls share one
   // chamber and so one roster, and keying on the roster alone left the same
   // member seated as a reader moved between them.
+  /**
+   * Whether the office sits under the name rather than beside it.
+   *
+   * All or nothing across the page. One office wrapping while its neighbours
+   * stay inline gives six cells three different shapes, which reads as a
+   * mistake; moving them together reads as a layout. Decided on length rather
+   * than by asking the browser, because the answer has to be the same for all
+   * six before any of them is drawn.
+   */
+  const officeBelow =
+    paged &&
+    shownKeys.some((k) => {
+      const t = people?.[k]?.title;
+      return t ? shortTitle(t).length > 12 : false;
+    });
+
   const roster = rotatable.join(",");
   useEffect(() => {
     const keys = roster ? roster.split(",") : [];
@@ -1136,10 +1184,10 @@ function TracedLineage({
       answer={
         <Span>
           <p className="font-body text-sm text-ink-muted leading-[1.65] max-w-[74ch]">
-            {chamber}&rsquo;s route with this bill, newest first. Where a step
-            took its text from the other chamber, it links there rather than
-            explaining it here: the other chamber&rsquo;s route belongs on its
-            own page.
+            Bills in Massachusetts get renumbered after any modification to
+            their text. Newer versions of the same bill often contain missing or
+            incomplete information. We made this bill tracker to make it easier
+            to understand where a bill is in its lifecycle and how it got there.
           </p>
         </Span>
       }
@@ -1208,11 +1256,10 @@ function TracedLineage({
                   </p>
                 )}
                 {/* On its own line, like every other step's link, rather than
-                    trailing the sentence. The conference page does not exist
-                    yet. */}
+                    trailing the sentence. */}
                 {stage.id === "conf" && (
                   <a
-                    href="/conferenceCommittees/s2581-h5366"
+                    href="/conferenceCommittees/phone-free-schools"
                     className="inline-flex items-center gap-[4px] mt-[12px] font-body font-semibold text-sm underline decoration-dotted underline-offset-[4px] text-official-ink hover:text-official"
                   >
                     Go to conference committee
@@ -1269,12 +1316,23 @@ function TracedLineage({
                       that. Steps that already show their members do not need this
                       and do not get it. */}
               {!hasList && people && (
-                // Floor set to what one filled row measures: a 36px
-                // portrait between 10px of padding. The panel then keeps its
-                // size whether or not a seat is chosen, so nothing below it
-                // moves when one is.
-                <div className="group min-h-[60px] flex items-stretch gap-[4px] flex-1 bg-sunken rounded-panel overflow-hidden">
-                  {/* Chevrons at the panel's edges, the way the followed
+                <div className="flex-1 flex flex-col">
+                  {/* Names the set the faces come from, the way the filings
+                      step says "six bills, six sponsors". On a roll call that
+                      set is the whole chamber, and what the panel offers is any
+                      one of them, so it says so rather than repeating the vote
+                      the card has already named twice above. */}
+                  {(committee || roll) && (
+                    <p className="font-body font-semibold text-2xs uppercase tracking-[0.08em] text-ink-muted mb-[8px]">
+                      {committee ? committee.name : "How each voted"}
+                    </p>
+                  )}
+                  {/* Floor set to what one filled row measures: a 36px
+                      portrait between 10px of padding. The panel then keeps its
+                      size whether or not a seat is chosen, so nothing below it
+                      moves when one is. */}
+                  <div className="group min-h-[60px] flex items-stretch gap-[4px] flex-1 bg-sunken rounded-panel overflow-hidden">
+                    {/* Chevrons at the panel's edges, the way the followed
                           testimony card cycles its entries. Hidden by opacity
                           rather than display, so the panel keeps its width and the
                           member beside them does not shift when they appear, and
@@ -1283,73 +1341,73 @@ function TracedLineage({
                           into the same one selection, beside the map and the lists,
                           and the only one that works without knowing which district
                           to point at. */}
-                  <button
-                    disabled={!canStep}
-                    onClick={() => step(-1)}
-                    aria-label={paged ? "Previous six" : "Previous member"}
-                    className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
-                  >
-                    <ChevronLeft className="w-[14px] h-[14px]" />
-                  </button>
+                    <button
+                      disabled={!canStep}
+                      onClick={() => step(-1)}
+                      aria-label={paged ? "Previous six" : "Previous member"}
+                      className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
+                    >
+                      <ChevronLeft className="w-[14px] h-[14px]" />
+                    </button>
 
-                  <div className="flex-1 min-w-0 flex flex-col justify-center py-[10px]">
-                    {shownKeys.length ? (
-                      // A page of six is three across and two down.
-                      //
-                      // `auto` rather than equal thirds: a column takes the
-                      // width its own content needs and the surplus is shared
-                      // out. Equal thirds gave the same width to a cell holding
-                      // "A. Michlewitz chair" and one holding "K. Diggs asst.
-                      // vice chair", so the first had slack going spare while
-                      // the second wrapped. The cost is that columns are no
-                      // longer identical and shift a little between pages.
-                      <div
-                        className={
-                          paged
-                            ? "grid grid-cols-[auto_auto_auto] auto-rows-[minmax(48px,auto)] gap-x-[20px] gap-y-[10px]"
-                            : "flex"
-                        }
-                      >
-                        {shownKeys.map((key) => {
-                          const { seat, vacant, card, vote } = readSeat(key);
-                          if (!card && !vacant) return null;
-                          return (
-                            <div
-                              key={key}
-                              // Hovering a name is what grows its district on
-                              // the map. The six are already at full strength
-                              // there, so this is the only thing singling one
-                              // out, and it reads in both directions: the map
-                              // answers the list and the list answers the map.
-                              onPointerEnter={() => setHovered(key)}
-                              onPointerLeave={() => setHovered(null)}
-                              className={`min-w-0 h-full flex items-center gap-[10px] ${
-                                // Alone, claim the panel. In a grid the cell
-                                // already sets the width.
-                                paged ? "" : "flex-1"
-                              }`}
-                            >
-                              {vacant || !card?.portrait ? (
-                                <span className="shrink-0 w-[36px] h-[36px] rounded-full bg-sunken border border-line flex items-center justify-center">
-                                  <Scale className="w-[18px] h-[18px] text-ink-faint" />
-                                </span>
-                              ) : (
-                                <img
-                                  src={card.portrait}
-                                  alt=""
-                                  className={`shrink-0 w-[36px] h-[36px] rounded-full object-cover bg-sunken border-[3px] transition-[box-shadow] ${
-                                    card.party === "R"
-                                      ? "border-negative"
-                                      : "border-official"
-                                  } ${
-                                    hovered === key
-                                      ? "ring-2 ring-ink ring-offset-2 ring-offset-sunken"
-                                      : ""
-                                  }`}
-                                />
-                              )}
-                              <span className="min-w-0">
-                                {/* Name, then office. The office sits with the
+                    <div className="flex-1 min-w-0 flex flex-col justify-center py-[10px]">
+                      {shownKeys.length ? (
+                        // A page of six is three across and two down.
+                        //
+                        // `auto` rather than equal thirds: a column takes the
+                        // width its own content needs and the surplus is shared
+                        // out. Equal thirds gave the same width to a cell holding
+                        // "A. Michlewitz chair" and one holding "K. Diggs asst.
+                        // vice chair", so the first had slack going spare while
+                        // the second wrapped. The cost is that columns are no
+                        // longer identical and shift a little between pages.
+                        <div
+                          className={
+                            paged
+                              ? "grid grid-cols-[auto_auto_auto] auto-rows-[minmax(48px,auto)] gap-x-[20px] gap-y-[10px]"
+                              : "flex"
+                          }
+                        >
+                          {shownKeys.map((key) => {
+                            const { seat, vacant, card, vote } = readSeat(key);
+                            if (!card && !vacant) return null;
+                            return (
+                              <div
+                                key={key}
+                                // Hovering a name is what grows its district on
+                                // the map. The six are already at full strength
+                                // there, so this is the only thing singling one
+                                // out, and it reads in both directions: the map
+                                // answers the list and the list answers the map.
+                                onPointerEnter={() => setHovered(key)}
+                                onPointerLeave={() => setHovered(null)}
+                                className={`min-w-0 h-full flex items-center gap-[10px] ${
+                                  // Alone, claim the panel. In a grid the cell
+                                  // already sets the width.
+                                  paged ? "" : "flex-1"
+                                }`}
+                              >
+                                {vacant || !card?.portrait ? (
+                                  <span className="shrink-0 w-[36px] h-[36px] rounded-full bg-sunken border border-line flex items-center justify-center">
+                                    <Scale className="w-[18px] h-[18px] text-ink-faint" />
+                                  </span>
+                                ) : (
+                                  <img
+                                    src={card.portrait}
+                                    alt=""
+                                    className={`shrink-0 w-[36px] h-[36px] rounded-full object-cover bg-sunken border-[3px] transition-[box-shadow] ${
+                                      card.party === "R"
+                                        ? "border-negative"
+                                        : "border-official"
+                                    } ${
+                                      hovered === key
+                                        ? "ring-2 ring-ink ring-offset-2 ring-offset-sunken"
+                                        : ""
+                                    }`}
+                                  />
+                                )}
+                                <span className="min-w-0">
+                                  {/* Name, then office. The office sits with the
                                     name because it qualifies who they are.
                                     The line wraps rather than running on: the
                                     panel is a fixed box and a long surname
@@ -1357,7 +1415,7 @@ function TracedLineage({
                                     piece still holds together, so a break lands
                                     between the name and the office rather than
                                     inside either. */}
-                                {/* The leading goes on the same elements as
+                                  {/* The leading goes on the same elements as
                                       the type sizes, not on this wrapper. In
                                       Tailwind v4 `text-sm` and `text-xs` set a
                                       line-height of their own through
@@ -1378,77 +1436,85 @@ function TracedLineage({
                                       wrapped name should read as one thing, and
                                       at 1 the gap left over is the font's own
                                       space inside the em box. */}
-                                <span className="block leading-[0.9]">
-                                  <span className="font-body font-semibold text-sm leading-[0.9] text-ink">
-                                    {vacant ? "Vacant seat" : card?.name}
-                                  </span>
-                                  {/* A real space, not just the margin. Two
+                                  <span className="block leading-[0.9]">
+                                    <span className="font-body font-semibold text-sm leading-[0.9] text-ink">
+                                      {vacant ? "Vacant seat" : card?.name}
+                                    </span>
+                                    {/* A real space, not just the margin. Two
                                       adjacent spans give the browser nowhere to
                                       break, so it was splitting the name itself
                                       and leaving "K." alone. With a space here
                                       the break falls between the name and the
                                       office, and the office, being nowrap,
                                       moves down whole. */}
-                                  {!vacant && card?.title && " "}
-                                  {!vacant && card?.title && (
-                                    <span className="font-body text-xs leading-[0.9] text-caution-ink whitespace-nowrap">
-                                      {shortTitle(card.title).toLowerCase()}
-                                    </span>
-                                  )}
-                                </span>
-                                <span className="block mt-[3px] font-body text-xs text-ink-muted leading-[1.3]">
-                                  {seat?.d}
-                                  {/* With the district rather than the name: a
+                                    {!vacant &&
+                                      card?.title &&
+                                      !officeBelow &&
+                                      " "}
+                                    {!vacant && card?.title && (
+                                      <span
+                                        className={`font-body text-xs leading-[0.9] text-caution-ink whitespace-nowrap ${
+                                          officeBelow ? "block mt-[1px]" : ""
+                                        }`}
+                                      >
+                                        {shortTitle(card.title).toLowerCase()}
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span className="block mt-[3px] font-body text-xs text-ink-muted leading-[1.3]">
+                                    {seat?.d}
+                                    {/* With the district rather than the name: a
                                       vote is something the seat did, not part of
                                       who holds it. */}
-                                  {/* No vote line on a vacant seat: "Vacant
+                                    {/* No vote line on a vacant seat: "Vacant
                                         seat" has already said there was nobody
                                         to cast one. */}
-                                  {roll && !vacant && (
-                                    <span
-                                      className={`ml-[7px] font-semibold ${
-                                        vote === "Y"
-                                          ? "text-yea"
+                                    {roll && !vacant && (
+                                      <span
+                                        className={`ml-[7px] font-semibold ${
+                                          vote === "Y"
+                                            ? "text-yea"
+                                            : vote === "N"
+                                              ? "text-nay"
+                                              : "text-ink-faint"
+                                        }`}
+                                      >
+                                        {vote === "Y"
+                                          ? "voted yea"
                                           : vote === "N"
-                                            ? "text-nay"
-                                            : "text-ink-faint"
-                                      }`}
-                                    >
-                                      {vote === "Y"
-                                        ? "voted yea"
-                                        : vote === "N"
-                                          ? "voted nay"
-                                          : "no vote recorded"}
-                                    </span>
-                                  )}
+                                            ? "voted nay"
+                                            : "no vote recorded"}
+                                      </span>
+                                    )}
+                                  </span>
                                 </span>
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      // A recessed panel rather than a line of grey text: the
-                      // slot is waiting to be filled, and saying so with a
-                      // surface reads as somewhere to look rather than as
-                      // something missing.
-                      <div className="flex-1">
-                        <p className="font-body text-sm text-ink-muted leading-[1.5]">
-                          {roll
-                            ? "Hover or click on a district to see the vote."
-                            : "Hover or click on a district to see whose seat it is."}
-                        </p>
-                      </div>
-                    )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        // A recessed panel rather than a line of grey text: the
+                        // slot is waiting to be filled, and saying so with a
+                        // surface reads as somewhere to look rather than as
+                        // something missing.
+                        <div className="flex-1">
+                          <p className="font-body text-sm text-ink-muted leading-[1.5]">
+                            {roll
+                              ? "Hover or click on a district to see the vote."
+                              : "Hover or click on a district to see whose seat it is."}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      disabled={!canStep}
+                      onClick={() => step(1)}
+                      aria-label={paged ? "Next six" : "Next member"}
+                      className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
+                    >
+                      <ChevronRight className="w-[14px] h-[14px]" />
+                    </button>
                   </div>
-                  <button
-                    disabled={!canStep}
-                    onClick={() => step(1)}
-                    aria-label={paged ? "Next six" : "Next member"}
-                    className="shrink-0 self-stretch w-[25px] flex items-center justify-center text-ink-muted hover:text-ink hover:bg-wash-strong disabled:text-ink-faint disabled:hover:bg-transparent disabled:cursor-default cursor-pointer opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-visible:opacity-100"
-                  >
-                    <ChevronRight className="w-[14px] h-[14px]" />
-                  </button>
                 </div>
               )}
               {stage.id === "conf" && (
@@ -1565,16 +1631,11 @@ function TracedLineage({
                 // the map: bringing one forward would say the others had
                 // receded, and they have not.
                 dim={!hasList}
-                // The committee steps name the committee rather than the
-                // chamber, which is what the roster heading used to do before
-                // the rosters came off these steps.
-                label={
-                  stage.id === "h4745"
-                    ? "Joint Committee on Education"
-                    : stage.id === "h5349"
-                      ? "House Ways and Means"
-                      : undefined
-                }
+                // The map caption names the chamber. Which committee it is
+                // sits over the faces instead, where the faces are the thing it
+                // is naming.
+                label={undefined}
+                fit={!joint && !roll}
                 // The conference pair fills its columns edge to edge. A lone
                 // map has a whole column to itself, so it is capped and
                 // centred instead: it grows from the middle of its column
@@ -1588,8 +1649,17 @@ function TracedLineage({
                       : "@[840px]:col-start-3"
                     : roll
                       ? "@[840px]:col-start-1"
-                      : "@[840px]:col-start-2 max-w-[520px] mx-auto"
-                } ${joint ? "" : roll ? "max-w-[520px] mx-auto" : ""}`}
+                      : // Every step in this column has a tall block of
+                        // text and faces beside it, so the map fits that height
+                        // rather than following its own width. No cap: with
+                        // Massachusetts twice as wide as it is tall, a cap
+                        // binds before the height ever does.
+                        // `max-h` is the ceiling. The map scales proportionally to
+                        // fit its box, so capping the height caps the width
+                        // with it: this is the largest a map can ever be, on
+                        // any step and at any card width.
+                        "@[840px]:col-start-2 max-w-[520px] mx-auto @[840px]:max-w-none @[840px]:mx-0 @[840px]:h-full @[840px]:max-h-[340px] @[840px]:p-[20px]"
+                } ${joint ? "max-w-[420px] mx-auto" : roll ? "max-w-[520px] mx-auto" : ""}`}
                 chamber={ch}
                 roll={roll}
                 highlight={highlight}
